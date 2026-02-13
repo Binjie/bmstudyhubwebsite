@@ -4,7 +4,6 @@ canonifyURLs = true
 
 languageCode = "en-us"
 title = "BMStudyHub"
-theme = ""
 
 [caches]
   [caches.images]
