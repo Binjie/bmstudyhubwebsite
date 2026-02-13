@@ -1,4 +1,4 @@
-baseURL = "https://binjie.github.io/bmstudyhubwebsite/"
+baseURL = "https://binjie.github.io/"
 relativeURLs = true
 canonifyURLs = true
 
