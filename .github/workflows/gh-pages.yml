@@ -5,7 +5,7 @@ on:
     branches: ["main"] # 如果你的主分支叫 master，请修改此处
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
