@@ -1,7 +1,13 @@
 baseURL = "https://binjie.github.io/"
+relativeURLs = true
+canonifyURLs = true
+
 languageCode = "en-us"
 title = "BMStudyHub"
-theme = ""
+
+[caches]
+  [caches.images]
+    dir = ':cacheDir/images'
 
 # Main configuration
 [params]
