@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Visuospatial on BMStudyHub</title>
+    <link>http://localhost:1313/tags/visuospatial/</link>
+    <description>Recent content in Visuospatial on BMStudyHub</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 21 May 2024 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/visuospatial/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Spatial Memory Training Game</title>
+      <link>http://localhost:1313/games/spatialmemory/</link>
+      <pubDate>Tue, 21 May 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/games/spatialmemory/</guid>
+      <description>&lt;h2 id=&#34;how-to-play&#34;&gt;How to Play&lt;/h2&gt;&#xA;&lt;ol&gt;&#xA;&lt;li&gt;&lt;strong&gt;Watch&lt;/strong&gt; – Gray squares will briefly light up in a sequence (one by one).&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Repeat&lt;/strong&gt; – Click the squares in the &lt;strong&gt;exact same order&lt;/strong&gt;.&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Progress&lt;/strong&gt; – Each correct round adds one more step to the sequence.&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Fail?&lt;/strong&gt; – The game ends. Try to beat your longest sequence!&lt;/li&gt;&#xA;&lt;/ol&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;why-train-spatial-memory&#34;&gt;Why Train Spatial Memory?&lt;/h2&gt;&#xA;&lt;p&gt;Spatial memory is crucial for:&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;strong&gt;Navigation&lt;/strong&gt; – Remembering routes and locations.&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;STEM learning&lt;/strong&gt; – Visualizing geometry, diagrams, and 3D structures.&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Everyday tasks&lt;/strong&gt; – Packing, organizing, and recalling where things are.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;p&gt;This grid‑based task is a digital version of the classic &lt;strong&gt;Corsi block‑tapping test&lt;/strong&gt;, a widely used neuropsychological assessment.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Brain-Games on BMStudyHub</title>
+    <link>http://localhost:1313/tags/brain-games/</link>
+    <description>Recent content in Brain-Games on BMStudyHub</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 15 Oct 2023 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/brain-games/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Sequential Memory Training Game</title>
+      <link>http://localhost:1313/games/memory/</link>
+      <pubDate>Sun, 15 Oct 2023 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/games/memory/</guid>
+      <description>&lt;h2 id=&#34;how-to-play&#34;&gt;How to Play&lt;/h2&gt;&#xA;&lt;ol&gt;&#xA;&lt;li&gt;&lt;strong&gt;Memorize&lt;/strong&gt;: Watch symbols appear in numbered order (#1, #2, #3&amp;hellip;)&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Recall&lt;/strong&gt;: Click cards in the same numbered order&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Improve&lt;/strong&gt;: Track your score and accuracy as you progress&lt;/li&gt;&#xA;&lt;/ol&gt;&#xA;&lt;h2 id=&#34;why-it-works&#34;&gt;Why It Works&lt;/h2&gt;&#xA;&lt;p&gt;Sequential memory training strengthens your brain&amp;rsquo;s ability to:&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;Remember multi-step instructions&lt;/li&gt;&#xA;&lt;li&gt;Follow procedures in correct order&lt;/li&gt;&#xA;&lt;li&gt;Improve working memory capacity&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h2 id=&#34;tips-for-success&#34;&gt;Tips for Success&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;strong&gt;Create associations&lt;/strong&gt;: Link numbers to symbols (#1⭐ = &amp;ldquo;One star&amp;rdquo;)&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Make stories&lt;/strong&gt;: Create a narrative with symbols in order&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Practice daily&lt;/strong&gt;: Short, consistent sessions work best&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Progress gradually&lt;/strong&gt;: Start with 4 items, advance when ready&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h2 id=&#34;difficulty-levels&#34;&gt;Difficulty Levels&lt;/h2&gt;&#xA;&lt;table&gt;&#xA;  &lt;thead&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;th&gt;Level&lt;/th&gt;&#xA;          &lt;th&gt;Items&lt;/th&gt;&#xA;          &lt;th&gt;Time&lt;/th&gt;&#xA;      &lt;/tr&gt;&#xA;  &lt;/thead&gt;&#xA;  &lt;tbody&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;Beginner&lt;/td&gt;&#xA;          &lt;td&gt;4&lt;/td&gt;&#xA;          &lt;td&gt;10s&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;Intermediate&lt;/td&gt;&#xA;          &lt;td&gt;6&lt;/td&gt;&#xA;          &lt;td&gt;12s&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;Advanced&lt;/td&gt;&#xA;          &lt;td&gt;8&lt;/td&gt;&#xA;          &lt;td&gt;15s&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;Expert&lt;/td&gt;&#xA;          &lt;td&gt;10&lt;/td&gt;&#xA;          &lt;td&gt;18s&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;  &lt;/tbody&gt;&#xA;&lt;/table&gt;&#xA;&lt;p&gt;Train 5-10 minutes daily for best results.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

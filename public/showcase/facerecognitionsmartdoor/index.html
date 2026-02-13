@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Fun and engaging STEM education for kids - Mathematics, Science, Robotics, 3D Printing and more!">
+<title>Face Recognition Smart Door | BMStudyHub</title>
+
+<link rel="stylesheet" href='/css/style.css'>
+
+
+<link rel="icon" type="image/x-icon" href="/favicon.ico"></head>
+<body><header class="site-header">
+    <div class="container">
+        <div class="header-content">
+            <div class="logo">
+                <a href="http://localhost:1313/">
+                    <div class="logo-icon">
+                        
+                        <img src='/images/logo_pure.png' alt="BMStudyHub Logo" class="logo-image">
+                    </div>
+                    <div class="logo-text">
+                        <h1>BMStudyHub</h1>
+                        <p class="tagline">STEM Education for Young Minds</p>
+                    </div>
+                </a>
+            </div>
+            
+            <button class="nav-toggle" aria-label="Toggle navigation">
+                <span class="hamburger"></span>
+            </button>
+            
+            <nav class="site-nav">
+    <ul class="nav-menu">
+        
+        
+        <li class="nav-item ">
+            <a href="/" class="nav-link">Home</a>
+        </li>
+        
+        <li class="nav-item ">
+            <a href="/courses/" class="nav-link">Courses</a>
+        </li>
+        
+        <li class="nav-item ">
+            <a href="/blog/" class="nav-link">Blog</a>
+        </li>
+        
+        <li class="nav-item ">
+            <a href="/showcase/" class="nav-link">Showcase</a>
+        </li>
+        
+        <li class="nav-item ">
+            <a href="/games/" class="nav-link">Games</a>
+        </li>
+        
+        <li class="nav-item ">
+            <a href="/contact/" class="nav-link">Contact</a>
+        </li>
+        
+    </ul>
+    
+    
+</nav>
+        </div>
+    </div>
+</header>
+<main id="content">
+<div class="page-header">
+    <div class="container">
+        <h1 class="page-title">Face Recognition Smart Door</h1>
+        <p class="page-description">A real‑time face recognition system that greets registered users by name using 128‑dimensional embeddings</p>
+    </div>
+</div>
+
+<div class="container page-content">
+    <article class="single-content">
+        
+        
+        <div class="content-body">
+            <p>This project demonstrates how to build a face recognition application that identifies a person from a live camera feed and welcomes them personally. Users can register their face by uploading an image, which is converted into a unique 128‑dimensional numerical array (embedding). When the same face appears in front of the camera, the system matches the embedding and displays a “Welcome, [name]” message.</p>
+<p>Features
+Face registration – upload an image, extract a 128‑bit (float) embedding, and store it with a name.</p>
+<p>Real‑time recognition – capture video from a webcam, detect faces, and compute their embeddings.</p>
+<p>Similarity matching – compare live embeddings with registered ones using cosine distance.</p>
+<p>Personalised greeting – when a match is found, show a welcome message with the person’s name.</p>
+<p>How it works
+Embedding extraction – a pre‑trained deep learning model (e.g. FaceNet or a similar CNN) converts a face image into a 128‑dimensional vector. This vector is a compact numerical representation of the face’s unique features.</p>
+<p>Registration – the user’s name and their embedding are saved in a simple database (e.g. JSON file or in‑memory list).</p>
+<p>Recognition loop – each frame from the camera is processed: faces are located, cropped, and passed through the same model to obtain an embedding. This embedding is compared against all registered embeddings. If the distance is below a threshold, the corresponding name is retrieved.</p>
+<p>Output – the system overlays the welcome message on the video feed.</p>
+<p>Technologies used
+Python, OpenCV (face detection and camera handling)</p>
+<p>TensorFlow / PyTorch (pre‑trained face recognition model)</p>
+<p>NumPy &amp; scikit‑learn (embedding storage and distance calculation)</p>
+<p>Learning outcomes
+Understand how neural networks convert images into meaningful numerical vectors.</p>
+<p>Practise real‑time computer vision pipelines.</p>
+<p>Explore similarity search and threshold tuning.</p>
+<p>Integrate multiple components (image upload, camera, model inference) into a single application.</p>
+<p>This case study was developed as part of an AI elective course. Students were challenged to deploy the system on a Raspberry Pi, creating a low‑cost smart door prototype. The project successfully combined deep learning, software engineering, and user‑centred design.</p>
+
+        </div>
+        
+        
+    </article>
+</div>
+
+    </main><footer class="site-footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <div class="footer-logo">
+                    <div class="logo-icon small">
+                        
+                        <img src="/images/logo_pure.png" alt="BMStudyHub" class="logo-image">
+                    </div>
+                    <h3>BMStudyHub</h3>
+                </div>
+                <p class="footer-description">Fun and engaging STEM education for kids - Mathematics, Science, Robotics, 3D Printing and more!</p>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul class="footer-links">
+                    
+                    <li><a href="/">Home</a></li>
+                    
+                    <li><a href="/courses/">Courses</a></li>
+                    
+                    <li><a href="/blog/">Blog</a></li>
+                    
+                    <li><a href="/showcase/">Showcase</a></li>
+                    
+                    <li><a href="/games/">Games</a></li>
+                    
+                    <li><a href="/contact/">Contact</a></li>
+                    
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Contact Info</h4>
+                <ul class="contact-info">
+                    <li><strong>Email:</strong> bmstudyhub@outlook.com</li>
+                    
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2026 BMStudyHub. All rights reserved.</p>
+        </div>
+    </div>
+</footer><script src='/js/main.js'></script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<footer class="site-footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <div class="footer-logo">
+                    <div class="logo-icon small">
+                        <!-- 替换SVG为图片 -->
+                        <img src="/images/logo_pure.png" alt="{{ .Site.Title }}" class="logo-image">
+                    </div>
+                    <h3>{{ .Site.Title }}</h3>
+                </div>
+                <p class="footer-description">{{ .Site.Params.description }}</p>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul class="footer-links">
+                    {{ range .Site.Menus.main }}
+                    <li><a href="{{ .URL }}">{{ .Name }}</a></li>
+                    {{ end }}
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Contact Info</h4>
+                <ul class="contact-info">
+                    <li><strong>Email:</strong> {{ .Site.Params.email }}</li>
+                    {{/*  <li><strong>Phone:</strong> {{ .Site.Params.phone }}</li>
+                    <li><strong>Address:</strong> {{ .Site.Params.address }}</li>  */}}
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                {{/*  <h4>Follow Us</h4>
+                <div class="social-links">
+                    {{ range .Site.Params.social }}
+                    <a href="{{ .url }}" class="social-link" target="_blank" rel="noopener">
+                        <span class="social-icon">{{ if eq .icon "wechat" }}微信{{ else if eq .icon "instagram" }}小红书{{ else }}{{ .icon }}{{ end }}</span>
+                    </a>
+                    {{ end }}
+                </div>
+                <p class="social-text">Weekly updates on WeChat & Xiaohongshu</p>  */}}
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; {{ now.Format "2006" }} {{ .Site.Title }}. All rights reserved.</p>
+        </div>
+    </div>
+</footer>

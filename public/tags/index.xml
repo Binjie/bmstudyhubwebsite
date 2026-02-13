@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on BMStudyHub</title>
+    <link>http://localhost:1313/tags/</link>
+    <description>Recent content in Tags on BMStudyHub</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 21 May 2024 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Brain-Training</title>
+      <link>http://localhost:1313/tags/brain-training/</link>
+      <pubDate>Tue, 21 May 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/brain-training/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Corsi-Block</title>
+      <link>http://localhost:1313/tags/corsi-block/</link>
+      <pubDate>Tue, 21 May 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/corsi-block/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Spatial-Memory</title>
+      <link>http://localhost:1313/tags/spatial-memory/</link>
+      <pubDate>Tue, 21 May 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/spatial-memory/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Visuospatial</title>
+      <link>http://localhost:1313/tags/visuospatial/</link>
+      <pubDate>Tue, 21 May 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/visuospatial/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Working-Memory</title>
+      <link>http://localhost:1313/tags/working-memory/</link>
+      <pubDate>Tue, 21 May 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/working-memory/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Cognitive-Training</title>
+      <link>http://localhost:1313/tags/cognitive-training/</link>
+      <pubDate>Mon, 20 May 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/cognitive-training/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Dual-Task</title>
+      <link>http://localhost:1313/tags/dual-task/</link>
+      <pubDate>Mon, 20 May 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/dual-task/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Fluid-Intelligence</title>
+      <link>http://localhost:1313/tags/fluid-intelligence/</link>
+      <pubDate>Mon, 20 May 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/fluid-intelligence/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>N-Back</title>
+      <link>http://localhost:1313/tags/n-back/</link>
+      <pubDate>Mon, 20 May 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/n-back/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Brain-Games</title>
+      <link>http://localhost:1313/tags/brain-games/</link>
+      <pubDate>Sun, 15 Oct 2023 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/brain-games/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Memory</title>
+      <link>http://localhost:1313/tags/memory/</link>
+      <pubDate>Sun, 15 Oct 2023 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/memory/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Sequential-Memory</title>
+      <link>http://localhost:1313/tags/sequential-memory/</link>
+      <pubDate>Sun, 15 Oct 2023 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/sequential-memory/</guid>
+      <description></description>
+    </item>
+  </channel>
+</rss>

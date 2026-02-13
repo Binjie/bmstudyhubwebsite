@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>N-Back on BMStudyHub</title>
+    <link>http://localhost:1313/tags/n-back/</link>
+    <description>Recent content in N-Back on BMStudyHub</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 20 May 2024 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/n-back/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Dual N-Back Training Game</title>
+      <link>http://localhost:1313/games/nback/</link>
+      <pubDate>Mon, 20 May 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/games/nback/</guid>
+      <description>&lt;h2 id=&#34;how-to-play-dual-n-back&#34;&gt;How to Play Dual N-Back&lt;/h2&gt;&#xA;&lt;p&gt;Dual N-Back is one of the most scientifically validated working memory training tasks. You need to track two streams of information simultaneously and decide whether the &lt;strong&gt;current stimulus matches the one presented N steps ago&lt;/strong&gt;.&lt;/p&gt;&#xA;&lt;ol&gt;&#xA;&lt;li&gt;&lt;strong&gt;Visual Channel&lt;/strong&gt; – A blue square appears in one of 8 positions on a 3×3 grid.&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Auditory Channel&lt;/strong&gt; – A letter (A–H) is spoken at the same time.&lt;/li&gt;&#xA;&lt;/ol&gt;&#xA;&lt;p&gt;Your goal: press &lt;strong&gt;&amp;lsquo;A&amp;rsquo;&lt;/strong&gt; if the &lt;em&gt;position&lt;/em&gt; matches the one N steps back, press &lt;strong&gt;&amp;lsquo;L&amp;rsquo;&lt;/strong&gt; if the &lt;em&gt;letter&lt;/em&gt; matches, and press &lt;strong&gt;&amp;lsquo;Both&amp;rsquo;&lt;/strong&gt; (or the spacebar) if both match.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

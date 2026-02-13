@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+    <title>Spatial Memory · Grid Recall</title>
+    <style>
+        /* ===== GLOBAL CSS VARIABLES (matching site theme) ===== */
+        :root {
+            --primary: #E6E6FA;
+            --primary-dark: #D8BFD8;
+            --secondary: #FFD700;
+            --secondary-dark: #FFC107;
+            --accent: #6A5ACD;
+            --accent-light: #9370DB;
+            --background: #F9F9FF;
+            --text: #333333;
+            --text-light: #666666;
+            --white: #FFFFFF;
+            --gray: #F0F0F0;
+            --gray-dark: #E0E0E0;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --shadow-light: rgba(0, 0, 0, 0.05);
+            --success: #2ecc71;
+            --error: #e74c3c;
+        
+            /* 系统字体堆栈（无需联网） */
+            --font-heading: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+        
+            --border-radius: 12px;
+            --border-radius-lg: 20px;
+            --transition: all 0.3s ease;
+
+            --grid-size: 4;  /* default 4x4 */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-body);
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--text);
+            background-color: var(--background);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .game-container {
+            max-width: 780px;
+            width: 100%;
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            box-shadow: 0 10px 25px var(--shadow);
+            padding: 30px 25px;
+            transition: var(--transition);
+            border: 1px solid var(--gray);
+        }
+
+        .game-header {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            justify-content: space-between;
+            margin-bottom: 25px;
+        }
+
+        .game-title {
+            font-family: var(--font-heading);
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 5px;
+        }
+
+        .difficulty-badge {
+            background: var(--primary-dark);
+            padding: 5px 14px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--accent);
+            display: inline-block;
+        }
+
+        /* 设置面板 - 与 n-back 风格统一 */
+        .settings-panel {
+            background: var(--gray);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            margin-bottom: 25px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .control-group label {
+            font-weight: 600;
+            color: var(--text);
+            white-space: nowrap;
+        }
+
+        select, input[type="number"] {
+            min-width: 130px;
+            padding: 8px 12px;
+            border: 2px solid var(--accent-light);
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            font-size: 1rem;
+            background: var(--white);
+            cursor: pointer;
+            font-family: var(--font-body);
+        }
+
+        input[type="number"] {
+            min-width: 80px;
+        }
+
+        /* 网格区域 */
+        .grid-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        #grid {
+            display: grid;
+            grid-template-columns: repeat(var(--grid-size), 1fr);
+            gap: 12px;
+            background: var(--gray);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .cell {
+            aspect-ratio: 1 / 1;
+            width: 100%;
+            background: var(--white);
+            border-radius: 10px;
+            box-shadow: inset 0 2px 5px var(--shadow-light);
+            transition: background 0.15s, transform 0.1s;
+            cursor: pointer;
+        }
+
+        .cell.active {
+            background: var(--accent) !important;
+            box-shadow: 0 0 0 3px var(--secondary);
+            transform: scale(0.92);
+        }
+
+        .cell.success {
+            background: var(--success) !important;
+        }
+
+        .cell.error {
+            background: var(--error) !important;
+        }
+
+        /* 统计面板 */
+        .stats {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            background: var(--background);
+            padding: 18px 20px;
+            border-radius: var(--border-radius);
+            margin-top: 20px;
+            border: 1px solid var(--primary-dark);
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-value {
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: var(--accent);
+            line-height: 1.2;
+        }
+
+        .feedback {
+            font-size: 1.2rem;
+            font-weight: 600;
+            padding: 8px 20px;
+            border-radius: 40px;
+            background: var(--white);
+            border: 2px solid var(--secondary);
+            text-align: center;
+        }
+
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 25px;
+        }
+
+        .btn {
+            padding: 12px 28px;
+            border-radius: var(--border-radius);
+            font-family: var(--font-heading);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            font-size: 1rem;
+            background: var(--accent);
+            color: var(--white);
+            box-shadow: 0 4px 8px var(--shadow);
+        }
+
+        .btn:hover {
+            background: var(--accent-light);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px var(--shadow);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-outline:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .key-hint {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-top: 15px;
+            text-align: center;
+            border-top: 1px dashed var(--gray-dark);
+            padding-top: 15px;
+        }
+
+        .key {
+            display: inline-block;
+            background: var(--gray);
+            border-radius: 6px;
+            padding: 2px 10px;
+            font-family: monospace;
+            font-weight: 700;
+            border: 1px solid var(--gray-dark);
+        }
+
+        /* 响应式 */
+        @media (max-width: 600px) {
+            .game-container { padding: 20px; }
+            .settings-panel { flex-direction: column; align-items: stretch; }
+            .control-group { flex-direction: column; align-items: flex-start; width: 100%; }
+            select, input[type="number"] { width: 100%; min-width: unset; }
+            .stat-value { font-size: 1.4rem; }
+            #grid { gap: 8px; padding: 15px; }
+        }
+
+        @media (max-width: 400px) {
+            #grid { gap: 5px; padding: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <!-- 头部 -->
+        <div class="game-header">
+            <h1 class="game-title">🧠 Spatial Memory</h1>
+            <span class="difficulty-badge" id="gridSizeBadge">4x4</span>
+        </div>
+
+        <!-- 设置面板 -->
+        <div class="settings-panel">
+            <div class="control-group">
+                <label for="grid-select">Grid size:</label>
+                <select id="grid-select">
+                    <option value="3">3x3 (Beginner)</option>
+                    <option value="4" selected>4x4 (Standard)</option>
+                    <option value="5">5x5 (Advanced)</option>
+                    <option value="6">6x6 (Master)</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label for="start-length">Start length:</label>
+                <input type="number" id="start-length" value="3" min="2" max="8" step="1">
+            </div>
+            <button class="btn" id="startBtn">▶ Start</button>
+            <button class="btn btn-outline" id="resetBtn">⟲ Reset</button>
+        </div>
+
+        <!-- 游戏网格 -->
+        <div class="grid-container">
+            <div id="grid"></div>
+        </div>
+
+        <!-- 统计与反馈 -->
+        <div class="stats">
+            <div class="stat-item">
+                <span class="stat-label">Score</span>
+                <span class="stat-value" id="scoreDisplay">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Best</span>
+                <span class="stat-value" id="bestDisplay">3</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Current</span>
+                <span class="stat-value" id="currentLenDisplay">3</span>
+            </div>
+            <div id="feedbackMessage" class="feedback" style="align-self: center;">Ready</div>
+        </div>
+
+        <!-- 键盘快捷键提示 -->
+        <div class="key-hint">
+            <span class="key">Space</span> Start / Pause · 
+            <span class="key">R</span> Reset · 
+            <span class="key">Click</span> cells to recall
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            "use strict";
+
+            // ---------- DOM 元素 ----------
+            const gridContainer = document.getElementById('grid');
+            const gridSelect = document.getElementById('grid-select');
+            const startLengthInput = document.getElementById('start-length');
+            const startBtn = document.getElementById('startBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const scoreEl = document.getElementById('scoreDisplay');
+            const bestEl = document.getElementById('bestDisplay');
+            const currentLenEl = document.getElementById('currentLenDisplay');
+            const feedbackEl = document.getElementById('feedbackMessage');
+            const gridSizeBadge = document.getElementById('gridSizeBadge');
+
+            // ---------- 状态变量 ----------
+            let gridSize = 4;               // 当前网格大小
+            let sequence = [];             // 完整的序列（单元格索引）
+            let userSeq = [];             // 用户已点击的序列
+            let isPlaying = false;        // 游戏是否进行中
+            let isAnimating = false;      // 是否正在播放动画（禁止点击）
+            let score = 0;               // 正确轮次数（每正确一轮+1）
+            let bestLength = 3;          // 最长序列长度（初始为起始长度）
+            let currentLength = 3;       // 当前序列长度（动态增长）
+
+            // 网格单元格元素缓存
+            let cells = [];
+
+            // ---------- 辅助函数 ----------
+            function randomCellIndex() {
+                return Math.floor(Math.random() * (gridSize * gridSize));
+            }
+
+            // 生成新序列（仅新增一个随机索引）
+            function appendToSequence() {
+                sequence.push(randomCellIndex());
+            }
+
+            // 完全重置序列（根据当前起始长度）
+            function generateNewSequence() {
+                sequence = [];
+                for (let i = 0; i < currentLength; i++) {
+                    sequence.push(randomCellIndex());
+                }
+            }
+
+            // 初始化/重建网格（当gridSize改变时调用）
+            function buildGrid() {
+                gridContainer.style.setProperty('--grid-size', gridSize);
+                gridContainer.innerHTML = '';
+                for (let i = 0; i < gridSize * gridSize; i++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.dataset.index = i;
+                    cell.addEventListener('click', onCellClick);
+                    gridContainer.appendChild(cell);
+                }
+                // 更新cells引用
+                cells = document.querySelectorAll('.cell');
+            }
+
+            // ---------- 播放序列动画 ----------
+            async function playSequence() {
+                isAnimating = true;
+                feedbackEl.textContent = '👀 Watch...';
+                // 禁用开始按钮（但保留重置）
+                startBtn.disabled = true;
+
+                for (let idx of sequence) {
+                    if (!isPlaying) break; // 若中途重置/暂停则停止
+                    await new Promise(r => setTimeout(r, 550));
+                    if (!isPlaying) break;
+                    cells[idx].classList.add('active');
+                    await new Promise(r => setTimeout(r, 350));
+                    if (!isPlaying) break;
+                    cells[idx].classList.remove('active');
+                }
+
+                isAnimating = false;
+                startBtn.disabled = false;
+                if (isPlaying) {
+                    feedbackEl.textContent = '🔁 Your turn – repeat the sequence';
+                }
+            }
+
+            // ---------- 开始新回合 ----------
+            function startRound() {
+                if (!isPlaying) return;
+                // 重置用户输入
+                userSeq = [];
+                // 播放序列动画
+                playSequence();
+            }
+
+            // ---------- 处理单元格点击 ----------
+            function onCellClick(e) {
+                const idx = parseInt(e.currentTarget.dataset.index, 10);
+                if (!isPlaying || isAnimating || userSeq.length >= sequence.length) return;
+
+                // 记录点击
+                userSeq.push(idx);
+                const currentStep = userSeq.length - 1;
+
+                // 即时视觉反馈
+                const cell = e.currentTarget;
+                if (idx === sequence[currentStep]) {
+                    // 正确
+                    cell.classList.add('success');
+                    setTimeout(() => cell.classList.remove('success'), 200);
+                    
+                    // 如果完整输入了全部序列
+                    if (userSeq.length === sequence.length) {
+                        // 正确！分数+1，序列长度+1，继续
+                        score++;
+                        scoreEl.textContent = score;
+
+                        currentLength++;
+                        currentLenEl.textContent = currentLength;
+                        if (currentLength > bestLength) {
+                            bestLength = currentLength;
+                            bestEl.textContent = bestLength;
+                        }
+
+                        feedbackEl.textContent = '✅ Correct! Next level...';
+                        // 扩充序列（增加一个新随机位置）
+                        appendToSequence();
+                        // 短暂延迟后开始下一轮动画
+                        setTimeout(() => {
+                            if (isPlaying) startRound();
+                        }, 800);
+                    }
+                } else {
+                    // 错误 —— 游戏结束
+                    cell.classList.add('error');
+                    setTimeout(() => cell.classList.remove('error'), 200);
+                    feedbackEl.textContent = `❌ Wrong! You reached ${sequence.length} items.`;
+                    gameOver();
+                }
+            }
+
+            // ---------- 游戏结束 ----------
+            function gameOver() {
+                isPlaying = false;
+                startBtn.disabled = false;
+                startBtn.textContent = '▶ Start';
+                isAnimating = false;
+                // 保持best不重置
+            }
+
+            // ---------- 重置游戏（保留网格设置）----------
+            function resetGame(fullReset = true) {
+                // 强制停止所有活动
+                isPlaying = false;
+                isAnimating = false;
+                startBtn.disabled = false;
+                startBtn.textContent = '▶ Start';
+
+                // 重置状态变量
+                if (fullReset) {
+                    // 从输入框读取起始长度
+                    currentLength = parseInt(startLengthInput.value, 10);
+                    if (isNaN(currentLength) || currentLength < 2) currentLength = 3;
+                    if (currentLength > 8) currentLength = 8; // 上限8
+                    score = 0;
+                    // bestLength 仅在超过时更新，重置不清除，但可以手动重置？为了体验，重置时不清除最高记录，但保留。
+                    // 但如果用户切换网格，应当重置best？
+                    // 简单处理：点击reset按钮时，不清除best，但重新开始游戏。
+                }
+
+                scoreEl.textContent = score;
+                currentLenEl.textContent = currentLength;
+                // best保留之前的最佳
+
+                // 清空序列并重新生成
+                sequence = [];
+                for (let i = 0; i < currentLength; i++) {
+                    sequence.push(randomCellIndex());
+                }
+                userSeq = [];
+
+                // 清除所有高亮
+                cells.forEach(cell => {
+                    cell.classList.remove('active', 'success', 'error');
+                });
+
+                feedbackEl.textContent = 'Reset. Press Start to play.';
+            }
+
+            // ---------- 开始主游戏 ----------
+            function startGame() {
+                if (isAnimating) return; // 动画中不能开始
+                if (isPlaying) {
+                    // 暂停功能（简单实现：停止播放，但保留状态）
+                    isPlaying = false;
+                    startBtn.textContent = '▶ Start';
+                    feedbackEl.textContent = '⏸ Paused';
+                } else {
+                    // 开始新游戏
+                    isPlaying = true;
+                    startBtn.textContent = '⏸ Pause';
+                    // 如果序列为空，先生成
+                    if (sequence.length === 0) {
+                        resetGame(true);
+                    }
+                    // 开始回合
+                    startRound();
+                }
+            }
+
+            // ---------- 初始化事件监听 ----------
+            function init() {
+                // 初始化网格
+                gridSize = parseInt(gridSelect.value, 10);
+                buildGrid();
+                updateBadge();
+                // 初始重置
+                resetGame(true);
+                bestLength = currentLength;
+                bestEl.textContent = bestLength;
+
+                // 监听网格大小变化
+                gridSelect.addEventListener('change', function() {
+                    gridSize = parseInt(gridSelect.value, 10);
+                    buildGrid();
+                    updateBadge();
+                    // 切换网格后，自动重置所有状态（包括最佳长度重置，因为网格变化后难度不同）
+                    bestLength = parseInt(startLengthInput.value, 10);
+                    bestEl.textContent = bestLength;
+                    resetGame(true);
+                });
+
+                // 起始长度输入框变化时，重置状态但不自动开始
+                startLengthInput.addEventListener('change', function() {
+                    let val = parseInt(startLengthInput.value, 10);
+                    if (isNaN(val)) val = 3;
+                    if (val < 2) val = 2;
+                    if (val > 8) val = 8;
+                    startLengthInput.value = val;
+                    if (!isPlaying) {
+                        currentLength = val;
+                        resetGame(true);
+                    }
+                });
+
+                // 按钮事件
+                startBtn.addEventListener('click', startGame);
+                resetBtn.addEventListener('click', function() {
+                    // 重置时不清除最佳记录（但若网格已变，上面已重置best）
+                    // 这里仅重置游戏状态
+                    if (!isPlaying) {
+                        resetGame(true);
+                    } else {
+                        // 强制结束
+                        isPlaying = false;
+                        resetGame(true);
+                    }
+                });
+
+                // 键盘快捷键
+                window.addEventListener('keydown', function(e) {
+                    if (e.code === 'Space' || e.key === ' ') {
+                        e.preventDefault();
+                        startGame();
+                    }
+                    if (e.key === 'r' || e.key === 'R') {
+                        e.preventDefault();
+                        resetBtn.click();
+                    }
+                });
+            }
+
+            function updateBadge() {
+                gridSizeBadge.textContent = `${gridSize}x${gridSize}`;
+            }
+
+            init();
+        })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sudoku Game - STEM Games</title>
+    <style>
+        /* 继承全局CSS变量 */
+        :root {
+            --primary: #E6E6FA;
+            --primary-dark: #D8BFD8;
+            --secondary: #FFD700;
+            --secondary-dark: #FFC107;
+            --accent: #6A5ACD;
+            --accent-light: #9370DB;
+            --background: #F9F9FF;
+            --text: #333333;
+            --text-light: #666666;
+            --white: #FFFFFF;
+            --gray: #F0F0F0;
+            --gray-dark: #E0E0E0;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --border-radius: 12px;
+            --border-radius-lg: 20px;
+            --transition: all 0.3s ease;
+        }
+
+        /* 数独游戏容器 */
+        .sudoku-game-container {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            padding: 30px;
+            box-shadow: 0 10px 30px var(--shadow);
+            max-width: 650px;
+            width: 100%;
+            margin: 0 auto;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        .sudoku-title {
+            color: var(--accent);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .difficulty {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .difficulty button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            background: var(--primary);
+            color: var(--text);
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+        
+        .difficulty button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .difficulty button.active {
+            background: var(--accent);
+            color: var(--white);
+        }
+        
+        .stats {
+            display: flex;
+            gap: 20px;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+        
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .stat-value {
+            font-weight: bold;
+            color: var(--accent);
+            font-size: 1.1rem;
+        }
+        
+        .sudoku-grid {
+            display: grid;
+            grid-template-columns: repeat(9, 1fr);
+            gap: 0;
+            margin: 20px auto;
+            max-width: 450px;
+            border: 3px solid var(--text);
+            background: var(--text);
+            position: relative;
+        }
+        
+        .cell {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--white);
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+            user-select: none;
+            border: 0.5px solid var(--gray-dark);
+            box-sizing: border-box;
+        }
+        
+        .cell:hover {
+            background: #F0F0FF;
+        }
+        
+        /* 选中格子有更明显的背景色 */
+        .cell.selected {
+            background: #B3E5FC !important;
+            box-shadow: inset 0 0 0 2px #0288D1;
+        }
+        
+        /* 预填数字单元格 */
+        .cell.prefilled {
+            color: #1E40AF;
+            font-weight: 700;
+            background-color: var(--gray);
+        }
+        
+        /* 用户填入的数字 */
+        .cell.user-filled {
+            color: var(--text);
+            font-weight: 500;
+            background-color: var(--white);
+        }
+        
+        /* hint提供的数字 */
+        .cell.hint-filled {
+            color: #16A34A;
+            font-weight: 600;
+            background-color: #DCFCE7;
+        }
+        
+        /* 错误单元格 */
+        .cell.error {
+            background: #FFEBEE !important;
+            color: #D32F2F !important;
+        }
+        
+        /* 边框设置 */
+        .cell {
+            border-right: 0.5px solid var(--gray-dark);
+            border-bottom: 0.5px solid var(--gray-dark);
+        }
+        
+        .cell:nth-child(3n) {
+            border-right: 2px solid var(--text);
+        }
+        
+        .cell:nth-child(n+19):nth-child(-n+27),
+        .cell:nth-child(n+46):nth-child(-n+54) {
+            border-bottom: 2px solid var(--text);
+        }
+        
+        .cell:nth-child(9n) {
+            border-right: 0.5px solid var(--gray-dark);
+        }
+        
+        .cell:nth-child(n+73) {
+            border-bottom: 0.5px solid var(--gray-dark);
+        }
+        
+        .cell:nth-child(9n-3) {
+            border-right: 2px solid var(--text);
+        }
+        
+        /* 底部按钮区域 */
+        .bottom-controls {
+            margin-top: 30px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .action-buttons button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.95rem;
+            min-width: 120px;
+        }
+        
+        .action-buttons button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+        
+        .action-buttons .new-game {
+            background: var(--accent);
+            color: var(--white);
+        }
+        
+        .action-buttons .new-game:hover {
+            background: var(--accent-light);
+        }
+        
+        .action-buttons .hint-btn {
+            background: #4CAF50;
+            color: var(--white);
+        }
+        
+        .action-buttons .hint-btn:hover {
+            background: #45a049;
+        }
+        
+        .action-buttons .solve-btn {
+            background: #FF9800;
+            color: var(--white);
+        }
+        
+        .action-buttons .solve-btn:hover {
+            background: #F57C00;
+        }
+        
+        .action-buttons .clear-btn {
+            background: #f44336;
+            color: var(--white);
+        }
+        
+        .action-buttons .clear-btn:hover {
+            background: #d32f2f;
+        }
+        
+        /* 数字按钮区域 */
+        .number-pad {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 25px;
+            max-width: 450px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .number-btn {
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--primary);
+            border: 2px solid transparent;
+            border-radius: var(--border-radius);
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .number-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .number-btn.active {
+            background: var(--accent);
+            color: var(--white);
+            border-color: var(--accent);
+        }
+        
+        .number-btn.clear-btn {
+            background: #FFCCCC;
+            color: var(--text);
+            width: auto;
+            padding: 0 20px;
+        }
+        
+        .number-btn.clear-btn:hover {
+            background: #FFAAAA;
+        }
+        
+        .status {
+            text-align: center;
+            margin-top: 20px;
+            font-weight: 600;
+            min-height: 24px;
+            padding: 12px;
+            border-radius: var(--border-radius);
+            background: var(--gray);
+            transition: var(--transition);
+        }
+        
+        .status.success {
+            color: #155724;
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.error {
+            color: #721c24;
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .timer {
+            text-align: center;
+            font-size: 1.2rem;
+            margin-top: 10px;
+            color: var(--text-light);
+            font-weight: bold;
+        }
+        
+        .hint-counter {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .sudoku-game-container {
+                padding: 15px;
+            }
+            
+            .cell {
+                font-size: 1.2rem;
+            }
+            
+            .action-buttons {
+                gap: 8px;
+            }
+            
+            .action-buttons button {
+                padding: 10px 16px;
+                font-size: 0.9rem;
+                min-width: 100px;
+            }
+            
+            .number-btn {
+                width: 38px;
+                height: 38px;
+                font-size: 1rem;
+            }
+            
+            .number-btn.clear-btn {
+                padding: 0 15px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .sudoku-grid {
+                max-width: 100%;
+            }
+            
+            .cell {
+                font-size: 1rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .action-buttons button {
+                width: 100%;
+                max-width: 200px;
+            }
+            
+            .number-pad {
+                gap: 5px;
+            }
+            
+            .number-btn {
+                width: 32px;
+                height: 32px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sudoku-game-container">
+        <h1 class="sudoku-title">STEM Sudoku Challenge</h1>
+        
+        <div class="game-info">
+            <div class="difficulty">
+                <button class="active" onclick="setDifficulty('easy')">Easy</button>
+                <button onclick="setDifficulty('medium')">Medium</button>
+                <button onclick="setDifficulty('hard')">Hard</button>
+                <button onclick="setDifficulty('expert')">Expert</button>
+            </div>
+            
+            <div class="stats">
+                <div class="stat-item">
+                    <span>Hints</span>
+                    <span class="stat-value hint-counter" id="hint-counter">∞</span>
+                </div>
+                <div class="stat-item">
+                    <span>Mistakes</span>
+                    <span class="stat-value" id="mistake-counter">0</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="timer">Time: <span id="timer">00:00</span></div>
+        
+        <div id="sudoku-grid" class="sudoku-grid"></div>
+        
+        <div class="status" id="status">Select a cell and enter a number</div>
+        
+        <div class="bottom-controls">
+            <div class="number-pad">
+                <button class="number-btn" onclick="inputNumber(1)">1</button>
+                <button class="number-btn" onclick="inputNumber(2)">2</button>
+                <button class="number-btn" onclick="inputNumber(3)">3</button>
+                <button class="number-btn" onclick="inputNumber(4)">4</button>
+                <button class="number-btn" onclick="inputNumber(5)">5</button>
+                <button class="number-btn" onclick="inputNumber(6)">6</button>
+                <button class="number-btn" onclick="inputNumber(7)">7</button>
+                <button class="number-btn" onclick="inputNumber(8)">8</button>
+                <button class="number-btn" onclick="inputNumber(9)">9</button>
+                <button class="number-btn clear-btn" onclick="clearCell()">Clear Cell</button>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="hint-btn" onclick="giveHint()">Hint</button>
+                <button class="clear-btn" onclick="clearAllUserCells()">Clear All</button>
+                <button class="solve-btn" onclick="solvePuzzle()">Show Solution</button>
+                <button class="new-game" onclick="resetGame()">New Game</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentDifficulty = 'easy';
+        let selectedCell = null;
+        let startTime = null;
+        let timerInterval = null;
+        let puzzle = [];
+        let solution = [];
+        let initialPuzzle = [];
+        let hintsUsed = 0;
+        let mistakes = 0;
+        let clearAllConfirmShown = false;
+        let solveConfirmShown = false;
+        let totalTimeElapsed = 0; // 用于保存总花费时间
+        
+        // 保存游戏状态到本地存储
+        function saveGame() {
+            const gameState = {
+                currentDifficulty: currentDifficulty,
+                puzzle: puzzle,
+                initialPuzzle: initialPuzzle,
+                solution: solution,
+                hintsUsed: hintsUsed,
+                mistakes: mistakes,
+                startTime: startTime ? startTime.getTime() : null,
+                elapsedTime: startTime ? Math.floor((new Date() - startTime) / 1000) : 0
+            };
+            localStorage.setItem('sudokuGame', JSON.stringify(gameState));
+        }
+        
+        // 加载保存的游戏
+        function loadGame() {
+            const savedGame = localStorage.getItem('sudokuGame');
+            if (savedGame) {
+                const gameState = JSON.parse(savedGame);
+                
+                currentDifficulty = gameState.currentDifficulty;
+                puzzle = gameState.puzzle;
+                initialPuzzle = gameState.initialPuzzle;
+                solution = gameState.solution;
+                hintsUsed = gameState.hintsUsed;
+                mistakes = gameState.mistakes;
+                
+                // 更新难度按钮
+                updateDifficultyButtons();
+                
+                // 重新渲染网格
+                renderGrid();
+                
+                // 恢复计时器
+                if (gameState.startTime) {
+                    const elapsed = gameState.elapsedTime || 0;
+                    startTime = new Date(new Date().getTime() - elapsed * 1000);
+                    startTimer();
+                } else {
+                    startTimer();
+                }
+                
+                updateCounters();
+                document.getElementById('status').textContent = 'Game loaded from your previous session';
+                document.getElementById('status').className = 'status';
+                
+                return true;
+            }
+            return false;
+        }
+        
+        // 清除保存的游戏
+        function clearSavedGame() {
+            localStorage.removeItem('sudokuGame');
+        }
+        
+        // 添加点击其他地方取消选中的功能
+        document.addEventListener('click', function(event) {
+            if (!event.target.classList.contains('cell')) {
+                if (selectedCell) {
+                    selectedCell.classList.remove('selected');
+                    selectedCell = null;
+                }
+            }
+        });
+        
+        // 清除所有用户填写的单元格 - 修改为双击确认
+        function clearAllUserCells() {
+            // 如果是第一次点击，显示确认消息
+            if (!clearAllConfirmShown) {
+                document.getElementById('status').textContent = 'Click "Clear All" again to confirm. This will clear all your entries.';
+                document.getElementById('status').className = 'status error';
+                clearAllConfirmShown = true;
+                
+                // 3秒后重置确认状态
+                setTimeout(() => {
+                    if (clearAllConfirmShown) {
+                        clearAllConfirmShown = false;
+                        document.getElementById('status').textContent = 'Select a cell and enter a number';
+                        document.getElementById('status').className = 'status';
+                    }
+                }, 3000);
+                return;
+            }
+            
+            // 第二次点击，执行清除操作
+            for (let row = 0; row < 9; row++) {
+                for (let col = 0; col < 9; col++) {
+                    if (initialPuzzle[row][col] === 0) {
+                        puzzle[row][col] = 0;
+                        const cell = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
+                        if (cell) {
+                            cell.textContent = '';
+                            cell.className = 'cell user-filled';
+                            cell.classList.remove('error', 'hint-filled');
+                        }
+                    }
+                }
+            }
+            
+            mistakes = 0;
+            updateCounters();
+            document.getElementById('status').textContent = 'All your entries have been cleared';
+            document.getElementById('status').className = 'status';
+            clearAllConfirmShown = false;
+            
+            saveGame();
+        }
+        
+        // Sudoku generator class
+        class SudokuGenerator {
+            constructor() {
+                this.grid = Array(9).fill().map(() => Array(9).fill(0));
+                this.solution = null;
+            }
+            
+            generateSolution() {
+                this.solveGrid(this.grid);
+                this.solution = this.grid.map(row => [...row]);
+                return this.solution;
+            }
+            
+            solveGrid(grid) {
+                for (let row = 0; row < 9; row++) {
+                    for (let col = 0; col < 9; col++) {
+                        if (grid[row][col] === 0) {
+                            const numbers = this.shuffleArray([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+                            for (let num of numbers) {
+                                if (this.isValid(grid, row, col, num)) {
+                                    grid[row][col] = num;
+                                    if (this.solveGrid(grid)) {
+                                        return true;
+                                    }
+                                    grid[row][col] = 0;
+                                }
+                            }
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+            
+            shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            }
+            
+            isValid(grid, row, col, num) {
+                for (let x = 0; x < 9; x++) {
+                    if (grid[row][x] === num) return false;
+                }
+                
+                for (let x = 0; x < 9; x++) {
+                    if (grid[x][col] === num) return false;
+                }
+                
+                const boxRow = Math.floor(row / 3) * 3;
+                const boxCol = Math.floor(col / 3) * 3;
+                for (let i = 0; i < 3; i++) {
+                    for (let j = 0; j < 3; j++) {
+                        if (grid[boxRow + i][boxCol + j] === num) return false;
+                    }
+                }
+                
+                return true;
+            }
+            
+            createPuzzle(difficulty) {
+                this.generateSolution();
+                let puzzle = this.grid.map(row => [...row]);
+                
+                const difficultySettings = {
+                    easy: { min: 35, max: 40, attempts: 5 },
+                    medium: { min: 45, max: 50, attempts: 10 },
+                    hard: { min: 51, max: 56, attempts: 15 },
+                    expert: { min: 57, max: 62, attempts: 20 }
+                };
+                
+                const settings = difficultySettings[difficulty] || difficultySettings.easy;
+                const cellsToRemove = Math.floor(Math.random() * (settings.max - settings.min + 1)) + settings.min;
+                
+                let removed = 0;
+                let attempts = 0;
+                
+                while (removed < cellsToRemove && attempts < 100) {
+                    const row = Math.floor(Math.random() * 9);
+                    const col = Math.floor(Math.random() * 9);
+                    
+                    if (puzzle[row][col] !== 0) {
+                        const backup = puzzle[row][col];
+                        puzzle[row][col] = 0;
+                        
+                        if (this.countSolutions(puzzle) === 1) {
+                            removed++;
+                        } else {
+                            puzzle[row][col] = backup;
+                        }
+                    }
+                    attempts++;
+                }
+                
+                return { puzzle, solution: this.solution };
+            }
+            
+            countSolutions(grid) {
+                let count = 0;
+                let gridCopy = grid.map(row => [...row]);
+                
+                const solve = (grid) => {
+                    for (let row = 0; row < 9; row++) {
+                        for (let col = 0; col < 9; col++) {
+                            if (grid[row][col] === 0) {
+                                for (let num = 1; num <= 9; num++) {
+                                    if (this.isValid(grid, row, col, num)) {
+                                        grid[row][col] = num;
+                                        if (solve(grid)) {
+                                            if (count > 1) return true;
+                                            count++;
+                                            if (count > 1) return true;
+                                        }
+                                        grid[row][col] = 0;
+                                    }
+                                }
+                                return false;
+                            }
+                        }
+                    }
+                    return true;
+                };
+                
+                solve(gridCopy);
+                return count;
+            }
+        }
+        
+        function generateRandomPuzzle(difficulty) {
+            const generator = new SudokuGenerator();
+            return generator.createPuzzle(difficulty);
+        }
+        
+        function initGame() {
+            // 尝试加载保存的游戏
+            const loaded = loadGame();
+            if (loaded) {
+                return;
+            }
+            
+            // 如果没有保存的游戏，生成新游戏
+            const grid = document.getElementById('sudoku-grid');
+            grid.innerHTML = '';
+            
+            const { puzzle: newPuzzle, solution: newSolution } = generateRandomPuzzle(currentDifficulty);
+            puzzle = newPuzzle.map(row => [...row]);
+            initialPuzzle = newPuzzle.map(row => [...row]);
+            solution = newSolution;
+            
+            hintsUsed = 0;
+            mistakes = 0;
+            clearAllConfirmShown = false;
+            solveConfirmShown = false;
+            totalTimeElapsed = 0;
+            updateCounters();
+            
+            for (let row = 0; row < 9; row++) {
+                for (let col = 0; col < 9; col++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.dataset.row = row;
+                    cell.dataset.col = col;
+                    
+                    if (initialPuzzle[row][col] !== 0) {
+                        cell.textContent = initialPuzzle[row][col];
+                        cell.classList.add('prefilled');
+                    } else {
+                        cell.classList.add('user-filled');
+                    }
+                    
+                    cell.addEventListener('click', () => selectCell(cell, row, col));
+                    grid.appendChild(cell);
+                }
+            }
+            
+            // 重置计时器并开始
+            clearInterval(timerInterval);
+            startTime = new Date();
+            updateTimerDisplay();
+            timerInterval = setInterval(updateTimerDisplay, 1000);
+            
+            document.getElementById('status').textContent = `New ${currentDifficulty.charAt(0).toUpperCase() + currentDifficulty.slice(1)} puzzle generated! Select a cell to start.`;
+            document.getElementById('status').className = 'status';
+            
+            saveGame();
+        }
+        
+        function renderGrid() {
+            const grid = document.getElementById('sudoku-grid');
+            grid.innerHTML = '';
+            
+            for (let row = 0; row < 9; row++) {
+                for (let col = 0; col < 9; col++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.dataset.row = row;
+                    cell.dataset.col = col;
+                    
+                    if (initialPuzzle[row][col] !== 0) {
+                        cell.textContent = initialPuzzle[row][col];
+                        cell.classList.add('prefilled');
+                    } else if (puzzle[row][col] !== 0) {
+                        cell.textContent = puzzle[row][col];
+                        cell.classList.add('user-filled');
+                    } else {
+                        cell.classList.add('user-filled');
+                    }
+                    
+                    cell.addEventListener('click', () => selectCell(cell, row, col));
+                    grid.appendChild(cell);
+                }
+            }
+        }
+        
+        function updateDifficultyButtons() {
+            document.querySelectorAll('.difficulty button').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent.toLowerCase() === currentDifficulty) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+        
+        function selectCell(cell, row, col) {
+            if (selectedCell) {
+                selectedCell.classList.remove('selected');
+            }
+            
+            selectedCell = cell;
+            selectedCell.classList.add('selected');
+            
+            updateNumberButtons();
+        }
+        
+        function updateNumberButtons() {
+            document.querySelectorAll('.number-btn').forEach(btn => {
+                if (!btn.classList.contains('clear-btn')) {
+                    btn.classList.remove('active');
+                }
+            });
+            
+            if (selectedCell && selectedCell.textContent) {
+                const num = parseInt(selectedCell.textContent);
+                if (num >= 1 && num <= 9) {
+                    const numBtn = document.querySelector(`.number-btn:nth-child(${num})`);
+                    if (numBtn) {
+                        numBtn.classList.add('active');
+                    }
+                }
+            }
+        }
+        
+        function inputNumber(num) {
+            if (!selectedCell) {
+                document.getElementById('status').textContent = 'Please select a cell first!';
+                document.getElementById('status').className = 'status error';
+                return;
+            }
+            
+            const row = parseInt(selectedCell.dataset.row);
+            const col = parseInt(selectedCell.dataset.col);
+            
+            if (initialPuzzle[row][col] !== 0) {
+                document.getElementById('status').textContent = 'Cannot change pre-filled numbers!';
+                document.getElementById('status').className = 'status error';
+                return;
+            }
+            
+            puzzle[row][col] = num;
+            selectedCell.textContent = num;
+            selectedCell.className = 'cell user-filled selected';
+            selectedCell.classList.remove('error');
+            
+            updateNumberButtons();
+            
+            // 填满时自动检查
+            if (isPuzzleComplete()) {
+                checkAndHighlightErrors();
+                if (isSolutionCorrect()) {
+                    clearInterval(timerInterval);
+                    // 计算总花费时间
+                    const endTime = new Date();
+                    totalTimeElapsed = Math.floor((endTime - startTime) / 1000);
+                    const minutes = Math.floor(totalTimeElapsed / 60).toString().padStart(2, '0');
+                    const seconds = (totalTimeElapsed % 60).toString().padStart(2, '0');
+                    
+                    document.getElementById('status').textContent = `Congratulations! Puzzle solved correctly in ${minutes}:${seconds}!`;
+                    document.getElementById('status').className = 'status success';
+                } else {
+                    document.getElementById('status').textContent = 'Puzzle completed but has errors. Check highlighted cells.';
+                    document.getElementById('status').className = 'status error';
+                }
+            } else {
+                document.getElementById('status').textContent = `Entered ${num} in row ${row+1}, column ${col+1}`;
+                document.getElementById('status').className = 'status';
+            }
+            
+            saveGame();
+        }
+        
+        function checkAndHighlightErrors() {
+            // 清除之前的所有错误高亮
+            document.querySelectorAll('.cell.error').forEach(cell => {
+                if (!cell.classList.contains('selected')) {
+                    cell.classList.remove('error');
+                }
+            });
+            
+            let hasErrors = false;
+            for (let row = 0; row < 9; row++) {
+                for (let col = 0; col < 9; col++) {
+                    if (puzzle[row][col] !== 0 && puzzle[row][col] !== solution[row][col]) {
+                        const cell = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
+                        if (cell && initialPuzzle[row][col] === 0) {
+                            cell.classList.add('error');
+                            hasErrors = true;
+                        }
+                    }
+                }
+            }
+            return hasErrors;
+        }
+        
+        function clearCell() {
+            if (!selectedCell) {
+                document.getElementById('status').textContent = 'Please select a cell first!';
+                document.getElementById('status').className = 'status error';
+                return;
+            }
+            
+            const row = parseInt(selectedCell.dataset.row);
+            const col = parseInt(selectedCell.dataset.col);
+            
+            if (initialPuzzle[row][col] === 0) {
+                puzzle[row][col] = 0;
+                selectedCell.textContent = '';
+                selectedCell.classList.remove('error', 'hint-filled');
+                selectedCell.className = 'cell user-filled selected';
+                document.getElementById('status').textContent = 'Cell cleared';
+                document.getElementById('status').className = 'status';
+                
+                updateNumberButtons();
+                saveGame();
+            } else {
+                document.getElementById('status').textContent = 'Cannot clear pre-filled numbers!';
+                document.getElementById('status').className = 'status error';
+            }
+        }
+        
+        function giveHint() {
+            if (!selectedCell) {
+                document.getElementById('status').textContent = 'Please select an empty cell for a hint!';
+                document.getElementById('status').className = 'status error';
+                return;
+            }
+            
+            const row = parseInt(selectedCell.dataset.row);
+            const col = parseInt(selectedCell.dataset.col);
+            
+            if (initialPuzzle[row][col] !== 0) {
+                document.getElementById('status').textContent = 'This cell already has a pre-filled number!';
+                document.getElementById('status').className = 'status error';
+                return;
+            }
+            
+            if (puzzle[row][col] !== 0) {
+                document.getElementById('status').textContent = 'Selected cell already has a number!';
+                document.getElementById('status').className = 'status error';
+                return;
+            }
+            
+            const correctNumber = solution[row][col];
+            puzzle[row][col] = correctNumber;
+            selectedCell.textContent = correctNumber;
+            selectedCell.className = 'cell hint-filled selected';
+            
+            hintsUsed++;
+            updateCounters();
+            
+            document.getElementById('status').textContent = `Hint: The correct number is ${correctNumber}`;
+            document.getElementById('status').className = 'status success';
+            
+            updateNumberButtons();
+            
+            if (isPuzzleComplete()) {
+                if (isSolutionCorrect()) {
+                    clearInterval(timerInterval);
+                    // 计算总花费时间
+                    const endTime = new Date();
+                    totalTimeElapsed = Math.floor((endTime - startTime) / 1000);
+                    const minutes = Math.floor(totalTimeElapsed / 60).toString().padStart(2, '0');
+                    const seconds = (totalTimeElapsed % 60).toString().padStart(2, '0');
+                    
+                    document.getElementById('status').textContent = `Congratulations! Puzzle solved correctly in ${minutes}:${seconds}!`;
+                    document.getElementById('status').className = 'status success';
+                }
+            }
+            
+            saveGame();
+        }
+        
+        function updateCounters() {
+            document.getElementById('hint-counter').textContent = '∞';
+            document.getElementById('mistake-counter').textContent = mistakes;
+        }
+        
+        // 显示答案 - 修改为双击确认
+        function solvePuzzle() {
+            // 如果是第一次点击，显示确认消息
+            if (!solveConfirmShown) {
+                document.getElementById('status').textContent = 'Click "Show Solution" again to reveal the solution. This will end the game.';
+                document.getElementById('status').className = 'status error';
+                solveConfirmShown = true;
+                
+                // 3秒后重置确认状态
+                setTimeout(() => {
+                    if (solveConfirmShown) {
+                        solveConfirmShown = false;
+                        document.getElementById('status').textContent = 'Select a cell and enter a number';
+                        document.getElementById('status').className = 'status';
+                    }
+                }, 3000);
+                return;
+            }
+            
+            // 第二次点击，显示答案
+            clearInterval(timerInterval);
+            
+            // 计算总花费时间
+            const endTime = new Date();
+            totalTimeElapsed = Math.floor((endTime - startTime) / 1000);
+            const minutes = Math.floor(totalTimeElapsed / 60).toString().padStart(2, '0');
+            const seconds = (totalTimeElapsed % 60).toString().padStart(2, '0');
+            
+            for (let row = 0; row < 9; row++) {
+                for (let col = 0; col < 9; col++) {
+                    puzzle[row][col] = solution[row][col];
+                    const cell = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
+                    cell.textContent = solution[row][col];
+                    
+                    if (initialPuzzle[row][col] !== 0) {
+                        cell.className = 'cell prefilled';
+                    } else {
+                        cell.className = 'cell user-filled';
+                    }
+                }
+            }
+            
+            document.getElementById('status').textContent = `Puzzle solved in ${minutes}:${seconds}! Try another difficulty level!`;
+            document.getElementById('status').className = 'status success';
+            solveConfirmShown = false;
+            
+            saveGame();
+        }
+        
+        function resetGame() {
+            clearSavedGame();
+            clearAllConfirmShown = false;
+            solveConfirmShown = false;
+            totalTimeElapsed = 0;
+            initGame();
+        }
+        
+        function setDifficulty(difficulty) {
+            currentDifficulty = difficulty;
+            
+            document.querySelectorAll('.difficulty button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            clearSavedGame();
+            resetGame();
+        }
+        
+        function isPuzzleComplete() {
+            for (let row = 0; row < 9; row++) {
+                for (let col = 0; col < 9; col++) {
+                    if (puzzle[row][col] === 0) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+        
+        function isSolutionCorrect() {
+            for (let row = 0; row < 9; row++) {
+                for (let col = 0; col < 9; col++) {
+                    if (puzzle[row][col] !== solution[row][col]) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+        
+        function startTimer() {
+            clearInterval(timerInterval);
+            if (!startTime) {
+                startTime = new Date();
+            }
+            
+            timerInterval = setInterval(() => {
+                updateTimerDisplay();
+            }, 1000);
+        }
+        
+        function updateTimerDisplay() {
+            if (!startTime) return;
+            
+            const now = new Date();
+            const diff = Math.floor((now - startTime) / 1000);
+            const minutes = Math.floor(diff / 60).toString().padStart(2, '0');
+            const seconds = (diff % 60).toString().padStart(2, '0');
+            document.getElementById('timer').textContent = `${minutes}:${seconds}`;
+        }
+        
+        // 添加键盘支持
+        document.addEventListener('keydown', (e) => {
+            if (e.key >= '1' && e.key <= '9') {
+                inputNumber(parseInt(e.key));
+            } else if (e.key === 'Backspace' || e.key === 'Delete' || e.key === '0') {
+                clearCell();
+            } else if (e.key === 'h' || e.key === 'H') {
+                giveHint();
+            } else if (e.key === 'ArrowUp' && selectedCell) {
+                const row = parseInt(selectedCell.dataset.row);
+                const col = parseInt(selectedCell.dataset.col);
+                if (row > 0) {
+                    const newCell = document.querySelector(`.cell[data-row="${row-1}"][data-col="${col}"]`);
+                    if (newCell) selectCell(newCell, row-1, col);
+                }
+            } else if (e.key === 'ArrowDown' && selectedCell) {
+                const row = parseInt(selectedCell.dataset.row);
+                const col = parseInt(selectedCell.dataset.col);
+                if (row < 8) {
+                    const newCell = document.querySelector(`.cell[data-row="${row+1}"][data-col="${col}"]`);
+                    if (newCell) selectCell(newCell, row+1, col);
+                }
+            } else if (e.key === 'ArrowLeft' && selectedCell) {
+                const row = parseInt(selectedCell.dataset.row);
+                const col = parseInt(selectedCell.dataset.col);
+                if (col > 0) {
+                    const newCell = document.querySelector(`.cell[data-row="${row}"][data-col="${col-1}"]`);
+                    if (newCell) selectCell(newCell, row, col-1);
+                }
+            } else if (e.key === 'ArrowRight' && selectedCell) {
+                const row = parseInt(selectedCell.dataset.row);
+                const col = parseInt(selectedCell.dataset.col);
+                if (col < 8) {
+                    const newCell = document.querySelector(`.cell[data-row="${row}"][data-col="${col+1}"]`);
+                    if (newCell) selectCell(newCell, row, col+1);
+                }
+            }
+        });
+        
+        // 初始化游戏
+        initGame();
+    </script>
+</body>
+</html>
