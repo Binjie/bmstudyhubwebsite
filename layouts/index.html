@@ -1,71 +1,108 @@
 {{ define "main" }}
     {{ partial "hero.html" . }}
-    
-    <section class="features-section">
+
+    <section class="home-section home-section-soft">
         <div class="container">
-            <h2 class="section-title">{{ .Site.Params.features.subtitle }}</h2>
-            <div class="features-grid">
-                {{ range .Site.Params.features.items }}
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="20 6 9 17 4 12"></polyline>
-                        </svg>
-                    </div>
-                    <h3>{{ . }}</h3>
-                </div>
-                {{ end }}
+            <div class="section-heading">
+                <p class="eyebrow">Courses</p>
+                <h2>Course Information</h2>
+                <p>Simple, flexible learning options for students who want to strengthen foundations and explore creative technology.</p>
+            </div>
+            <div class="course-summary-grid">
+                <article class="course-summary-card">
+                    <span class="course-tag">Mathematics</span>
+                    <h3>Mathematics Programs</h3>
+                    <p>Foundation building, problem solving, logical thinking, and selected competition-style practice.</p>
+                    <a href="/courses/" class="text-link">View course details</a>
+                </article>
+                <article class="course-summary-card">
+                    <span class="course-tag">Technology</span>
+                    <h3>Coding, AI and Robotics</h3>
+                    <p>Creative programming, intelligent systems, robotics concepts, and hands-on technical projects.</p>
+                    <a href="/showcase/" class="text-link">See project examples</a>
+                </article>
+                <article class="course-summary-card">
+                    <span class="course-tag">Workshops</span>
+                    <h3>Holiday and Studio Workshops</h3>
+                    <p>Short-form workshops for curious learners, combining making, experimentation, and guided reflection.</p>
+                    <a href="/contact/" class="text-link">Ask about availability</a>
+                </article>
             </div>
         </div>
     </section>
-    
-    <section class="courses-preview">
+
+    <section class="home-section home-section-showcase">
         <div class="container">
-            <h2 class="section-title">Our Courses</h2>
-            <div class="courses-grid">
-                {{ range first 3 (where .Site.RegularPages "Section" "courses") }}
-                <div class="course-card">
-                    <div class="course-card-header">
-                        <h3>{{ .Title }}</h3>
-                    </div>
-                    <div class="course-card-body">
-                        <p>{{ .Summary | truncate 150 }}</p>
-                    </div>
-                    <div class="course-card-footer">
-                        <a href="{{ .RelPermalink }}" class="btn btn-secondary">Learn More</a>
-                    </div>
+            <div class="section-heading section-heading-row">
+                <div>
+                    <p class="eyebrow">Showcase</p>
+                    <h2>Student Projects and Teaching Examples</h2>
                 </div>
-                {{ end }}
+                <a href="/showcase/" class="btn btn-secondary">View All Showcase</a>
             </div>
-            <div class="text-center">
-                <a href="/courses/" class="btn btn-primary">View All Courses</a>
-            </div>
-        </div>
-    </section>
-    
-    <section class="blog-preview">
-        <div class="container">
-            <h2 class="section-title">Latest Updates</h2>
-            <div class="blog-grid">
-                {{ range first 3 (where .Site.RegularPages "Section" "blog") }}
-                <article class="blog-card">
-                    <div class="blog-card-header">
-                        <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
-                        <div class="blog-meta">
-                            <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "Jan 2, 2006" }}</time>
-                        </div>
-                    </div>
-                    <div class="blog-card-body">
-                        <p>{{ .Summary | truncate 120 }}</p>
-                    </div>
-                    <div class="blog-card-footer">
-                        <a href="{{ .RelPermalink }}" class="read-more">Read Article →</a>
-                    </div>
+            <div class="showcase-preview-grid">
+                {{ range first 3 (where .Site.RegularPages "Section" "showcase") }}
+                <article class="showcase-preview-card">
+                    <span class="course-tag">Project</span>
+                    <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+                    <p>{{ .Description | default .Summary | plainify | truncate 145 }}</p>
+                    <a href="{{ .RelPermalink }}" class="text-link">Explore project</a>
+                </article>
+                {{ else }}
+                <article class="showcase-preview-card">
+                    <span class="course-tag">Coming Soon</span>
+                    <h3>More projects will be added</h3>
+                    <p>Student work, classroom prototypes, and teaching examples will appear here as the showcase grows.</p>
                 </article>
                 {{ end }}
             </div>
-            <div class="text-center">
-                <a href="/blog/" class="btn btn-secondary">View All Articles</a>
+        </div>
+    </section>
+
+    <section class="home-section home-section-notes">
+        <div class="container">
+            <div class="notes-layout">
+                <div class="notes-copy">
+                    <p class="eyebrow">Studio Notes</p>
+                    <h2>Knowledge from everyday life, culture, and teaching reflections.</h2>
+                    <p>Personal observations about objects, craft, science, culture, and learning.</p>
+                    <a href="/blog/" class="btn btn-primary">Read Notes</a>
+                </div>
+                <figure class="notes-image">
+                    <img src='{{ "/images/home-studio-notes.png" | relURL }}' alt="A visual process of making a ceramic bowl from clay to shaping, glazing, firing, and finishing">
+                </figure>
+            </div>
+        </div>
+    </section>
+
+    <section class="studio-intro-section studio-intro-band">
+        <div class="container">
+            <div class="studio-manifesto">
+                <div class="studio-manifesto-copy">
+                    <p class="eyebrow">About the Studio</p>
+                    <h2>Learning that connects school knowledge with real-world thinking.</h2>
+                    <p>BMStudyHub is a personal learning studio shaped around curiosity, clear explanation, and creative practice.</p>
+                </div>
+                <div class="studio-principles">
+                    <div class="studio-principle">
+                        <div>
+                            <strong>Think Clearly</strong>
+                            <p>Questions, structure, and careful reasoning.</p>
+                        </div>
+                    </div>
+                    <div class="studio-principle">
+                        <div>
+                            <strong>Build Creatively</strong>
+                            <p>Projects, coding, AI, robotics, and making.</p>
+                        </div>
+                    </div>
+                    <div class="studio-principle">
+                        <div>
+                            <strong>Learn with Context</strong>
+                            <p>Culture, objects, stories, and everyday examples.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>

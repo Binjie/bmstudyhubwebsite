@@ -2,22 +2,21 @@
     <div class="container">
         <div class="header-content">
             <div class="logo">
-                <a href="{{ .Site.BaseURL }}">
+                <div class="logo-mark">
                     <div class="logo-icon">
-                        <!-- 替换 SVG 为 PNG 图片 -->
                         <img src='{{ "/images/logo_pure.png" | relURL }}' alt="{{ .Site.Title }} Logo" class="logo-image">
                     </div>
                     <div class="logo-text">
-                        <h1>{{ .Site.Title }}</h1>
-                        <p class="tagline">STEM Education for Young Minds</p>
+                        <h1 aria-label="{{ .Site.Title }}"><span class="brand-blue">BM</span><span class="brand-orange">Study</span><span class="brand-blue">Hub</span></h1>
+                        <p class="tagline">Creative Learning Studio</p>
                     </div>
-                </a>
+                </div>
             </div>
-            
+
             <button class="nav-toggle" aria-label="Toggle navigation">
                 <span class="hamburger"></span>
             </button>
-            
+
             {{ partial "nav.html" . }}
         </div>
     </div>
