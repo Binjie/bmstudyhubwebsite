@@ -1,637 +1,719 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
-    <title>Spatial Memory · Grid Recall</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes"
+    />
+    <title>Spatial Memory Grid Recall</title>
     <style>
-        /* ===== GLOBAL CSS VARIABLES (matching site theme) ===== */
-        :root {
-            --primary: #E6E6FA;
-            --primary-dark: #D8BFD8;
-            --secondary: #FFD700;
-            --secondary-dark: #FFC107;
-            --accent: #6A5ACD;
-            --accent-light: #9370DB;
-            --background: #F9F9FF;
-            --text: #333333;
-            --text-light: #666666;
-            --white: #FFFFFF;
-            --gray: #F0F0F0;
-            --gray-dark: #E0E0E0;
-            --shadow: rgba(0, 0, 0, 0.1);
-            --shadow-light: rgba(0, 0, 0, 0.05);
-            --success: #2ecc71;
-            --error: #e74c3c;
-        
-            /* 系统字体堆栈（无需联网） */
-            --font-heading: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-            --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-        
-            --border-radius: 12px;
-            --border-radius-lg: 20px;
-            --transition: all 0.3s ease;
+      :root {
+        --primary: #e7e2ff;
+        --primary-dark: #c9bdf4;
+        --secondary: #f6d365;
+        --secondary-dark: #e5b93f;
+        --accent: #5a4fcf;
+        --accent-dark: #352d87;
+        --background: #f8f7fb;
+        --panel: #ffffff;
+        --text: #252536;
+        --text-light: #66677a;
+        --gray: #eeedf4;
+        --gray-dark: #d8d6e4;
+        --good: #2f8f5b;
+        --bad: #bd3b3b;
+        --warn: #9b6a13;
+        --shadow: rgba(38, 34, 72, 0.14);
+        --radius: 12px;
+        --grid-size: 4;
+      }
 
-            --grid-size: 4;  /* default 4x4 */
-        }
+      * {
+        box-sizing: border-box;
+      }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      body {
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        overflow: hidden;
+        background: var(--background);
+        color: var(--text);
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial,
+          sans-serif;
+      }
 
-        body {
-            font-family: var(--font-body);
-            font-size: 16px;
-            line-height: 1.6;
-            color: var(--text);
-            background-color: var(--background);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
+      button,
+      input,
+      select {
+        font: inherit;
+      }
 
+      .game-container {
+        width: 100%;
+        background: var(--panel);
+        border: 1px solid var(--gray-dark);
+        border-radius: 0;
+        box-shadow: 0 14px 35px var(--shadow);
+        padding: 18px;
+        height: 100vh;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) clamp(230px, 24vw, 278px);
+        grid-template-rows: auto auto 1fr auto;
+        grid-template-areas:
+          "header header"
+          "grid settings"
+          "grid side"
+          "keys side";
+        gap: 12px clamp(16px, 2.5vw, 28px);
+      }
+
+      .game-header {
+        grid-area: header;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 0;
+      }
+
+      .game-title {
+        margin: 0;
+        color: var(--accent-dark);
+        font-size: 1.65rem;
+        line-height: 1.1;
+      }
+
+      .difficulty-badge {
+        flex: 0 0 auto;
+        padding: 6px 14px;
+        border-radius: 999px;
+        background: var(--primary);
+        color: var(--accent-dark);
+        font-weight: 800;
+      }
+
+      .guide {
+        grid-area: guide;
+        display: none;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        padding: 14px;
+        margin-bottom: 0;
+        border-radius: var(--radius);
+        background: #fbfbfe;
+        border: 1px solid var(--gray);
+      }
+
+      .guide h2 {
+        margin: 0 0 8px;
+        color: var(--accent-dark);
+        font-size: 1rem;
+      }
+
+      .guide p,
+      .guide ul {
+        margin: 0;
+        color: var(--text-light);
+        font-size: 0.94rem;
+      }
+
+      .guide ul {
+        padding-left: 18px;
+      }
+
+      .settings-panel {
+        grid-area: settings;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        padding: 12px;
+        margin-bottom: 0;
+        border-radius: var(--radius);
+        background: var(--gray);
+      }
+
+      .control-group {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+      }
+
+      .control-group label {
+        font-weight: 800;
+      }
+
+      select,
+      input[type="number"] {
+        min-width: 120px;
+        padding: 9px 10px;
+        border: 2px solid var(--primary-dark);
+        border-radius: 10px;
+        background: var(--panel);
+        color: var(--text);
+        font-weight: 800;
+      }
+
+      input[type="number"] {
+        width: 82px;
+        min-width: 82px;
+      }
+
+      .btn {
+        min-height: 42px;
+        padding: 10px 18px;
+        border: 0;
+        border-radius: 10px;
+        background: var(--accent);
+        color: white;
+        font-weight: 800;
+        cursor: pointer;
+      }
+
+      .btn:hover {
+        background: var(--accent-dark);
+      }
+
+      .btn-outline {
+        background: transparent;
+        color: var(--accent-dark);
+        border: 2px solid var(--accent);
+      }
+
+      .btn-outline:hover {
+        background: var(--accent);
+        color: white;
+      }
+
+      .btn:disabled {
+        cursor: not-allowed;
+        opacity: 0.6;
+      }
+
+      .grid-wrap {
+        grid-area: grid;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        align-self: center;
+        margin: 0;
+        min-height: 0;
+      }
+
+      #grid {
+        width: min(100%, 548px, calc(100vh - 116px));
+        display: grid;
+        grid-template-columns: repeat(var(--grid-size), 1fr);
+        gap: clamp(7px, 1.4vh, 10px);
+        padding: 12px;
+        border-radius: var(--radius);
+        background: var(--gray);
+      }
+
+      .cell {
+        aspect-ratio: 1 / 1;
+        border: 0;
+        border-radius: 9px;
+        background: var(--panel);
+        box-shadow: inset 0 0 0 1px var(--gray-dark);
+        cursor: pointer;
+      }
+
+      .cell.active {
+        background: var(--accent);
+        box-shadow:
+          inset 0 0 0 1px var(--accent-dark),
+          0 0 0 4px var(--secondary);
+      }
+
+      .cell.success {
+        background: #bfe8cf;
+      }
+
+      .cell.error {
+        background: #f2b8b8;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        margin-top: 0;
+      }
+
+      .side-panel {
+        grid-area: side;
+        display: grid;
+        align-content: start;
+        gap: 12px;
+        min-height: 0;
+      }
+
+      .stat-item {
+        padding: 10px 8px;
+        border-radius: var(--radius);
+        background: #fbfbfe;
+        border: 1px solid var(--gray);
+        text-align: center;
+      }
+
+      .stat-label {
+        display: block;
+        color: var(--text-light);
+        font-size: 0.75rem;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      .stat-value {
+        display: block;
+        margin-top: 2px;
+        color: var(--accent-dark);
+        font-size: 1.35rem;
+        font-weight: 900;
+      }
+
+      .feedback {
+        min-height: 52px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 12px;
+        margin-top: 0;
+        align-self: start;
+        border: 2px solid var(--gray-dark);
+        border-radius: var(--radius);
+        background: #fff;
+        font-weight: 800;
+        text-align: center;
+      }
+
+      .feedback.good {
+        border-color: #a7d9bd;
+        color: var(--good);
+      }
+
+      .feedback.bad {
+        border-color: #efb4b4;
+        color: var(--bad);
+      }
+
+      .feedback.warn {
+        border-color: #f1d38d;
+        color: var(--warn);
+      }
+
+      .key-hint {
+        grid-area: keys;
+        margin-top: 0;
+        padding-top: 0;
+        border-top: 1px dashed var(--gray-dark);
+        color: var(--text-light);
+        font-size: 0.88rem;
+        text-align: center;
+        align-self: end;
+      }
+
+      .key {
+        display: inline-block;
+        min-width: 28px;
+        margin: 2px;
+        padding: 2px 7px;
+        border: 1px solid var(--gray-dark);
+        border-radius: 6px;
+        background: var(--gray);
+        color: var(--text);
+        font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+        font-weight: 900;
+      }
+
+      @media (max-width: 860px) {
         .game-container {
-            max-width: 780px;
-            width: 100%;
-            background: var(--white);
-            border-radius: var(--border-radius-lg);
-            box-shadow: 0 10px 25px var(--shadow);
-            padding: 30px 25px;
-            transition: var(--transition);
-            border: 1px solid var(--gray);
+          padding: 14px;
+          grid-template-columns: 1fr;
+          grid-template-rows: auto;
+          grid-template-areas:
+            "header"
+            "settings"
+            "grid"
+            "side"
+            "keys";
+          overflow-y: auto;
         }
 
-        .game-header {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: baseline;
-            justify-content: space-between;
-            margin-bottom: 25px;
+        .game-header,
+        .settings-panel,
+        .control-group {
+          align-items: stretch;
         }
 
-        .game-title {
-            font-family: var(--font-heading);
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--accent);
-            margin-bottom: 5px;
-        }
-
-        .difficulty-badge {
-            background: var(--primary-dark);
-            padding: 5px 14px;
-            border-radius: 30px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--accent);
-            display: inline-block;
-        }
-
-        /* 设置面板 - 与 n-back 风格统一 */
+        .game-header,
         .settings-panel {
-            background: var(--gray);
-            padding: 20px;
-            border-radius: var(--border-radius);
-            margin-bottom: 25px;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 20px;
+          flex-direction: column;
+        }
+
+        .guide,
+        .stats {
+          grid-template-columns: 1fr;
         }
 
         .control-group {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
+          width: 100%;
         }
 
-        .control-group label {
-            font-weight: 600;
-            color: var(--text);
-            white-space: nowrap;
-        }
-
-        select, input[type="number"] {
-            min-width: 130px;
-            padding: 8px 12px;
-            border: 2px solid var(--accent-light);
-            border-radius: var(--border-radius);
-            font-weight: 600;
-            font-size: 1rem;
-            background: var(--white);
-            cursor: pointer;
-            font-family: var(--font-body);
-        }
-
+        select,
         input[type="number"] {
-            min-width: 80px;
-        }
-
-        /* 网格区域 */
-        .grid-container {
-            display: flex;
-            justify-content: center;
-            margin: 20px 0;
+          width: 100%;
         }
 
         #grid {
-            display: grid;
-            grid-template-columns: repeat(var(--grid-size), 1fr);
-            gap: 12px;
-            background: var(--gray);
-            padding: 20px;
-            border-radius: var(--border-radius);
-            width: 100%;
-            max-width: 450px;
+          width: min(100%, 340px);
         }
-
-        .cell {
-            aspect-ratio: 1 / 1;
-            width: 100%;
-            background: var(--white);
-            border-radius: 10px;
-            box-shadow: inset 0 2px 5px var(--shadow-light);
-            transition: background 0.15s, transform 0.1s;
-            cursor: pointer;
-        }
-
-        .cell.active {
-            background: var(--accent) !important;
-            box-shadow: 0 0 0 3px var(--secondary);
-            transform: scale(0.92);
-        }
-
-        .cell.success {
-            background: var(--success) !important;
-        }
-
-        .cell.error {
-            background: var(--error) !important;
-        }
-
-        /* 统计面板 */
-        .stats {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            background: var(--background);
-            padding: 18px 20px;
-            border-radius: var(--border-radius);
-            margin-top: 20px;
-            border: 1px solid var(--primary-dark);
-        }
-
-        .stat-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .stat-label {
-            font-size: 0.85rem;
-            color: var(--text-light);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .stat-value {
-            font-size: 1.7rem;
-            font-weight: 700;
-            color: var(--accent);
-            line-height: 1.2;
-        }
-
-        .feedback {
-            font-size: 1.2rem;
-            font-weight: 600;
-            padding: 8px 20px;
-            border-radius: 40px;
-            background: var(--white);
-            border: 2px solid var(--secondary);
-            text-align: center;
-        }
-
-        .button-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            justify-content: center;
-            margin-top: 25px;
-        }
-
-        .btn {
-            padding: 12px 28px;
-            border-radius: var(--border-radius);
-            font-family: var(--font-heading);
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            border: none;
-            font-size: 1rem;
-            background: var(--accent);
-            color: var(--white);
-            box-shadow: 0 4px 8px var(--shadow);
-        }
-
-        .btn:hover {
-            background: var(--accent-light);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 16px var(--shadow);
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 2px solid var(--accent);
-            color: var(--accent);
-        }
-
-        .btn-outline:hover {
-            background: var(--accent);
-            color: white;
-        }
-
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
-        .key-hint {
-            font-size: 0.85rem;
-            color: var(--text-light);
-            margin-top: 15px;
-            text-align: center;
-            border-top: 1px dashed var(--gray-dark);
-            padding-top: 15px;
-        }
-
-        .key {
-            display: inline-block;
-            background: var(--gray);
-            border-radius: 6px;
-            padding: 2px 10px;
-            font-family: monospace;
-            font-weight: 700;
-            border: 1px solid var(--gray-dark);
-        }
-
-        /* 响应式 */
-        @media (max-width: 600px) {
-            .game-container { padding: 20px; }
-            .settings-panel { flex-direction: column; align-items: stretch; }
-            .control-group { flex-direction: column; align-items: flex-start; width: 100%; }
-            select, input[type="number"] { width: 100%; min-width: unset; }
-            .stat-value { font-size: 1.4rem; }
-            #grid { gap: 8px; padding: 15px; }
-        }
-
-        @media (max-width: 400px) {
-            #grid { gap: 5px; padding: 10px; }
-        }
+      }
     </style>
-</head>
-<body>
-    <div class="game-container">
-        <!-- 头部 -->
-        <div class="game-header">
-            <h1 class="game-title">🧠 Spatial Memory</h1>
-            <span class="difficulty-badge" id="gridSizeBadge">4x4</span>
-        </div>
+  </head>
+  <body>
+    <main class="game-container">
+      <header class="game-header">
+        <h1 class="game-title">Spatial Memory</h1>
+        <span class="difficulty-badge" id="gridSizeBadge">4x4</span>
+      </header>
 
-        <!-- 设置面板 -->
-        <div class="settings-panel">
-            <div class="control-group">
-                <label for="grid-select">Grid size:</label>
-                <select id="grid-select">
-                    <option value="3">3x3 (Beginner)</option>
-                    <option value="4" selected>4x4 (Standard)</option>
-                    <option value="5">5x5 (Advanced)</option>
-                    <option value="6">6x6 (Master)</option>
-                </select>
-            </div>
-            <div class="control-group">
-                <label for="start-length">Start length:</label>
-                <input type="number" id="start-length" value="3" min="2" max="8" step="1">
-            </div>
-            <button class="btn" id="startBtn">▶ Start</button>
-            <button class="btn btn-outline" id="resetBtn">⟲ Reset</button>
+      <section class="guide" aria-label="Quick guide">
+        <div>
+          <h2>Rule</h2>
+          <p>Watch the highlighted cells, then repeat the same sequence. One wrong click ends the run.</p>
         </div>
+        <div>
+          <h2>Controls</h2>
+          <ul>
+            <li>Enter or Space: start/pause</li>
+            <li>Esc or R: reset</li>
+            <li>Click cells to recall</li>
+          </ul>
+        </div>
+      </section>
 
-        <!-- 游戏网格 -->
-        <div class="grid-container">
-            <div id="grid"></div>
+      <section class="settings-panel" aria-label="Game settings">
+        <div class="control-group">
+          <label for="grid-select">Grid</label>
+          <select id="grid-select">
+            <option value="3">3x3 Beginner</option>
+            <option value="4" selected>4x4 Standard</option>
+            <option value="5">5x5 Advanced</option>
+            <option value="6">6x6 Expert</option>
+          </select>
         </div>
+        <div class="control-group">
+          <label for="start-length">Start length</label>
+          <input type="number" id="start-length" value="3" min="2" max="8" step="1" />
+        </div>
+        <button class="btn" id="startBtn" type="button">Start</button>
+        <button class="btn btn-outline" id="resetBtn" type="button">Reset</button>
+      </section>
 
-        <!-- 统计与反馈 -->
-        <div class="stats">
-            <div class="stat-item">
-                <span class="stat-label">Score</span>
-                <span class="stat-value" id="scoreDisplay">0</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-label">Best</span>
-                <span class="stat-value" id="bestDisplay">3</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-label">Current</span>
-                <span class="stat-value" id="currentLenDisplay">3</span>
-            </div>
-            <div id="feedbackMessage" class="feedback" style="align-self: center;">Ready</div>
-        </div>
+      <section class="grid-wrap" aria-label="Memory grid">
+        <div id="grid"></div>
+      </section>
 
-        <!-- 键盘快捷键提示 -->
-        <div class="key-hint">
-            <span class="key">Space</span> Start / Pause · 
-            <span class="key">R</span> Reset · 
-            <span class="key">Click</span> cells to recall
+      <aside class="side-panel" aria-label="Game status">
+        <section class="stats" aria-label="Game stats">
+          <div class="stat-item">
+            <span class="stat-label">Rounds</span>
+            <span class="stat-value" id="scoreDisplay">0</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Current</span>
+            <span class="stat-value" id="currentLenDisplay">3</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Best</span>
+            <span class="stat-value" id="bestDisplay">3</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Attempt</span>
+            <span class="stat-value" id="attemptDisplay">0/3</span>
+          </div>
+        </section>
+
+        <div class="feedback" id="feedbackMessage" aria-live="polite">
+          Choose settings and press Start.
         </div>
-    </div>
+      </aside>
+
+      <div class="key-hint">
+        <span class="key">Enter</span> start/pause
+        <span class="key">Space</span> start/pause
+        <span class="key">Esc</span> reset
+        <span class="key">R</span> reset
+      </div>
+    </main>
 
     <script>
-        (function() {
-            "use strict";
+      (function () {
+        "use strict";
 
-            // ---------- DOM 元素 ----------
-            const gridContainer = document.getElementById('grid');
-            const gridSelect = document.getElementById('grid-select');
-            const startLengthInput = document.getElementById('start-length');
-            const startBtn = document.getElementById('startBtn');
-            const resetBtn = document.getElementById('resetBtn');
-            const scoreEl = document.getElementById('scoreDisplay');
-            const bestEl = document.getElementById('bestDisplay');
-            const currentLenEl = document.getElementById('currentLenDisplay');
-            const feedbackEl = document.getElementById('feedbackMessage');
-            const gridSizeBadge = document.getElementById('gridSizeBadge');
+        const gridContainer = document.getElementById("grid");
+        const gridSelect = document.getElementById("grid-select");
+        const startLengthInput = document.getElementById("start-length");
+        const startBtn = document.getElementById("startBtn");
+        const resetBtn = document.getElementById("resetBtn");
+        const scoreEl = document.getElementById("scoreDisplay");
+        const bestEl = document.getElementById("bestDisplay");
+        const currentLenEl = document.getElementById("currentLenDisplay");
+        const attemptEl = document.getElementById("attemptDisplay");
+        const feedbackEl = document.getElementById("feedbackMessage");
+        const gridSizeBadge = document.getElementById("gridSizeBadge");
 
-            // ---------- 状态变量 ----------
-            let gridSize = 4;               // 当前网格大小
-            let sequence = [];             // 完整的序列（单元格索引）
-            let userSeq = [];             // 用户已点击的序列
-            let isPlaying = false;        // 游戏是否进行中
-            let isAnimating = false;      // 是否正在播放动画（禁止点击）
-            let score = 0;               // 正确轮次数（每正确一轮+1）
-            let bestLength = 3;          // 最长序列长度（初始为起始长度）
-            let currentLength = 3;       // 当前序列长度（动态增长）
+        let gridSize = 4;
+        let startLength = 3;
+        let currentLength = 3;
+        let sequence = [];
+        let userSequence = [];
+        let isPlaying = false;
+        let isShowing = false;
+        let rounds = 0;
+        let bestLength = 3;
+        let cells = [];
 
-            // 网格单元格元素缓存
-            let cells = [];
+        function storageKey() {
+          return `spatialMemoryBest:${gridSize}:${startLength}`;
+        }
 
-            // ---------- 辅助函数 ----------
-            function randomCellIndex() {
-                return Math.floor(Math.random() * (gridSize * gridSize));
+        function loadBest() {
+          const saved = Number(localStorage.getItem(storageKey()));
+          bestLength = Number.isFinite(saved) && saved >= startLength ? saved : startLength;
+          bestEl.textContent = String(bestLength);
+        }
+
+        function saveBest() {
+          localStorage.setItem(storageKey(), String(bestLength));
+        }
+
+        function setFeedback(message, tone) {
+          feedbackEl.textContent = message;
+          feedbackEl.className = "feedback";
+          if (tone) feedbackEl.classList.add(tone);
+        }
+
+        function randomCellIndex() {
+          return Math.floor(Math.random() * (gridSize * gridSize));
+        }
+
+        function randomNextCell() {
+          if (sequence.length === 0) return randomCellIndex();
+          let next = randomCellIndex();
+          while (next === sequence[sequence.length - 1] && gridSize * gridSize > 1) {
+            next = randomCellIndex();
+          }
+          return next;
+        }
+
+        function clampStartLength() {
+          let value = parseInt(startLengthInput.value, 10);
+          if (Number.isNaN(value)) value = 3;
+          value = Math.max(2, Math.min(8, value));
+          startLengthInput.value = String(value);
+          startLength = value;
+        }
+
+        function buildGrid() {
+          gridContainer.style.setProperty("--grid-size", gridSize);
+          gridContainer.innerHTML = "";
+          for (let i = 0; i < gridSize * gridSize; i++) {
+            const cell = document.createElement("button");
+            cell.type = "button";
+            cell.className = "cell";
+            cell.dataset.index = String(i);
+            cell.setAttribute("aria-label", `Cell ${i + 1}`);
+            cell.addEventListener("click", onCellClick);
+            gridContainer.appendChild(cell);
+          }
+          cells = Array.from(document.querySelectorAll(".cell"));
+        }
+
+        function generateSequence() {
+          sequence = [];
+          for (let i = 0; i < currentLength; i++) {
+            sequence.push(randomNextCell());
+          }
+        }
+
+        function updateStats() {
+          scoreEl.textContent = String(rounds);
+          currentLenEl.textContent = String(currentLength);
+          bestEl.textContent = String(bestLength);
+          attemptEl.textContent = `${userSequence.length}/${sequence.length || currentLength}`;
+          gridSizeBadge.textContent = `${gridSize}x${gridSize}`;
+        }
+
+        function clearCellStates() {
+          cells.forEach((cell) => {
+            cell.classList.remove("active", "success", "error");
+          });
+        }
+
+        function wait(ms) {
+          return new Promise((resolve) => setTimeout(resolve, ms));
+        }
+
+        async function showSequence() {
+          isShowing = true;
+          startBtn.disabled = true;
+          clearCellStates();
+          setFeedback("Watch the pattern.", "warn");
+
+          for (const idx of sequence) {
+            if (!isPlaying) break;
+            await wait(420);
+            if (!isPlaying) break;
+            cells[idx].classList.add("active");
+            await wait(330);
+            cells[idx].classList.remove("active");
+          }
+
+          isShowing = false;
+          startBtn.disabled = false;
+          if (isPlaying) {
+            setFeedback("Your turn. Repeat the sequence.");
+          }
+        }
+
+        function startRound() {
+          userSequence = [];
+          updateStats();
+          showSequence();
+        }
+
+        function onCellClick(event) {
+          if (!isPlaying || isShowing) return;
+
+          const idx = Number(event.currentTarget.dataset.index);
+          const step = userSequence.length;
+          const expected = sequence[step];
+          userSequence.push(idx);
+          updateStats();
+
+          if (idx !== expected) {
+            event.currentTarget.classList.add("error");
+            setFeedback(`Wrong cell. You reached ${sequence.length} items.`, "bad");
+            endRun();
+            return;
+          }
+
+          event.currentTarget.classList.add("success");
+          setTimeout(() => event.currentTarget.classList.remove("success"), 180);
+
+          if (userSequence.length === sequence.length) {
+            rounds++;
+            currentLength++;
+            if (currentLength > bestLength) {
+              bestLength = currentLength;
+              saveBest();
             }
+            sequence.push(randomNextCell());
+            updateStats();
+            setFeedback("Correct. Next round.", "good");
+            setTimeout(() => {
+              if (isPlaying) startRound();
+            }, 750);
+          }
+        }
 
-            // 生成新序列（仅新增一个随机索引）
-            function appendToSequence() {
-                sequence.push(randomCellIndex());
-            }
+        function startGame() {
+          if (isPlaying) {
+            isPlaying = false;
+            startBtn.textContent = "Start";
+            setFeedback("Paused. Press Start to continue.", "warn");
+            return;
+          }
 
-            // 完全重置序列（根据当前起始长度）
-            function generateNewSequence() {
-                sequence = [];
-                for (let i = 0; i < currentLength; i++) {
-                    sequence.push(randomCellIndex());
-                }
-            }
+          if (isShowing) return;
 
-            // 初始化/重建网格（当gridSize改变时调用）
-            function buildGrid() {
-                gridContainer.style.setProperty('--grid-size', gridSize);
-                gridContainer.innerHTML = '';
-                for (let i = 0; i < gridSize * gridSize; i++) {
-                    const cell = document.createElement('div');
-                    cell.className = 'cell';
-                    cell.dataset.index = i;
-                    cell.addEventListener('click', onCellClick);
-                    gridContainer.appendChild(cell);
-                }
-                // 更新cells引用
-                cells = document.querySelectorAll('.cell');
-            }
+          if (sequence.length === 0) {
+            resetGame(false);
+          }
 
-            // ---------- 播放序列动画 ----------
-            async function playSequence() {
-                isAnimating = true;
-                feedbackEl.textContent = '👀 Watch...';
-                // 禁用开始按钮（但保留重置）
-                startBtn.disabled = true;
+          isPlaying = true;
+          startBtn.textContent = "Pause";
+          startRound();
+        }
 
-                for (let idx of sequence) {
-                    if (!isPlaying) break; // 若中途重置/暂停则停止
-                    await new Promise(r => setTimeout(r, 550));
-                    if (!isPlaying) break;
-                    cells[idx].classList.add('active');
-                    await new Promise(r => setTimeout(r, 350));
-                    if (!isPlaying) break;
-                    cells[idx].classList.remove('active');
-                }
+        function endRun() {
+          isPlaying = false;
+          isShowing = false;
+          startBtn.disabled = false;
+          startBtn.textContent = "Start";
+          updateStats();
+        }
 
-                isAnimating = false;
-                startBtn.disabled = false;
-                if (isPlaying) {
-                    feedbackEl.textContent = '🔁 Your turn – repeat the sequence';
-                }
-            }
+        function resetGame(showMessage) {
+          isPlaying = false;
+          isShowing = false;
+          startBtn.disabled = false;
+          startBtn.textContent = "Start";
+          clampStartLength();
+          currentLength = startLength;
+          rounds = 0;
+          userSequence = [];
+          generateSequence();
+          clearCellStates();
+          updateStats();
+          if (showMessage !== false) {
+            setFeedback("Reset. Press Start to play.");
+          }
+        }
 
-            // ---------- 开始新回合 ----------
-            function startRound() {
-                if (!isPlaying) return;
-                // 重置用户输入
-                userSeq = [];
-                // 播放序列动画
-                playSequence();
-            }
+        function updateSettings() {
+          gridSize = parseInt(gridSelect.value, 10);
+          clampStartLength();
+          buildGrid();
+          loadBest();
+          resetGame(false);
+          setFeedback("Settings updated. Press Start to play.");
+        }
 
-            // ---------- 处理单元格点击 ----------
-            function onCellClick(e) {
-                const idx = parseInt(e.currentTarget.dataset.index, 10);
-                if (!isPlaying || isAnimating || userSeq.length >= sequence.length) return;
+        function handleKeydown(event) {
+          const tagName = document.activeElement
+            ? document.activeElement.tagName
+            : "";
+          if (tagName === "INPUT" || tagName === "SELECT") return;
 
-                // 记录点击
-                userSeq.push(idx);
-                const currentStep = userSeq.length - 1;
+          if (event.key === "Enter" || event.code === "Space") {
+            event.preventDefault();
+            startGame();
+          } else if (event.key === "Escape" || event.key === "r" || event.key === "R") {
+            event.preventDefault();
+            resetGame(true);
+          }
+        }
 
-                // 即时视觉反馈
-                const cell = e.currentTarget;
-                if (idx === sequence[currentStep]) {
-                    // 正确
-                    cell.classList.add('success');
-                    setTimeout(() => cell.classList.remove('success'), 200);
-                    
-                    // 如果完整输入了全部序列
-                    if (userSeq.length === sequence.length) {
-                        // 正确！分数+1，序列长度+1，继续
-                        score++;
-                        scoreEl.textContent = score;
+        function init() {
+          gridSize = parseInt(gridSelect.value, 10);
+          clampStartLength();
+          buildGrid();
+          loadBest();
+          resetGame(false);
 
-                        currentLength++;
-                        currentLenEl.textContent = currentLength;
-                        if (currentLength > bestLength) {
-                            bestLength = currentLength;
-                            bestEl.textContent = bestLength;
-                        }
+          startBtn.addEventListener("click", startGame);
+          resetBtn.addEventListener("click", () => resetGame(true));
+          gridSelect.addEventListener("change", updateSettings);
+          startLengthInput.addEventListener("change", updateSettings);
+          window.addEventListener("keydown", handleKeydown);
 
-                        feedbackEl.textContent = '✅ Correct! Next level...';
-                        // 扩充序列（增加一个新随机位置）
-                        appendToSequence();
-                        // 短暂延迟后开始下一轮动画
-                        setTimeout(() => {
-                            if (isPlaying) startRound();
-                        }, 800);
-                    }
-                } else {
-                    // 错误 —— 游戏结束
-                    cell.classList.add('error');
-                    setTimeout(() => cell.classList.remove('error'), 200);
-                    feedbackEl.textContent = `❌ Wrong! You reached ${sequence.length} items.`;
-                    gameOver();
-                }
-            }
+          setFeedback("Choose settings and press Start.");
+        }
 
-            // ---------- 游戏结束 ----------
-            function gameOver() {
-                isPlaying = false;
-                startBtn.disabled = false;
-                startBtn.textContent = '▶ Start';
-                isAnimating = false;
-                // 保持best不重置
-            }
-
-            // ---------- 重置游戏（保留网格设置）----------
-            function resetGame(fullReset = true) {
-                // 强制停止所有活动
-                isPlaying = false;
-                isAnimating = false;
-                startBtn.disabled = false;
-                startBtn.textContent = '▶ Start';
-
-                // 重置状态变量
-                if (fullReset) {
-                    // 从输入框读取起始长度
-                    currentLength = parseInt(startLengthInput.value, 10);
-                    if (isNaN(currentLength) || currentLength < 2) currentLength = 3;
-                    if (currentLength > 8) currentLength = 8; // 上限8
-                    score = 0;
-                    // bestLength 仅在超过时更新，重置不清除，但可以手动重置？为了体验，重置时不清除最高记录，但保留。
-                    // 但如果用户切换网格，应当重置best？
-                    // 简单处理：点击reset按钮时，不清除best，但重新开始游戏。
-                }
-
-                scoreEl.textContent = score;
-                currentLenEl.textContent = currentLength;
-                // best保留之前的最佳
-
-                // 清空序列并重新生成
-                sequence = [];
-                for (let i = 0; i < currentLength; i++) {
-                    sequence.push(randomCellIndex());
-                }
-                userSeq = [];
-
-                // 清除所有高亮
-                cells.forEach(cell => {
-                    cell.classList.remove('active', 'success', 'error');
-                });
-
-                feedbackEl.textContent = 'Reset. Press Start to play.';
-            }
-
-            // ---------- 开始主游戏 ----------
-            function startGame() {
-                if (isAnimating) return; // 动画中不能开始
-                if (isPlaying) {
-                    // 暂停功能（简单实现：停止播放，但保留状态）
-                    isPlaying = false;
-                    startBtn.textContent = '▶ Start';
-                    feedbackEl.textContent = '⏸ Paused';
-                } else {
-                    // 开始新游戏
-                    isPlaying = true;
-                    startBtn.textContent = '⏸ Pause';
-                    // 如果序列为空，先生成
-                    if (sequence.length === 0) {
-                        resetGame(true);
-                    }
-                    // 开始回合
-                    startRound();
-                }
-            }
-
-            // ---------- 初始化事件监听 ----------
-            function init() {
-                // 初始化网格
-                gridSize = parseInt(gridSelect.value, 10);
-                buildGrid();
-                updateBadge();
-                // 初始重置
-                resetGame(true);
-                bestLength = currentLength;
-                bestEl.textContent = bestLength;
-
-                // 监听网格大小变化
-                gridSelect.addEventListener('change', function() {
-                    gridSize = parseInt(gridSelect.value, 10);
-                    buildGrid();
-                    updateBadge();
-                    // 切换网格后，自动重置所有状态（包括最佳长度重置，因为网格变化后难度不同）
-                    bestLength = parseInt(startLengthInput.value, 10);
-                    bestEl.textContent = bestLength;
-                    resetGame(true);
-                });
-
-                // 起始长度输入框变化时，重置状态但不自动开始
-                startLengthInput.addEventListener('change', function() {
-                    let val = parseInt(startLengthInput.value, 10);
-                    if (isNaN(val)) val = 3;
-                    if (val < 2) val = 2;
-                    if (val > 8) val = 8;
-                    startLengthInput.value = val;
-                    if (!isPlaying) {
-                        currentLength = val;
-                        resetGame(true);
-                    }
-                });
-
-                // 按钮事件
-                startBtn.addEventListener('click', startGame);
-                resetBtn.addEventListener('click', function() {
-                    // 重置时不清除最佳记录（但若网格已变，上面已重置best）
-                    // 这里仅重置游戏状态
-                    if (!isPlaying) {
-                        resetGame(true);
-                    } else {
-                        // 强制结束
-                        isPlaying = false;
-                        resetGame(true);
-                    }
-                });
-
-                // 键盘快捷键
-                window.addEventListener('keydown', function(e) {
-                    if (e.code === 'Space' || e.key === ' ') {
-                        e.preventDefault();
-                        startGame();
-                    }
-                    if (e.key === 'r' || e.key === 'R') {
-                        e.preventDefault();
-                        resetBtn.click();
-                    }
-                });
-            }
-
-            function updateBadge() {
-                gridSizeBadge.textContent = `${gridSize}x${gridSize}`;
-            }
-
-            init();
-        })();
+        init();
+      })();
     </script>
-</body>
+  </body>
 </html>

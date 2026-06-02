@@ -6,265 +6,185 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes"
     />
-    <title>Dual N‑Back · Cognitive Training (with Audio)</title>
+    <title>Dual N-Back Cognitive Training</title>
     <style>
-      /* ===== INJECTED GLOBAL CSS VARIABLES ===== */
       :root {
-        --primary: #e6e6fa;
-        --primary-dark: #d8bfd8;
-        --secondary: #ffd700;
-        --secondary-dark: #ffc107;
-        --accent: #6a5acd;
-        --accent-light: #9370db;
-        --background: #f9f9ff;
-        --text: #333333;
-        --text-light: #666666;
-        --white: #ffffff;
-        --gray: #f0f0f0;
-        --gray-dark: #e0e0e0;
-        --shadow: rgba(0, 0, 0, 0.1);
-        --shadow-light: rgba(0, 0, 0, 0.05);
-
-        --font-heading:
-          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji",
-          "Segoe UI Emoji", "Segoe UI Symbol";
-        --font-body:
-          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji",
-          "Segoe UI Emoji", "Segoe UI Symbol";
-
-        --border-radius: 12px;
-        --border-radius-lg: 20px;
-        --transition: all 0.3s ease;
+        --primary: #e7e2ff;
+        --primary-dark: #c9bdf4;
+        --secondary: #f6d365;
+        --secondary-dark: #e5b93f;
+        --accent: #5a4fcf;
+        --accent-dark: #352d87;
+        --background: #f8f7fb;
+        --panel: #ffffff;
+        --text: #252536;
+        --text-light: #66677a;
+        --gray: #eeedf4;
+        --gray-dark: #d8d6e4;
+        --good: #2f8f5b;
+        --bad: #bd3b3b;
+        --warn: #9b6a13;
+        --shadow: rgba(38, 34, 72, 0.14);
+        --radius: 12px;
       }
 
       * {
-        margin: 0;
-        padding: 0;
         box-sizing: border-box;
       }
 
       body {
-        font-family: var(--font-body);
-        font-size: 16px;
-        line-height: 1.6;
-        color: var(--text);
-        background-color: var(--background);
+        margin: 0;
+        height: 100vh;
         display: flex;
-        flex-direction: column;
         align-items: center;
         justify-content: center;
-        min-height: 100vh;
-        padding: 20px;
+        padding: 0;
+        overflow: hidden;
+        background: var(--background);
+        color: var(--text);
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial,
+          sans-serif;
+      }
+
+      button,
+      select {
+        font: inherit;
       }
 
       .game-container {
-        max-width: 780px;
         width: 100%;
-        background: var(--white);
-        border-radius: var(--border-radius-lg);
-        box-shadow: 0 10px 25px var(--shadow);
-        padding: 30px 25px;
-        transition: var(--transition);
-        border: 1px solid var(--gray);
+        background: var(--panel);
+        border: 1px solid var(--gray-dark);
+        border-radius: 0;
+        box-shadow: 0 14px 35px var(--shadow);
+        padding: 18px;
+        height: 100vh;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) clamp(230px, 24vw, 278px);
+        grid-template-rows: auto auto 1fr auto;
+        grid-template-areas:
+          "header header"
+          "play settings"
+          "play side"
+          "keys side";
+        gap: 12px clamp(16px, 2.5vw, 28px);
       }
 
       .game-header {
+        grid-area: header;
         display: flex;
-        flex-wrap: wrap;
-        align-items: baseline;
+        align-items: center;
         justify-content: space-between;
-        margin-bottom: 25px;
+        gap: 16px;
+        margin-bottom: 0;
       }
 
       .game-title {
-        font-family: var(--font-heading);
-        font-size: 1.8rem;
-        font-weight: 700;
-        color: var(--accent);
-        margin-bottom: 5px;
+        margin: 0;
+        color: var(--accent-dark);
+        font-size: 1.55rem;
+        line-height: 1.1;
       }
 
       .n-badge {
-        background: var(--primary-dark);
-        padding: 5px 14px;
-        border-radius: 30px;
-        font-size: 0.9rem;
-        font-weight: 600;
-        color: var(--accent);
-        display: inline-block;
-      }
-
-      /* settings panel */
-      .settings-panel {
-        background: var(--gray);
-        padding: 20px;
-        border-radius: var(--border-radius);
-        margin-bottom: 25px;
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 20px;
-      }
-
-      .n-level {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-      }
-
-      .n-level label {
-        font-weight: 600;
-        color: var(--text);
-        white-space: nowrap;
-      }
-
-      /* ===== 改进：拉长选择框，保持文字大小 ===== */
-      #nValue {
-        min-width: 150px; /* 足够宽，避免遮挡 */
-        width: auto; /* 自动适应内容 */
-        padding: 8px 12px;
-        border: 2px solid var(--accent-light);
-        border-radius: var(--border-radius);
-        font-weight: 600;
-        font-size: 1rem; /* 保持原字体大小，不缩小 */
-        background: var(--white);
-        cursor: pointer;
-      }
-
-      /* 移动设备上宽度占满，依然不缩小文字 */
-      @media (max-width: 600px) {
-        #nValue {
-          min-width: 100%;
-          width: 100%;
-        }
-      }
-
-      /* grid 3x3 */
-      .grid-3x3 {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 12px;
-        background: var(--gray);
-        padding: 15px;
-        border-radius: var(--border-radius);
-        margin-bottom: 15px;
-        aspect-ratio: 1 / 1;
-        max-width: 300px;
-        margin-left: auto;
-        margin-right: auto;
-      }
-
-      .grid-cell {
-        background: var(--white);
-        border-radius: 10px;
-        aspect-ratio: 1 / 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: inset 0 2px 5px var(--shadow-light);
-        transition: background 0.15s;
-      }
-
-      .grid-cell.active {
-        background: var(--accent);
-        box-shadow: 0 0 0 3px var(--secondary);
-      }
-
-      .letter-display {
-        text-align: center;
-        font-size: 2.5rem;
-        font-weight: 700;
-        color: var(--accent);
+        flex: 0 0 auto;
+        padding: 6px 14px;
+        border-radius: 999px;
         background: var(--primary);
-        padding: 15px;
-        border-radius: var(--border-radius);
-        margin: 10px 0 20px;
-        letter-spacing: 4px;
+        color: var(--accent-dark);
+        font-weight: 700;
       }
 
-      .stats {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        background: var(--background);
-        padding: 18px 20px;
-        border-radius: var(--border-radius);
-        margin-top: 20px;
-        border: 1px solid var(--primary-dark);
+      .guide {
+        display: none;
       }
 
-      .stat-item {
+      .guide {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 14px;
+        padding: 14px;
+        margin-bottom: 10px;
+        border-radius: var(--radius);
+        background: #fbfbfe;
+        border: 1px solid var(--gray);
+      }
+
+      .guide h2 {
+        margin: 0 0 8px;
+        font-size: 1rem;
+        color: var(--accent-dark);
+      }
+
+      .guide p,
+      .guide ul {
+        margin: 0;
+        color: var(--text-light);
+        font-size: 0.94rem;
+      }
+
+      .guide ul {
+        padding-left: 18px;
+      }
+
+      .guide {
+        display: none;
+      }
+
+      .settings-panel {
+        grid-area: settings;
         display: flex;
         flex-direction: column;
-        align-items: center;
+        align-items: stretch;
+        gap: 10px;
+        padding: 12px;
+        margin-bottom: 0;
+        border-radius: var(--radius);
+        background: var(--gray);
       }
 
-      .stat-label {
-        font-size: 0.85rem;
-        color: var(--text-light);
-        text-transform: uppercase;
-        letter-spacing: 1px;
-      }
-
-      .stat-value {
-        font-size: 1.7rem;
-        font-weight: 700;
-        color: var(--accent);
-        line-height: 1.2;
-      }
-
-      .feedback {
-        font-size: 1.2rem;
-        font-weight: 600;
-        padding: 8px 16px;
-        border-radius: 40px;
-        background: var(--white);
-        border: 2px solid var(--secondary);
-      }
-
-      .button-group {
+      .settings-field {
         display: flex;
-        flex-wrap: wrap;
-        gap: 15px;
-        justify-content: center;
-        margin-top: 25px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+      }
+
+      .settings-field label {
+        font-weight: 700;
+      }
+
+      #nValue,
+      #gridSize,
+      #speedValue {
+        min-width: 130px;
+        padding: 9px 10px;
+        border: 2px solid var(--primary-dark);
+        border-radius: 10px;
+        background: var(--panel);
+        font-weight: 700;
       }
 
       .btn {
-        padding: 12px 28px;
-        border-radius: var(--border-radius);
-        font-family: var(--font-heading);
-        font-weight: 600;
-        cursor: pointer;
-        transition: var(--transition);
-        border: none;
-        font-size: 1rem;
+        min-height: 42px;
+        padding: 10px 18px;
+        border: 0;
+        border-radius: 10px;
         background: var(--accent);
-        color: var(--white);
-        box-shadow: 0 4px 8px var(--shadow);
+        color: white;
+        font-weight: 800;
+        cursor: pointer;
       }
 
       .btn:hover {
-        background: var(--accent-light);
-        transform: translateY(-3px);
-        box-shadow: 0 8px 16px var(--shadow);
-      }
-
-      .btn-secondary {
-        background: var(--secondary);
-        color: var(--text);
-      }
-
-      .btn-secondary:hover {
-        background: var(--secondary-dark);
+        background: var(--accent-dark);
       }
 
       .btn-outline {
         background: transparent;
+        color: var(--accent-dark);
         border: 2px solid var(--accent);
-        color: var(--accent);
       }
 
       .btn-outline:hover {
@@ -272,55 +192,273 @@
         color: white;
       }
 
-      .key-hint {
-        font-size: 0.85rem;
-        color: var(--text-light);
-        margin-top: 10px;
+      .play-area {
+        grid-area: play;
+        display: grid;
+        grid-template-columns: minmax(410px, 560px) minmax(210px, 250px);
+        gap: clamp(14px, 2.4vw, 28px);
+        align-items: center;
+        align-self: center;
+        justify-content: center;
+        min-height: 0;
+      }
+
+      .position-grid {
+        --grid-cols: 3;
+        --grid-rows: 3;
+        display: grid;
+        grid-template-columns: repeat(var(--grid-cols), 1fr);
+        gap: 10px;
+        aspect-ratio: var(--grid-cols) / var(--grid-rows);
+        padding: 12px;
+        border-radius: var(--radius);
+        background: var(--gray);
+        width: min(100%, 548px, calc(100vh - 116px));
+        justify-self: center;
+      }
+
+      .grid-cell {
+        aspect-ratio: 1 / 1;
+        border-radius: 9px;
+        background: var(--panel);
+        box-shadow: inset 0 0 0 1px var(--gray-dark);
+      }
+
+      .grid-cell.active {
+        background: var(--accent);
+        box-shadow:
+          inset 0 0 0 1px var(--accent-dark),
+          0 0 0 4px var(--secondary);
+      }
+
+      .stimulus-panel {
+        display: grid;
+        gap: 14px;
+        align-content: center;
+        min-width: 0;
+      }
+
+      .stimulus-panel .response-grid {
+        margin-top: 6px;
+      }
+
+      .letter-display {
+        min-height: 112px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: var(--radius);
+        background: var(--primary);
+        color: var(--accent-dark);
+        font-size: 3.6rem;
+        font-weight: 900;
+        letter-spacing: 0;
+      }
+
+      .feedback {
+        min-height: 52px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 12px;
+        border-radius: var(--radius);
+        border: 2px solid var(--gray-dark);
+        background: #fff;
+        color: var(--text);
+        font-weight: 800;
         text-align: center;
+      }
+
+      .feedback.good {
+        border-color: #a7d9bd;
+        color: var(--good);
+      }
+
+      .feedback.bad {
+        border-color: #efb4b4;
+        color: var(--bad);
+      }
+
+      .feedback.warn {
+        border-color: #f1d38d;
+        color: var(--warn);
+      }
+
+      .response-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+        margin-top: 0;
+        align-self: start;
+      }
+
+      .side-panel {
+        grid-area: side;
+        display: grid;
+        align-content: start;
+        gap: 12px;
+        min-height: 0;
+      }
+
+      .response-btn {
+        min-height: 58px;
+        padding: 10px;
+        border: 2px solid var(--secondary-dark);
+        border-radius: var(--radius);
+        background: #fff8df;
+        color: var(--text);
+        font-weight: 900;
+        cursor: pointer;
+      }
+
+      .response-btn span {
+        display: block;
+        margin-top: 4px;
+        color: var(--text-light);
+        font-size: 0.82rem;
+        font-weight: 700;
+      }
+
+      .response-btn.selected {
+        background: var(--secondary);
+        border-color: var(--accent-dark);
+        color: var(--accent-dark);
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        margin-top: 0;
+      }
+
+      .stat-item {
+        padding: 10px 8px;
+        border-radius: var(--radius);
+        background: #fbfbfe;
+        border: 1px solid var(--gray);
+        text-align: center;
+      }
+
+      .stat-label {
+        display: block;
+        color: var(--text-light);
+        font-size: 0.75rem;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      .stat-value {
+        display: block;
+        margin-top: 2px;
+        color: var(--accent-dark);
+        font-size: 1.35rem;
+        font-weight: 900;
+      }
+
+      .key-hint {
+        grid-area: keys;
+        margin-top: 0;
+        padding-top: 0;
         border-top: 1px dashed var(--gray-dark);
-        padding-top: 15px;
+        color: var(--text-light);
+        font-size: 0.88rem;
+        text-align: center;
+        align-self: end;
       }
 
       .key {
         display: inline-block;
-        background: var(--gray);
-        border-radius: 6px;
-        padding: 2px 10px;
-        font-family: monospace;
-        font-weight: 700;
+        min-width: 28px;
+        margin: 2px;
+        padding: 2px 7px;
         border: 1px solid var(--gray-dark);
+        border-radius: 6px;
+        background: var(--gray);
+        color: var(--text);
+        font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+        font-weight: 900;
       }
 
-      @media (max-width: 600px) {
+      @media (max-width: 860px) {
         .game-container {
-          padding: 20px;
+          padding: 14px;
+          grid-template-columns: 1fr;
+          grid-template-rows: auto;
+          grid-template-areas:
+            "header"
+            "settings"
+            "play"
+            "side"
+            "keys";
+          overflow-y: auto;
         }
-        .settings-panel {
-          flex-direction: column;
+
+        .game-header,
+        .settings-panel,
+        .settings-field {
           align-items: stretch;
         }
-        .grid-3x3 {
-          max-width: 250px;
+
+        .game-header,
+        .settings-panel {
+          flex-direction: column;
         }
-        .stat-value {
-          font-size: 1.4rem;
+
+        .settings-field {
+          width: 100%;
         }
-        .n-level label {
-          white-space: normal;
+
+        #nValue,
+        #gridSize,
+        #speedValue {
+          flex: 1;
+          min-width: 0;
+        }
+
+        .guide,
+        .play-area,
+        .response-grid,
+        .stats {
+          grid-template-columns: 1fr;
+        }
+
+        .position-grid {
+          width: min(100%, 340px);
+          margin: 0 auto;
         }
       }
     </style>
   </head>
   <body>
-    <div class="game-container">
-      <div class="game-header">
-        <h1 class="game-title">🎯 Dual N‑Back</h1>
-        <span class="n-badge" id="currentNLabel">2‑back</span>
-      </div>
+    <main class="game-container">
+      <header class="game-header">
+        <h1 class="game-title">Dual N-Back</h1>
+        <span class="n-badge" id="currentNLabel">2-back</span>
+      </header>
 
-      <div class="settings-panel">
-        <div class="n-level">
-          <label for="nValue">N‑back level:</label>
+      <section class="guide" aria-label="Quick guide">
+        <div>
+          <h2>Rule</h2>
+          <p>
+            Compare the current square and letter with the one from N rounds ago.
+            The first N rounds only build history.
+          </p>
+        </div>
+        <div>
+          <h2>Respond</h2>
+          <ul>
+            <li>Position match: F or Left Arrow</li>
+            <li>Letter match: J or Right Arrow</li>
+            <li>Both match: Space</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="settings-panel" aria-label="Game settings">
+        <div class="settings-field">
+          <label for="nValue">Level</label>
           <select id="nValue" aria-label="N-back level">
             <option value="1">1-back</option>
             <option value="2" selected>2-back</option>
@@ -329,59 +467,89 @@
             <option value="5">5-back</option>
           </select>
         </div>
-        <button class="btn" id="startBtn">▶ Start Game</button>
-        <button class="btn btn-outline" id="resetBtn">⟲ Reset</button>
-      </div>
+        <div class="settings-field">
+          <label for="gridSize">Grid</label>
+          <select id="gridSize" aria-label="Position grid size">
+            <option value="3x3" selected>3 x 3</option>
+            <option value="4x4">4 x 4</option>
+            <option value="5x5">5 x 5</option>
+          </select>
+        </div>
+        <div class="settings-field">
+          <label for="speedValue">Speed</label>
+          <select id="speedValue" aria-label="Refresh speed">
+            <option value="4000">Slow - 4.0s</option>
+            <option value="3000" selected>Standard - 3.0s</option>
+            <option value="2000">Fast - 2.0s</option>
+          </select>
+        </div>
+        <button class="btn" id="startBtn" type="button">Start</button>
+        <button class="btn btn-outline" id="resetBtn" type="button">Reset</button>
+      </section>
 
-      <div class="grid-3x3" id="positionGrid"></div>
-      <div class="letter-display" id="letterDisplay">—</div>
+      <section class="play-area" aria-label="Current stimulus">
+        <div class="position-grid" id="positionGrid" aria-label="Position grid"></div>
+        <div class="stimulus-panel">
+          <div class="letter-display" id="letterDisplay" aria-live="polite">-</div>
+          <div class="feedback" id="feedbackMessage" aria-live="polite">
+            Choose a level and press Start.
+          </div>
+          <section class="response-grid" aria-label="Response buttons">
+            <button class="response-btn" id="posMatchBtn" type="button">
+              Position match
+              <span>F / Left Arrow</span>
+            </button>
+            <button class="response-btn" id="letterMatchBtn" type="button">
+              Letter match
+              <span>J / Right Arrow</span>
+            </button>
+            <button class="response-btn" id="bothMatchBtn" type="button">
+              Both match
+              <span>Space</span>
+            </button>
+          </section>
+        </div>
+      </section>
 
-      <div class="stats">
-        <div class="stat-item">
-          <span class="stat-label">Trials</span>
-          <span class="stat-value" id="trialCount">0</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-label">Accuracy</span>
-          <span class="stat-value" id="accuracyDisplay">0%</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-label">Score</span>
-          <span class="stat-value" id="scoreDisplay">0</span>
-        </div>
-        <div id="feedbackMessage" class="feedback" style="align-self: center">
-          Ready
-        </div>
-      </div>
-
-      <div class="button-group">
-        <button class="btn btn-secondary" id="posMatchBtn">
-          📍 Position match (A)
-        </button>
-        <button class="btn btn-secondary" id="letterMatchBtn">
-          🔤 Letter match (L)
-        </button>
-        <button class="btn btn-secondary" id="bothMatchBtn">
-          ✨ Both match (Space)
-        </button>
-      </div>
+      <aside class="side-panel" aria-label="Responses and stats">
+        <section class="stats" aria-label="Game stats">
+          <div class="stat-item">
+            <span class="stat-label">Trial</span>
+            <span class="stat-value" id="trialCount">0</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Accuracy</span>
+            <span class="stat-value" id="accuracyDisplay">0%</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Hits</span>
+            <span class="stat-value" id="hitsDisplay">0</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Errors</span>
+            <span class="stat-value" id="errorsDisplay">0</span>
+          </div>
+        </section>
+      </aside>
 
       <div class="key-hint">
-        <span class="key">A</span> position match ·
-        <span class="key">L</span> letter match ·
-        <span class="key">Space</span> both match ·
-        <span class="key">S</span> start/stop
+        <span class="key">F</span> position
+        <span class="key">J</span> letter
+        <span class="key">Space</span> both
+        <span class="key">Enter</span> start/pause
+        <span class="key">Esc</span> reset
       </div>
-    </div>
+    </main>
 
     <script>
       (function () {
         "use strict";
 
-        // --- DOM elements ---
         const gridContainer = document.getElementById("positionGrid");
         const letterEl = document.getElementById("letterDisplay");
         const nSelect = document.getElementById("nValue");
+        const gridSizeSelect = document.getElementById("gridSize");
+        const speedSelect = document.getElementById("speedValue");
         const currentNLabel = document.getElementById("currentNLabel");
         const startBtn = document.getElementById("startBtn");
         const resetBtn = document.getElementById("resetBtn");
@@ -390,197 +558,293 @@
         const bothBtn = document.getElementById("bothMatchBtn");
         const trialEl = document.getElementById("trialCount");
         const accuracyEl = document.getElementById("accuracyDisplay");
-        const scoreEl = document.getElementById("scoreDisplay");
+        const hitsEl = document.getElementById("hitsDisplay");
+        const errorsEl = document.getElementById("errorsDisplay");
         const feedbackEl = document.getElementById("feedbackMessage");
 
-        // --- Game state ---
+        const LETTERS = ["A", "B", "C", "D", "E", "F", "G", "H"];
+        const TARGET_PROBABILITY = 0.3;
+        const GRID_PRESETS = {
+          "3x3": { rows: 3, cols: 3 },
+          "4x4": { rows: 4, cols: 4 },
+          "5x5": { rows: 5, cols: 5 },
+        };
+
         let isRunning = false;
         let n = 2;
+        let gridRows = 3;
+        let gridCols = 3;
+        let cellCount = 9;
         let trialCounter = 0;
-        let correctHits = 0;
-        let totalResponses = 0;
-
+        let intervalId = null;
         let posHistory = [];
         let letterHistory = [];
+        let selectedPosition = false;
+        let selectedLetter = false;
+        let scoredTrials = 0;
+        let correctChannels = 0;
+        let totalChannels = 0;
+        let hits = 0;
+        let errors = 0;
+        let currentTrialScored = false;
+        let responseScoreTimeout = null;
 
-        let currentPos = 0;
-        let currentLetter = "A";
-
-        let intervalId = null;
-        const STIMULUS_INTERVAL = 3000; // 3 seconds
-
-        const LETTERS = ["A", "B", "C", "D", "E", "F", "G", "H"];
-
-        // --- 语音合成函数（新增）---
-        function speakLetter(letter) {
-          if ("speechSynthesis" in window) {
-            // 取消当前正在朗读的语音，避免重叠
-            window.speechSynthesis.cancel();
-            const utterance = new SpeechSynthesisUtterance(letter);
-            utterance.rate = 0.9; // 略慢，更清晰
-            utterance.pitch = 1;
-            utterance.volume = 1;
-            utterance.lang = "en-US";
-            window.speechSynthesis.speak(utterance);
-          } else {
-            // 浏览器不支持语音，静默失败（不影响游戏）
-            console.log("Speech synthesis not supported");
-          }
+        function setFeedback(message, tone) {
+          feedbackEl.textContent = message;
+          feedbackEl.className = "feedback";
+          if (tone) feedbackEl.classList.add(tone);
         }
 
-        // --- Helper functions ---
         function randomPosition() {
-          return Math.floor(Math.random() * 9);
+          return Math.floor(Math.random() * cellCount);
+        }
+
+        function getStimulusInterval() {
+          return Number(speedSelect.value) || 3000;
         }
 
         function randomLetter() {
           return LETTERS[Math.floor(Math.random() * LETTERS.length)];
         }
 
-        function renderGrid(pos) {
-          const cells = document.querySelectorAll(".grid-cell");
-          cells.forEach((cell, idx) => {
-            if (idx === pos) {
-              cell.classList.add("active");
-            } else {
-              cell.classList.remove("active");
-            }
-          });
+        function randomDifferentPosition(position) {
+          let next = randomPosition();
+          while (next === position) {
+            next = randomPosition();
+          }
+          return next;
+        }
+
+        function randomDifferentLetter(letter) {
+          let next = randomLetter();
+          while (next === letter) {
+            next = randomLetter();
+          }
+          return next;
+        }
+
+        function readGridPreset() {
+          return GRID_PRESETS[gridSizeSelect.value] || GRID_PRESETS["3x3"];
+        }
+
+        function updateGridSize() {
+          const preset = readGridPreset();
+          gridRows = preset.rows;
+          gridCols = preset.cols;
+          cellCount = gridRows * gridCols;
+          gridContainer.style.setProperty("--grid-cols", String(gridCols));
+          gridContainer.style.setProperty("--grid-rows", String(gridRows));
+          gridContainer.setAttribute(
+            "aria-label",
+            `${gridRows} by ${gridCols} position grid`,
+          );
         }
 
         function buildGrid() {
+          updateGridSize();
           gridContainer.innerHTML = "";
-          for (let i = 0; i < 9; i++) {
+          for (let i = 0; i < cellCount; i++) {
             const cell = document.createElement("div");
             cell.className = "grid-cell";
             gridContainer.appendChild(cell);
           }
         }
 
-        // --- Core game logic: produce a new trial ---
-        function nextTrial() {
-          if (!isRunning) return;
-
-          const newPos = randomPosition();
-          const newLetter = randomLetter();
-
-          currentPos = newPos;
-          currentLetter = newLetter;
-
-          renderGrid(newPos);
-          letterEl.textContent = newLetter;
-
-          // ★ 朗读字母（听觉刺激）
-          speakLetter(newLetter);
-
-          posHistory.push(newPos);
-          letterHistory.push(newLetter);
-
-          trialCounter++;
-          trialEl.textContent = trialCounter;
+        function renderGrid(pos) {
+          document.querySelectorAll(".grid-cell").forEach((cell, idx) => {
+            cell.classList.toggle("active", idx === pos);
+          });
         }
 
-        // --- Process response ---
-        function handleResponse(type) {
-          if (!isRunning) {
-            feedbackEl.textContent = "⏸ Game not started";
-            return;
-          }
-          if (trialCounter <= n) {
-            feedbackEl.textContent = "⏳ Wait, history building...";
-            return;
-          }
+        function speakLetter(letter) {
+          if (!("speechSynthesis" in window)) return;
+          window.speechSynthesis.cancel();
+          const utterance = new SpeechSynthesisUtterance(letter);
+          utterance.rate = 0.9;
+          utterance.pitch = 1;
+          utterance.volume = 1;
+          utterance.lang = "en-US";
+          window.speechSynthesis.speak(utterance);
+        }
 
-          n = parseInt(nSelect.value, 10);
-          currentNLabel.textContent = n + "-back";
+        function updateResponseButtons() {
+          posBtn.classList.toggle("selected", selectedPosition);
+          letterBtn.classList.toggle("selected", selectedLetter);
+          bothBtn.classList.toggle("selected", selectedPosition && selectedLetter);
+        }
 
-          const idxCurrent = posHistory.length - 1;
-          const idxPrev = idxCurrent - n;
-
-          if (idxPrev < 0) {
-            feedbackEl.textContent = "⏳ Still building history...";
-            return;
-          }
-
-          const prevPos = posHistory[idxPrev];
-          const prevLetter = letterHistory[idxPrev];
-          const currPos = posHistory[idxCurrent];
-          const currLetter = letterHistory[idxCurrent];
-
-          const posMatch = currPos === prevPos;
-          const letterMatch = currLetter === prevLetter;
-
-          let isCorrect = false;
-          let feedbackMsg = "";
-
-          if (posMatch && letterMatch) {
-            if (type === "both") {
-              isCorrect = true;
-              feedbackMsg = "✅ Both correct!";
-            } else {
-              feedbackMsg = "❌ Miss: both matched!";
-            }
-          } else if (posMatch) {
-            if (type === "pos") {
-              isCorrect = true;
-              feedbackMsg = "✅ Position match!";
-            } else {
-              feedbackMsg = "❌ Position matched!";
-            }
-          } else if (letterMatch) {
-            if (type === "letter") {
-              isCorrect = true;
-              feedbackMsg = "✅ Letter match!";
-            } else {
-              feedbackMsg = "❌ Letter matched!";
-            }
-          } else {
-            isCorrect = false;
-            feedbackMsg = "❌ False alarm (no match)";
-          }
-
-          totalResponses++;
-          if (isCorrect) {
-            correctHits++;
-            feedbackEl.textContent = feedbackMsg;
-          } else {
-            feedbackEl.textContent = feedbackMsg;
-          }
-
-          scoreEl.textContent = correctHits;
+        function updateStats() {
+          trialEl.textContent = String(trialCounter);
+          hitsEl.textContent = String(hits);
+          errorsEl.textContent = String(errors);
           const accuracy =
-            totalResponses > 0
-              ? Math.round((correctHits / totalResponses) * 100)
+            totalChannels > 0
+              ? Math.round((correctChannels / totalChannels) * 100)
               : 0;
           accuracyEl.textContent = accuracy + "%";
         }
 
-        // --- Reset game ---
-        function resetGame() {
-          if (isRunning) {
-            stopGame();
+        function expectedForCurrentTrial() {
+          const currentIdx = posHistory.length - 1;
+          const compareIdx = currentIdx - n;
+          if (compareIdx < 0) {
+            return null;
           }
-          isRunning = false;
-          startBtn.textContent = "▶ Start Game";
-          trialCounter = 0;
-          correctHits = 0;
-          totalResponses = 0;
-          posHistory = [];
-          letterHistory = [];
-          trialEl.textContent = "0";
-          scoreEl.textContent = "0";
-          accuracyEl.textContent = "0%";
-          feedbackEl.textContent = "Reset";
-          letterEl.textContent = "—";
-          const cells = document.querySelectorAll(".grid-cell");
-          cells.forEach((c) => c.classList.remove("active"));
-          n = parseInt(nSelect.value, 10);
-          currentNLabel.textContent = n + "-back";
 
-          // 停止任何正在朗读的语音
-          if ("speechSynthesis" in window) {
-            window.speechSynthesis.cancel();
+          return {
+            position: posHistory[currentIdx] === posHistory[compareIdx],
+            letter: letterHistory[currentIdx] === letterHistory[compareIdx],
+          };
+        }
+
+        function clearResponseScoreTimeout() {
+          if (responseScoreTimeout) {
+            clearTimeout(responseScoreTimeout);
+            responseScoreTimeout = null;
           }
+        }
+
+        function describeSelection() {
+          if (selectedPosition && selectedLetter) return "Both matches selected.";
+          if (selectedPosition) return "Position match selected.";
+          if (selectedLetter) return "Letter match selected.";
+          return "Selection cleared.";
+        }
+
+        function describeExpected(expected) {
+          if (expected.position && expected.letter) return "both matches";
+          if (expected.position) return "position match";
+          if (expected.letter) return "letter match";
+          return "no match";
+        }
+
+        function scoreCurrentTrial() {
+          if (currentTrialScored) return;
+          if (posHistory.length === 0) return;
+
+          const expected = expectedForCurrentTrial();
+          if (!expected) return;
+
+          currentTrialScored = true;
+          clearResponseScoreTimeout();
+
+          const positionCorrect = selectedPosition === expected.position;
+          const letterCorrect = selectedLetter === expected.letter;
+          const trialCorrect = positionCorrect && letterCorrect;
+          const expectedAny = expected.position || expected.letter;
+          const selectedAny = selectedPosition || selectedLetter;
+
+          scoredTrials++;
+          totalChannels += 2;
+          correctChannels += (positionCorrect ? 1 : 0) + (letterCorrect ? 1 : 0);
+
+          if (trialCorrect) {
+            hits++;
+            if (expectedAny) {
+              setFeedback("Correct. Good match.", "good");
+            } else {
+              setFeedback("Correct. No match.", "good");
+            }
+          } else {
+            errors++;
+            if (!selectedAny && expectedAny) {
+              setFeedback(
+                "Missed a match. Expected " + describeExpected(expected) + ".",
+                "bad",
+              );
+            } else if (selectedAny && !expectedAny) {
+              setFeedback("False alarm. No match this round.", "bad");
+            } else {
+              setFeedback(
+                "Partly wrong. Expected " + describeExpected(expected) + ".",
+                "bad",
+              );
+            }
+          }
+
+          updateStats();
+        }
+
+        function clearSelection() {
+          selectedPosition = false;
+          selectedLetter = false;
+          updateResponseButtons();
+        }
+
+        function scheduleResponseScore() {
+          if (currentTrialScored) {
+            setFeedback("This round has already been scored.", "warn");
+            return;
+          }
+
+          setFeedback(describeSelection(), "warn");
+          clearResponseScoreTimeout();
+          responseScoreTimeout = setTimeout(function () {
+            responseScoreTimeout = null;
+            scoreCurrentTrial();
+          }, 300);
+        }
+
+        function nextTrial() {
+          if (!isRunning) return;
+
+          clearResponseScoreTimeout();
+          scoreCurrentTrial();
+          clearSelection();
+
+          const compareIdx = posHistory.length - n;
+          const canCreateTarget = compareIdx >= 0;
+          const shouldMatchPosition =
+            canCreateTarget && Math.random() < TARGET_PROBABILITY;
+          const shouldMatchLetter =
+            canCreateTarget && Math.random() < TARGET_PROBABILITY;
+
+          const newPos = shouldMatchPosition
+            ? posHistory[compareIdx]
+            : canCreateTarget
+              ? randomDifferentPosition(posHistory[compareIdx])
+              : randomPosition();
+          const newLetter = shouldMatchLetter
+            ? letterHistory[compareIdx]
+            : canCreateTarget
+              ? randomDifferentLetter(letterHistory[compareIdx])
+              : randomLetter();
+          posHistory.push(newPos);
+          letterHistory.push(newLetter);
+          trialCounter++;
+          currentTrialScored = false;
+
+          renderGrid(newPos);
+          letterEl.textContent = newLetter;
+          speakLetter(newLetter);
+
+          if (trialCounter <= n) {
+            setFeedback("Warm-up: build history.", "warn");
+          }
+
+          updateStats();
+        }
+
+        function choosePosition() {
+          if (!isRunning || trialCounter <= n) return;
+          selectedPosition = !selectedPosition;
+          updateResponseButtons();
+          scheduleResponseScore();
+        }
+
+        function chooseLetter() {
+          if (!isRunning || trialCounter <= n) return;
+          selectedLetter = !selectedLetter;
+          updateResponseButtons();
+          scheduleResponseScore();
+        }
+
+        function chooseBoth() {
+          if (!isRunning || trialCounter <= n) return;
+          selectedPosition = true;
+          selectedLetter = true;
+          updateResponseButtons();
+          scheduleResponseScore();
         }
 
         function stopGame() {
@@ -588,76 +852,119 @@
             clearInterval(intervalId);
             intervalId = null;
           }
-          isRunning = false;
-          startBtn.textContent = "▶ Start Game";
-          feedbackEl.textContent = "Paused";
-
-          // 暂停时也停止语音
+          clearResponseScoreTimeout();
           if ("speechSynthesis" in window) {
             window.speechSynthesis.cancel();
           }
+          isRunning = false;
+          startBtn.textContent = "Start";
+          setFeedback("Paused. Press Start to continue.", "warn");
+        }
+
+        function restartInterval() {
+          if (intervalId) clearInterval(intervalId);
+          intervalId = setInterval(nextTrial, getStimulusInterval());
         }
 
         function startGame() {
           if (isRunning) {
             stopGame();
+            return;
+          }
+
+          isRunning = true;
+          n = parseInt(nSelect.value, 10);
+          currentNLabel.textContent = n + "-back";
+          startBtn.textContent = "Pause";
+
+          if (trialCounter === 0) {
+            nextTrial();
           } else {
-            if (trialCounter === 0) {
-              posHistory = [];
-              letterHistory = [];
-            }
-            isRunning = true;
-            startBtn.textContent = "⏸ Pause";
-            n = parseInt(nSelect.value, 10);
-            currentNLabel.textContent = n + "-back";
-            if (trialCounter === 0) {
-              nextTrial(); // first stimulus
-            }
-            if (intervalId) clearInterval(intervalId);
-            intervalId = setInterval(() => {
-              nextTrial();
-            }, STIMULUS_INTERVAL);
-            feedbackEl.textContent = "🎧 Listening...";
+            setFeedback("Running.", "warn");
+          }
+
+          restartInterval();
+        }
+
+        function resetGame() {
+          if (intervalId) {
+            clearInterval(intervalId);
+            intervalId = null;
+          }
+          clearResponseScoreTimeout();
+          if ("speechSynthesis" in window) {
+            window.speechSynthesis.cancel();
+          }
+
+          isRunning = false;
+          updateGridSize();
+          n = parseInt(nSelect.value, 10);
+          trialCounter = 0;
+          posHistory = [];
+          letterHistory = [];
+          scoredTrials = 0;
+          correctChannels = 0;
+          totalChannels = 0;
+          hits = 0;
+          errors = 0;
+          currentTrialScored = false;
+          clearSelection();
+          buildGrid();
+          renderGrid(-1);
+          letterEl.textContent = "-";
+          currentNLabel.textContent = n + "-back";
+          startBtn.textContent = "Start";
+          setFeedback("Choose a level and press Start.");
+          updateStats();
+        }
+
+        function handleKeydown(e) {
+          const tagName = document.activeElement
+            ? document.activeElement.tagName
+            : "";
+          if (tagName === "SELECT") return;
+
+          if (e.code === "Space") {
+            e.preventDefault();
+            chooseBoth();
+          } else if (e.key === "f" || e.key === "F" || e.key === "ArrowLeft") {
+            e.preventDefault();
+            choosePosition();
+          } else if (e.key === "j" || e.key === "J" || e.key === "ArrowRight") {
+            e.preventDefault();
+            chooseLetter();
+          } else if (e.key === "Enter") {
+            e.preventDefault();
+            startGame();
+          } else if (e.key === "Escape") {
+            e.preventDefault();
+            resetGame();
           }
         }
 
-        // --- Event listeners ---
         function init() {
           buildGrid();
           resetGame();
 
           startBtn.addEventListener("click", startGame);
+          resetBtn.addEventListener("click", resetGame);
+          posBtn.addEventListener("click", choosePosition);
+          letterBtn.addEventListener("click", chooseLetter);
+          bothBtn.addEventListener("click", chooseBoth);
+          window.addEventListener("keydown", handleKeydown);
 
-          resetBtn.addEventListener("click", function () {
+          nSelect.addEventListener("change", function () {
             resetGame();
           });
 
-          posBtn.addEventListener("click", () => handleResponse("pos"));
-          letterBtn.addEventListener("click", () => handleResponse("letter"));
-          bothBtn.addEventListener("click", () => handleResponse("both"));
-
-          window.addEventListener("keydown", (e) => {
-            if (e.code === "Space" || e.key === " ") {
-              e.preventDefault();
-              if (isRunning) handleResponse("both");
-            }
-            if (e.key === "a" || e.key === "A") {
-              if (isRunning) handleResponse("pos");
-            }
-            if (e.key === "l" || e.key === "L") {
-              if (isRunning) handleResponse("letter");
-            }
-            if (e.key === "s" || e.key === "S") {
-              startGame();
-            }
-            if (e.key === "r" || e.key === "R") {
-              resetGame();
-            }
+          gridSizeSelect.addEventListener("change", function () {
+            resetGame();
           });
 
-          nSelect.addEventListener("change", function () {
-            const newN = parseInt(nSelect.value, 10);
-            currentNLabel.textContent = newN + "-back";
+          speedSelect.addEventListener("change", function () {
+            if (!isRunning) return;
+            restartInterval();
+            setFeedback("Speed updated.", "warn");
           });
         }
 
