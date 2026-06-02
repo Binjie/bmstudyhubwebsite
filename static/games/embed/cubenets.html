@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cube Net Builder</title>
+    <style>
+      :root {
+        --bg: #f8f7fb;
+        --panel: #ffffff;
+        --ink: #252536;
+        --muted: #686a7d;
+        --line: #d8d6e4;
+        --soft: #eeedf4;
+        --accent: #5a4fcf;
+        --accent-dark: #352d87;
+        --good: #2f8f5b;
+        --bad: #bd3b3b;
+        --shadow: rgba(38, 34, 72, 0.14);
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        overflow: hidden;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      }
+      button { font: inherit; }
+      .game {
+        width: 100%;
+        height: 100vh;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        box-shadow: 0 14px 35px var(--shadow);
+        padding: 16px;
+        display: grid;
+        grid-template-rows: auto auto 1fr auto;
+        gap: 10px;
+      }
+      .top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        margin-bottom: 0;
+      }
+      h1 { margin: 0; color: var(--accent-dark); font-size: 1.6rem; }
+      .badge {
+        padding: 6px 12px;
+        border-radius: 999px;
+        background: #e7e2ff;
+        color: var(--accent-dark);
+        font-weight: 800;
+      }
+      .guide {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 12px;
+        padding: 10px 12px;
+        border: 1px solid var(--soft);
+        border-radius: 12px;
+        background: #fbfbfe;
+        color: var(--muted);
+        font-size: 0.94rem;
+      }
+      .guide strong { color: var(--accent-dark); }
+      .board {
+        display: grid;
+        grid-template-columns: 1fr 1.4fr;
+        gap: 12px;
+        margin-top: 0;
+        min-height: 0;
+      }
+      .cube-panel, .net-panel {
+        border: 1px solid var(--soft);
+        border-radius: 14px;
+        background: #fbfbfe;
+        padding: 10px;
+        min-height: 0;
+      }
+      .cube-panel {
+        display: flex;
+        flex-direction: column;
+      }
+      .cube-panel h2, .net-panel h2 {
+        margin: 0 0 10px;
+        font-size: 1rem;
+        color: var(--accent-dark);
+      }
+      .scene {
+        flex: 1;
+        height: auto;
+        min-height: 0;
+        display: grid;
+        place-items: center;
+        perspective: 850px;
+        background: white;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        overflow: hidden;
+        cursor: grab;
+        touch-action: none;
+        user-select: none;
+      }
+      .scene.dragging {
+        cursor: grabbing;
+      }
+      .cube {
+        position: relative;
+        width: 190px;
+        height: 190px;
+        transform-style: preserve-3d;
+        transform: rotateX(-24deg) rotateY(38deg);
+        transition: transform 0.18s ease;
+      }
+      .scene.dragging .cube { transition: none; }
+      .face {
+        position: absolute;
+        width: 190px;
+        height: 190px;
+        display: grid;
+        place-items: center;
+        border: 3px solid rgba(255,255,255,0.72);
+        color: rgba(0,0,0,0.62);
+        font-weight: 900;
+        font-size: 2.3rem;
+        backface-visibility: hidden;
+      }
+      .front { transform: translateZ(95px); }
+      .back { transform: rotateY(180deg) translateZ(95px); }
+      .right { transform: rotateY(90deg) translateZ(95px); }
+      .left { transform: rotateY(-90deg) translateZ(95px); }
+      .topface { transform: rotateX(90deg) translateZ(95px); }
+      .bottom { transform: rotateX(-90deg) translateZ(95px); }
+      .net-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+      }
+      .option {
+        border: 2px solid var(--line);
+        border-radius: 12px;
+        background: white;
+        padding: 6px;
+        cursor: pointer;
+      }
+      .option:hover { border-color: var(--accent); }
+      .option.correct { border-color: var(--good); background: #edf9f2; }
+      .option.wrong { border-color: var(--bad); background: #fff0f0; }
+      .option-label {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 4px;
+        color: var(--muted);
+        font-size: 0.84rem;
+        font-weight: 800;
+      }
+      .net {
+        display: grid;
+        grid-template-columns: repeat(4, 52px);
+        grid-template-rows: repeat(3, 52px);
+        justify-content: center;
+        gap: 3px;
+        min-height: 166px;
+      }
+      .square {
+        display: grid;
+        place-items: center;
+        border: 2px solid white;
+        border-radius: 6px;
+        color: rgba(0,0,0,0.64);
+        font-size: 1rem;
+        font-weight: 900;
+      }
+      .footer {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 12px;
+        align-items: center;
+        margin-top: 0;
+      }
+      .feedback {
+        min-height: 32px;
+        display: flex;
+        align-items: center;
+        padding: 4px 2px;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        color: var(--muted);
+        font-weight: 800;
+      }
+      .feedback.good { color: var(--good); }
+      .feedback.bad { color: var(--bad); }
+      .actions { display: flex; gap: 8px; }
+      .btn {
+        min-height: 40px;
+        padding: 10px 16px;
+        border: 0;
+        border-radius: 10px;
+        background: var(--accent);
+        color: white;
+        font-weight: 900;
+        cursor: pointer;
+      }
+      .btn.secondary {
+        background: transparent;
+        color: var(--accent-dark);
+        border: 2px solid var(--accent);
+      }
+      .stats {
+        display: flex;
+        gap: 12px;
+        color: var(--muted);
+        font-size: 0.9rem;
+        font-weight: 800;
+        margin-top: 6px;
+      }
+      .key {
+        display: inline-block;
+        padding: 2px 7px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        background: var(--soft);
+        color: var(--ink);
+        font-family: ui-monospace, Consolas, monospace;
+      }
+      @media (max-width: 760px) {
+        .board, .guide, .footer { grid-template-columns: 1fr; }
+        .net-grid { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="game">
+      <div class="top">
+        <h1>Cube Net Builder</h1>
+        <span class="badge" id="levelBadge">Face Match</span>
+      </div>
+      <section class="guide">
+        <div><strong>Goal:</strong> choose the net that folds into the cube shown on the left.</div>
+        <div><span class="key">1-4</span> answer <span class="key">N</span> next <span class="key">R</span> reset</div>
+      </section>
+      <section class="board">
+        <div class="cube-panel">
+          <h2>Folded cube</h2>
+          <div class="scene" id="scene" aria-label="Drag to rotate the cube">
+            <div class="cube" id="cube"></div>
+          </div>
+        </div>
+        <div class="net-panel">
+          <h2>Which net matches?</h2>
+          <div class="net-grid" id="netGrid"></div>
+        </div>
+      </section>
+      <section class="footer">
+        <div>
+          <div class="feedback" id="feedback">Choose the matching cube net.</div>
+          <div class="stats">
+            <span>Score: <strong id="score">0</strong></span>
+            <span>Question: <strong id="question">1</strong></span>
+            <span>Accuracy: <strong id="accuracy">0%</strong></span>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn secondary" id="resetBtn" type="button">Reset</button>
+          <button class="btn" id="nextBtn" type="button">Next</button>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      (function () {
+        "use strict";
+        const cube = document.getElementById("cube");
+        const scene = document.getElementById("scene");
+        const netGrid = document.getElementById("netGrid");
+        const feedback = document.getElementById("feedback");
+        const scoreEl = document.getElementById("score");
+        const questionEl = document.getElementById("question");
+        const accuracyEl = document.getElementById("accuracy");
+        const nextBtn = document.getElementById("nextBtn");
+        const resetBtn = document.getElementById("resetBtn");
+        const COLORS = ["#ff8a80", "#ffd166", "#74d3ae", "#72a1e5", "#c49bbb", "#f4a261"];
+        const FACE_NAMES = ["front", "right", "back", "left", "topface", "bottom"];
+        const LABELS = ["F", "R", "B", "L", "T", "D"];
+        const BASE_NET = {
+          F: [1,1], R: [2,1], B: [3,1], L: [0,1], T: [1,0], D: [1,2]
+        };
+        let faces = {};
+        let options = [];
+        let score = 0;
+        let answered = 0;
+        let question = 1;
+        let locked = false;
+        let angleX = -24;
+        let angleY = 38;
+        let isDragging = false;
+        let dragStartX = 0;
+        let dragStartY = 0;
+        let startAngleX = 0;
+        let startAngleY = 0;
+
+        function shuffle(items) {
+          return items.map((value) => ({ value, sort: Math.random() }))
+            .sort((a,b) => a.sort - b.sort).map((item) => item.value);
+        }
+        function makeFaces() {
+          const colors = shuffle(COLORS);
+          faces = {};
+          LABELS.forEach((label, i) => faces[label] = colors[i]);
+        }
+        function renderCube() {
+          cube.innerHTML = "";
+          FACE_NAMES.forEach((className, i) => {
+            const label = LABELS[i];
+            const face = document.createElement("div");
+            face.className = `face ${className}`;
+            face.style.background = faces[label];
+            face.textContent = label;
+            cube.appendChild(face);
+          });
+          cube.style.transform = `rotateX(${angleX}deg) rotateY(${angleY}deg)`;
+        }
+        function cloneNet(net) {
+          return Object.fromEntries(Object.entries(net).map(([k,v]) => [k, v.slice()]));
+        }
+        function swapped(a, b) {
+          const net = cloneNet(BASE_NET);
+          const temp = net[a];
+          net[a] = net[b];
+          net[b] = temp;
+          return net;
+        }
+        function shiftedTop() {
+          const net = cloneNet(BASE_NET);
+          net.T = [2,0];
+          return net;
+        }
+        function shiftedBottom() {
+          const net = cloneNet(BASE_NET);
+          net.D = [2,2];
+          return net;
+        }
+        function makeOptions() {
+          options = shuffle([
+            { net: cloneNet(BASE_NET), correct: true, note: "correct fold" },
+            { net: swapped("T", "D"), correct: false, note: "top and bottom are swapped" },
+            { net: swapped("L", "R"), correct: false, note: "left and right are swapped" },
+            { net: Math.random() > 0.5 ? shiftedTop() : shiftedBottom(), correct: false, note: "one face is attached in the wrong place" }
+          ]);
+        }
+        function renderNet(button, net) {
+          const wrap = document.createElement("div");
+          wrap.className = "net";
+          Object.entries(net).forEach(([label, pos]) => {
+            const square = document.createElement("div");
+            square.className = "square";
+            square.style.gridColumn = String(pos[0] + 1);
+            square.style.gridRow = String(pos[1] + 1);
+            square.style.background = faces[label];
+            square.textContent = label;
+            wrap.appendChild(square);
+          });
+          button.appendChild(wrap);
+        }
+        function renderOptions() {
+          netGrid.innerHTML = "";
+          options.forEach((option, index) => {
+            const btn = document.createElement("button");
+            btn.className = "option";
+            btn.type = "button";
+            btn.innerHTML = `<div class="option-label"><span>Option ${index + 1}</span><span>${index + 1}</span></div>`;
+            renderNet(btn, option.net);
+            btn.addEventListener("click", () => answer(index, btn));
+            netGrid.appendChild(btn);
+          });
+        }
+        function newQuestion() {
+          locked = false;
+          feedback.textContent = "Choose the matching cube net.";
+          feedback.className = "feedback";
+          makeFaces();
+          makeOptions();
+          renderCube();
+          renderOptions();
+          updateStats();
+        }
+        function answer(index, btn) {
+          if (locked) return;
+          locked = true;
+          answered++;
+          if (options[index].correct) {
+            score++;
+            btn.classList.add("correct");
+            feedback.textContent = "Correct. That net folds into the cube.";
+            feedback.className = "feedback good";
+          } else {
+            btn.classList.add("wrong");
+            feedback.textContent = `Not quite: ${options[index].note}.`;
+            feedback.className = "feedback bad";
+            [...netGrid.children].forEach((child, i) => {
+              if (options[i].correct) child.classList.add("correct");
+            });
+          }
+          updateStats();
+        }
+        function updateStats() {
+          scoreEl.textContent = String(score);
+          questionEl.textContent = String(question);
+          accuracyEl.textContent = answered ? `${Math.round((score / answered) * 100)}%` : "0%";
+        }
+        function next() { question++; newQuestion(); }
+        function reset() { score = 0; answered = 0; question = 1; newQuestion(); }
+        nextBtn.addEventListener("click", next);
+        resetBtn.addEventListener("click", reset);
+        scene.addEventListener("pointerdown", (e) => {
+          isDragging = true;
+          dragStartX = e.clientX;
+          dragStartY = e.clientY;
+          startAngleX = angleX;
+          startAngleY = angleY;
+          scene.classList.add("dragging");
+          scene.setPointerCapture(e.pointerId);
+        });
+        scene.addEventListener("pointermove", (e) => {
+          if (!isDragging) return;
+          const dx = e.clientX - dragStartX;
+          const dy = e.clientY - dragStartY;
+          angleY = startAngleY + dx * 0.45;
+          angleX = Math.max(-85, Math.min(85, startAngleX - dy * 0.45));
+          renderCube();
+        });
+        function endDrag(e) {
+          if (!isDragging) return;
+          isDragging = false;
+          scene.classList.remove("dragging");
+          if (e && scene.hasPointerCapture(e.pointerId)) {
+            scene.releasePointerCapture(e.pointerId);
+          }
+        }
+        scene.addEventListener("pointerup", endDrag);
+        scene.addEventListener("pointercancel", endDrag);
+        window.addEventListener("keydown", (e) => {
+          if (e.key >= "1" && e.key <= "4") {
+            e.preventDefault();
+            const btn = netGrid.children[Number(e.key) - 1];
+            if (btn) btn.click();
+          } else if (e.key === "n" || e.key === "N" || e.code === "Space") {
+            e.preventDefault();
+            next();
+          } else if (e.key === "r" || e.key === "R") {
+            e.preventDefault();
+            reset();
+          } else if (e.key === "ArrowLeft") {
+            e.preventDefault();
+            angleY -= 45;
+            renderCube();
+          } else if (e.key === "ArrowRight") {
+            e.preventDefault();
+            angleY += 45;
+            renderCube();
+          } else if (e.key === "ArrowUp") {
+            e.preventDefault();
+            angleX = Math.max(-85, angleX - 20);
+            renderCube();
+          } else if (e.key === "ArrowDown") {
+            e.preventDefault();
+            angleX = Math.min(85, angleX + 20);
+            renderCube();
+          }
+        });
+        reset();
+      })();
+    </script>
+  </body>
+</html>

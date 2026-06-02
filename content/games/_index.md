@@ -1,6 +1,6 @@
 ---
-title: "Games"
-description: "Fun and challenging games to develop your STEM skills"
+title: "Thinking Games"
+description: "Short, focused challenges that help children slow down, notice patterns, ask better questions, and build confidence in their own thinking."
 ---
 
-Play our educational games designed to make learning fun! These games help develop logical thinking, problem-solving skills, and STEM knowledge.
+These games are part of the BMStudyHub learning studio: playful practice for building the habits that make learning last. Each activity encourages students to observe carefully, try strategies, learn from mistakes, and become more self-driven in the way they explore new ideas.

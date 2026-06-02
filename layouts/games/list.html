@@ -1,21 +1,71 @@
 {{ define "main" }}
-<div class="page-header">
+<div class="games-hero">
     <div class="container">
-        <h1 class="page-title">{{ .Title }}</h1>
-        <p class="page-description">{{ .Params.description }}</p>
+        <div class="games-hero-layout">
+            <div class="games-hero-copy">
+                <p class="eyebrow">Practice Lab</p>
+                <h1 class="games-hero-title">{{ .Title }}</h1>
+                <p class="games-hero-description">{{ .Params.description }}</p>
+                <div class="games-hero-text">
+                    {{ .Content }}
+                </div>
+            </div>
+            <div class="games-hero-panel" aria-label="Learning habit focus areas">
+                <div class="games-focus-card games-focus-card-large">
+                    <span>Core Goal</span>
+                    <strong>Help children become thoughtful, curious, and self-driven learners.</strong>
+                </div>
+                <div class="games-focus-grid">
+                    <div class="games-focus-card">
+                        <span>Notice</span>
+                        <strong>Look closely before rushing to answer</strong>
+                    </div>
+                    <div class="games-focus-card">
+                        <span>Question</span>
+                        <strong>Ask what changed, why, and what to try next</strong>
+                    </div>
+                    <div class="games-focus-card">
+                        <span>Strategy</span>
+                        <strong>Plan, test, adjust, and keep improving</strong>
+                    </div>
+                    <div class="games-focus-card">
+                        <span>Confidence</span>
+                        <strong>Build the courage to learn independently</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
-<div class="container page-content">
+<div class="games-page-content">
+    <div class="container">
+        <div class="section-heading section-heading-row games-section-heading">
+            <div>
+                <p class="eyebrow">Challenge Library</p>
+                <h2>Choose a learning habit to practise.</h2>
+                <p>Each game is short enough for regular practice, but designed to help students think more clearly, stay curious, and take ownership of the next step.</p>
+            </div>
+        </div>
     <div class="compact-games-grid">
-        {{ range .Pages }}
-        <div class="compact-game-card">
+        {{ $tones := slice "violet" "gold" "teal" "coral" }}
+        {{ range $index, $page := .Pages.ByTitle }}
+        {{ $tone := index $tones (mod $index (len $tones)) }}
+        <article class="compact-game-card compact-game-card-{{ $tone }}">
+            <div class="compact-game-card-top">
+                <span class="compact-game-index">0{{ add $index 1 }}</span>
+                <span class="compact-game-badge">{{ .Params.category | default .Params.difficulty | default "Thinking Skill" }}</span>
+            </div>
             <div class="compact-game-card-content">
                 <h3 class="compact-game-title">{{ .Title }}</h3>
                 <p class="compact-game-description">{{ .Description | default .Summary }}</p>
+                <div class="compact-game-meta">
+                    {{ with .Params.difficulty }}<span>{{ . }}</span>{{ end }}
+                    {{ with .Params.duration }}<span>{{ . }}</span>{{ end }}
+                </div>
                 <div class="compact-game-footer">
                     <a href="{{ .RelPermalink }}" class="compact-game-button" target="_blank">
-                        Play Now
+                        Open Challenge
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
                             <polyline points="15 3 21 3 21 9"></polyline>
@@ -24,8 +74,9 @@
                     </a>
                 </div>
             </div>
-        </div>
+        </article>
         {{ end }}
+        </div>
     </div>
 </div>
 {{ end }}

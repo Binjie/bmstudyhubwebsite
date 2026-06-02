@@ -1,66 +1,53 @@
 ---
 title: "Spatial Memory Training Game"
-description: "Train visuospatial short-term memory with grid recall."
+description: "Train visuospatial short-term memory by repeating a growing grid sequence."
 date: 2024-05-21
-lastmod: 2024-05-21
+lastmod: 2026-06-01
 draft: false
 embed: true
 embed_url: "/games/embed/spatialmemory.html"
-game_width: 780
-game_height: 650
-difficulty: "Adjustable grid size (3x3–6x6) and growing sequence"
-duration: "2–8 minutes per session"
+game_width: 1160
+game_height: 780
+difficulty: "Adjustable grid size (3x3-6x6) and growing sequence"
+duration: "2-5 minutes per session"
 category: "Cognitive Training"
 featured_image: "/images/spatial-memory-preview.jpg"
-tags: ["spatial-memory", "visuospatial", "corsi-block", "working-memory", "brain-training"]
-keywords: "spatial memory, grid memory test, Corsi block tapping, brain game"
+tags: ["spatial-memory", "visuospatial", "corsi-block", "working-memory", "attention"]
+keywords: "spatial memory, grid memory test, Corsi block tapping, memory game"
 ---
 
 ## How to Play
 
-1. **Watch** – Gray squares will briefly light up in a sequence (one by one).  
-2. **Repeat** – Click the squares in the **exact same order**.  
-3. **Progress** – Each correct round adds one more step to the sequence.  
-4. **Fail?** – The game ends. Try to beat your longest sequence!
+Spatial Memory is a grid recall task. Watch the highlighted cells, then repeat the same sequence.
 
----
+1. Press **Start**.
+2. Watch the cells light up one by one.
+3. Click the cells back in the same order.
+4. Each correct round adds one more cell to the sequence.
+5. One wrong click ends the run.
 
-## Why Train Spatial Memory?
+## Controls
 
-Spatial memory is crucial for:
+- **Enter** or **Space**: start or pause.
+- **Esc** or **R**: reset the current run.
+- Click or tap cells to repeat the pattern.
 
-- **Navigation** – Remembering routes and locations.  
-- **STEM learning** – Visualizing geometry, diagrams, and 3D structures.  
-- **Everyday tasks** – Packing, organizing, and recalling where things are.  
+## Difficulty Guide
 
-This grid‑based task is a digital version of the classic **Corsi block‑tapping test**, a widely used neuropsychological assessment.
+| Grid size | Best for |
+|-----------|----------|
+| 3x3 | First attempts and younger students |
+| 4x4 | Standard practice |
+| 5x5 | Advanced practice |
+| 6x6 | Expert challenge |
 
----
+Start length controls how many cells appear in the first round. A start length of **3** is usually best.
 
-## Tips for Improvement
+## Practice Tips
 
-- **Chunking** – Mentally group squares into patterns (L‑shape, diagonal).  
-- **Verbal coding** – Silently name positions (e.g., “top‑left, center”).  
-- **Pacing** – Don’t rush; accuracy is more important than speed.  
-- **Gradual increase** – Start with 3×3 and short sequences, then increase grid size.
+- Group nearby cells into shapes, such as a line, corner, or triangle.
+- Silently name positions, such as "top left, center, bottom right".
+- Watch the whole pattern before clicking.
+- Stop after a few minutes if accuracy drops. Short, focused practice works best.
 
----
-
-## Difficulty Levels
-
-| Grid Size | Cells | Best for          |
-|-----------|-------|-------------------|
-| 3×3       | 9     | Beginners         |
-| 4×4       | 16    | Standard          |
-| 5×5       | 25    | Advanced          |
-| 6×6       | 36    | Expert / Challenge |
-
-*Initial sequence length is always 3. After each correct recall, the sequence grows by one.*
-
----
-
-## Ready to Play?
-
-Click **Start** below, watch the pattern, and then repeat it. Your **Score** (rounds completed) and **Best** (longest sequence) are tracked.
-
-[//]: # (Game iframe will be injected here by Hugo)
+The game below tracks your completed rounds, current sequence length, and best sequence length for the selected settings.

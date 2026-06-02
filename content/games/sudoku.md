@@ -1,47 +1,45 @@
 ---
 title: "Interactive Sudoku"
-description: "Challenge your logical thinking with this number puzzle game"
+description: "Practice logical reasoning by filling a 9x9 number grid."
 date: 2023-10-01
+lastmod: 2026-06-01
 embed: true
 embed_url: "/games/embed/sudoku.html"
+game_width: 1160
+game_height: 780
 difficulty: "Beginner to Expert"
+category: "Logic Puzzle"
+tags: ["sudoku", "logic", "problem-solving", "number-sense", "concentration"]
 ---
 
 ## How to Play
 
-1. **Objective**: Fill the 9×9 grid so that each column, each row, and each of the nine 3×3 subgrids contains all digits from 1 to 9.
+Fill the 9x9 grid so that every **row**, **column**, and **3x3 box** contains the numbers **1-9 exactly once**.
 
-2. **Basic Rules**:
-   - Each row must contain the numbers 1-9 without repetition
-   - Each column must contain the numbers 1-9 without repetition
-   - Each 3×3 box must contain the numbers 1-9 without repetition
+The starting numbers are fixed. Your job is to reason out the empty cells.
 
-## Step-by-Step Instructions
+## Controls
 
-1. **Start Easy**: Begin with the easiest level to understand the mechanics
-2. **Look for Singles**: Find rows, columns, or boxes with only one possible number
-3. **Use Pencil Marks**: Note down possible numbers in empty cells
-4. **Eliminate Options**: Remove numbers that can't go in certain cells
-5. **Check Constantly**: Verify rows, columns, and boxes after each move
+- Click a cell, then press a number button or use the keyboard keys **1-9**.
+- Use **Backspace**, **Delete**, **0**, or **C** to clear the selected cell.
+- Use the **Arrow Keys** to move around the grid.
+- Press **H** for a hint on the selected empty cell.
+- Press **N** to start a new puzzle.
 
-## Educational Benefits
+## A Good Solving Routine
 
-- **Logical Thinking**: Develops deductive reasoning skills
-- **Pattern Recognition**: Improves ability to identify patterns
-- **Concentration**: Enhances focus and attention span
-- **Problem Solving**: Teaches systematic approach to challenges
-- **Memory**: Strengthens working memory and recall
+1. **Scan rows and columns** for places where only one number can fit.
+2. **Check each 3x3 box** and look for missing numbers.
+3. **Use elimination**: if a number already appears in the same row, column, or box, it cannot go in the selected cell.
+4. **Slow down before guessing**. Sudoku is most useful when each move has a reason.
 
-## Tips for Students
+## Difficulty Guide
 
-- Start with the most constrained areas first
-- Don't guess - every move should have a logical reason
-- Take breaks if stuck to refresh your perspective
-- Practice regularly to improve speed and accuracy
+| Level | Best for |
+|-------|----------|
+| Easy | Learning the rules and building confidence |
+| Medium | Regular practice |
+| Hard | Careful multi-step reasoning |
+| Expert | Longer challenge sessions |
 
-## Learning Objectives
-
-1. Understand and apply logical constraints
-2. Develop systematic problem-solving strategies
-3. Improve number sense and pattern recognition
-4. Build patience and persistence in challenging tasks
+The game saves your current puzzle in the browser, so students can return later and continue.

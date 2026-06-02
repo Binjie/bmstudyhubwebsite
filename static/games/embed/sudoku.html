@@ -25,29 +25,56 @@
             --transition: all 0.3s ease;
         }
 
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            height: 100vh;
+            overflow: hidden;
+            background: var(--background);
+        }
+
         /* 数独游戏容器 */
         .sudoku-game-container {
             background: var(--white);
             border-radius: var(--border-radius-lg);
-            padding: 30px;
+            padding: 18px;
             box-shadow: 0 10px 30px var(--shadow);
-            max-width: 650px;
+            max-width: none;
             width: 100%;
-            margin: 0 auto;
+            height: 100vh;
+            margin: 0;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) clamp(208px, 22vw, 238px);
+            grid-template-rows: auto auto auto 1fr auto;
+            grid-template-areas:
+                "title title"
+                "grid info"
+                "grid timer"
+                "grid controls"
+                "keys status";
+            gap: 12px clamp(16px, 2.5vw, 28px);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         }
 
         .sudoku-title {
+            grid-area: title;
             color: var(--accent);
             text-align: center;
-            margin-bottom: 20px;
+            margin: 0;
+            font-size: 1.8rem;
         }
         
         .game-info {
+            grid-area: info;
             display: flex;
+            flex-direction: column;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
+            align-items: stretch;
+            margin-bottom: 0;
             flex-wrap: wrap;
             gap: 10px;
         }
@@ -56,10 +83,11 @@
             display: flex;
             gap: 8px;
             flex-wrap: wrap;
+            flex-direction: column;
         }
         
         .difficulty button {
-            padding: 8px 16px;
+            padding: 8px 12px;
             border: none;
             border-radius: 6px;
             background: var(--primary);
@@ -82,7 +110,8 @@
         
         .stats {
             display: flex;
-            gap: 20px;
+            flex-direction: column;
+            gap: 10px;
             font-size: 0.9rem;
             color: var(--text-light);
         }
@@ -100,14 +129,18 @@
         }
         
         .sudoku-grid {
+            grid-area: grid;
             display: grid;
             grid-template-columns: repeat(9, 1fr);
             gap: 0;
-            margin: 20px auto;
-            max-width: 450px;
+            margin: 0 auto;
+            width: min(100%, 560px);
+            aspect-ratio: 1;
+            max-width: 600px;
             border: 3px solid var(--text);
             background: var(--text);
             position: relative;
+            justify-self: center;
         }
         
         .cell {
@@ -133,6 +166,15 @@
         .cell.selected {
             background: #B3E5FC !important;
             box-shadow: inset 0 0 0 2px #0288D1;
+        }
+
+        .cell.related {
+            background: #F1F5FF;
+        }
+
+        .cell.same-number {
+            background: #FFF4CC;
+            box-shadow: inset 0 0 0 2px #E0A800;
         }
         
         /* 预填数字单元格 */
@@ -191,26 +233,30 @@
         
         /* 底部按钮区域 */
         .bottom-controls {
-            margin-top: 30px;
+            grid-area: controls;
+            margin-top: 0;
+            align-self: center;
+            display: grid;
+            gap: 14px;
         }
         
         .action-buttons {
-            display: flex;
-            gap: 12px;
-            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+            margin-top: 8px;
             justify-content: center;
-            flex-wrap: wrap;
         }
         
         .action-buttons button {
-            padding: 12px 20px;
+            padding: 9px 8px;
             border: none;
             border-radius: var(--border-radius);
             font-weight: 600;
             cursor: pointer;
             transition: var(--transition);
-            font-size: 0.95rem;
-            min-width: 120px;
+            font-size: 0.84rem;
+            min-width: 0;
         }
         
         .action-buttons button:hover {
@@ -256,19 +302,19 @@
         
         /* 数字按钮区域 */
         .number-pad {
-            display: flex;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: repeat(3, 42px);
             justify-content: center;
-            gap: 10px;
-            margin-top: 25px;
-            max-width: 450px;
+            gap: 8px;
+            margin-top: 0;
+            max-width: 142px;
             margin-left: auto;
             margin-right: auto;
         }
         
         .number-btn {
-            width: 44px;
-            height: 44px;
+            width: 42px;
+            height: 42px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -295,8 +341,9 @@
         .number-btn.clear-btn {
             background: #FFCCCC;
             color: var(--text);
-            width: auto;
-            padding: 0 20px;
+            width: 100%;
+            grid-column: 1 / -1;
+            padding: 0 12px;
         }
         
         .number-btn.clear-btn:hover {
@@ -304,8 +351,9 @@
         }
         
         .status {
+            grid-area: status;
             text-align: center;
-            margin-top: 20px;
+            margin-top: 0;
             font-weight: 600;
             min-height: 24px;
             padding: 12px;
@@ -325,13 +373,38 @@
             background: #f8d7da;
             border: 1px solid #f5c6cb;
         }
+
+        .key-hint {
+            grid-area: keys;
+            margin-top: 0;
+            padding-top: 0;
+            border-top: 0;
+            color: var(--text-light);
+            font-size: 0.88rem;
+            text-align: center;
+        }
+
+        .key {
+            display: inline-block;
+            min-width: 28px;
+            margin: 2px;
+            padding: 2px 7px;
+            border: 1px solid var(--gray-dark);
+            border-radius: 6px;
+            background: var(--gray);
+            color: var(--text);
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+            font-weight: 900;
+        }
         
         .timer {
+            grid-area: timer;
             text-align: center;
             font-size: 1.2rem;
-            margin-top: 10px;
+            margin-top: 0;
             color: var(--text-light);
             font-weight: bold;
+            align-self: end;
         }
         
         .hint-counter {
@@ -340,6 +413,22 @@
         }
         
         /* 响应式设计 */
+        @media (max-width: 720px) {
+            .sudoku-game-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto;
+                grid-template-areas:
+                    "title"
+                    "grid"
+                    "info"
+                    "timer"
+                    "controls"
+                    "keys"
+                    "status";
+                overflow-y: auto;
+            }
+        }
+
         @media (max-width: 768px) {
             .sudoku-game-container {
                 padding: 15px;
@@ -403,14 +492,14 @@
 </head>
 <body>
     <div class="sudoku-game-container">
-        <h1 class="sudoku-title">STEM Sudoku Challenge</h1>
+        <h1 class="sudoku-title">Sudoku Challenge</h1>
         
         <div class="game-info">
             <div class="difficulty">
-                <button class="active" onclick="setDifficulty('easy')">Easy</button>
-                <button onclick="setDifficulty('medium')">Medium</button>
-                <button onclick="setDifficulty('hard')">Hard</button>
-                <button onclick="setDifficulty('expert')">Expert</button>
+                <button class="active" onclick="setDifficulty('easy', this)">Easy</button>
+                <button onclick="setDifficulty('medium', this)">Medium</button>
+                <button onclick="setDifficulty('hard', this)">Hard</button>
+                <button onclick="setDifficulty('expert', this)">Expert</button>
             </div>
             
             <div class="stats">
@@ -451,6 +540,14 @@
                 <button class="solve-btn" onclick="solvePuzzle()">Show Solution</button>
                 <button class="new-game" onclick="resetGame()">New Game</button>
             </div>
+        </div>
+
+        <div class="key-hint">
+            <span class="key">1-9</span> fill
+            <span class="key">Arrows</span> move
+            <span class="key">C</span> clear cell
+            <span class="key">H</span> hint
+            <span class="key">N</span> new game
         </div>
     </div>
 
@@ -804,12 +901,28 @@
         }
         
         function selectCell(cell, row, col) {
-            if (selectedCell) {
-                selectedCell.classList.remove('selected');
-            }
+            document.querySelectorAll('.cell.selected, .cell.related, .cell.same-number').forEach(existingCell => {
+                existingCell.classList.remove('selected', 'related', 'same-number');
+            });
             
             selectedCell = cell;
             selectedCell.classList.add('selected');
+
+            const selectedValue = puzzle[row][col];
+            document.querySelectorAll('.cell').forEach(otherCell => {
+                const otherRow = parseInt(otherCell.dataset.row);
+                const otherCol = parseInt(otherCell.dataset.col);
+                const sameBox = Math.floor(otherRow / 3) === Math.floor(row / 3) &&
+                    Math.floor(otherCol / 3) === Math.floor(col / 3);
+
+                if (otherCell !== selectedCell && (otherRow === row || otherCol === col || sameBox)) {
+                    otherCell.classList.add('related');
+                }
+
+                if (otherCell !== selectedCell && selectedValue && puzzle[otherRow][otherCol] === selectedValue) {
+                    otherCell.classList.add('same-number');
+                }
+            });
             
             updateNumberButtons();
         }
@@ -852,6 +965,7 @@
             selectedCell.textContent = num;
             selectedCell.className = 'cell user-filled selected';
             selectedCell.classList.remove('error');
+            selectCell(selectedCell, row, col);
             
             updateNumberButtons();
             
@@ -918,6 +1032,7 @@
                 selectedCell.textContent = '';
                 selectedCell.classList.remove('error', 'hint-filled');
                 selectedCell.className = 'cell user-filled selected';
+                selectCell(selectedCell, row, col);
                 document.getElementById('status').textContent = 'Cell cleared';
                 document.getElementById('status').className = 'status';
                 
@@ -955,6 +1070,7 @@
             puzzle[row][col] = correctNumber;
             selectedCell.textContent = correctNumber;
             selectedCell.className = 'cell hint-filled selected';
+            selectCell(selectedCell, row, col);
             
             hintsUsed++;
             updateCounters();
@@ -1043,13 +1159,17 @@
             initGame();
         }
         
-        function setDifficulty(difficulty) {
+        function setDifficulty(difficulty, button) {
             currentDifficulty = difficulty;
             
             document.querySelectorAll('.difficulty button').forEach(btn => {
                 btn.classList.remove('active');
             });
-            event.target.classList.add('active');
+            if (button) {
+                button.classList.add('active');
+            } else {
+                updateDifficultyButtons();
+            }
             
             clearSavedGame();
             resetGame();
@@ -1101,12 +1221,19 @@
         // 添加键盘支持
         document.addEventListener('keydown', (e) => {
             if (e.key >= '1' && e.key <= '9') {
+                e.preventDefault();
                 inputNumber(parseInt(e.key));
-            } else if (e.key === 'Backspace' || e.key === 'Delete' || e.key === '0') {
+            } else if (e.key === 'Backspace' || e.key === 'Delete' || e.key === '0' || e.key === 'c' || e.key === 'C') {
+                e.preventDefault();
                 clearCell();
             } else if (e.key === 'h' || e.key === 'H') {
+                e.preventDefault();
                 giveHint();
+            } else if (e.key === 'n' || e.key === 'N') {
+                e.preventDefault();
+                resetGame();
             } else if (e.key === 'ArrowUp' && selectedCell) {
+                e.preventDefault();
                 const row = parseInt(selectedCell.dataset.row);
                 const col = parseInt(selectedCell.dataset.col);
                 if (row > 0) {
@@ -1114,6 +1241,7 @@
                     if (newCell) selectCell(newCell, row-1, col);
                 }
             } else if (e.key === 'ArrowDown' && selectedCell) {
+                e.preventDefault();
                 const row = parseInt(selectedCell.dataset.row);
                 const col = parseInt(selectedCell.dataset.col);
                 if (row < 8) {
@@ -1121,6 +1249,7 @@
                     if (newCell) selectCell(newCell, row+1, col);
                 }
             } else if (e.key === 'ArrowLeft' && selectedCell) {
+                e.preventDefault();
                 const row = parseInt(selectedCell.dataset.row);
                 const col = parseInt(selectedCell.dataset.col);
                 if (col > 0) {
@@ -1128,6 +1257,7 @@
                     if (newCell) selectCell(newCell, row, col-1);
                 }
             } else if (e.key === 'ArrowRight' && selectedCell) {
+                e.preventDefault();
                 const row = parseInt(selectedCell.dataset.row);
                 const col = parseInt(selectedCell.dataset.col);
                 if (col < 8) {

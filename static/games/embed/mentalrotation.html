@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mental Rotation 3D</title>
+    <style>
+      :root {
+        --bg: #f8f7fb;
+        --panel: #ffffff;
+        --ink: #252536;
+        --muted: #686a7d;
+        --line: #d8d6e4;
+        --soft: #eeedf4;
+        --accent: #5a4fcf;
+        --accent-dark: #352d87;
+        --gold: #f6d365;
+        --good: #2f8f5b;
+        --bad: #bd3b3b;
+        --shadow: rgba(38, 34, 72, 0.14);
+      }
+
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        overflow: hidden;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      }
+      button { font: inherit; }
+      .game {
+        width: 100%;
+        height: 100vh;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        box-shadow: 0 14px 35px var(--shadow);
+        padding: 16px;
+        display: grid;
+        grid-template-rows: auto auto 1fr auto;
+        gap: 10px;
+      }
+      .top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        margin-bottom: 0;
+      }
+      h1 {
+        margin: 0;
+        color: var(--accent-dark);
+        font-size: 1.6rem;
+      }
+      .badge {
+        padding: 6px 12px;
+        border-radius: 999px;
+        background: #e7e2ff;
+        color: var(--accent-dark);
+        font-weight: 800;
+      }
+      .guide {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 12px;
+        padding: 10px 12px;
+        border: 1px solid var(--soft);
+        border-radius: 12px;
+        background: #fbfbfe;
+        color: var(--muted);
+        font-size: 0.94rem;
+      }
+      .guide strong { color: var(--accent-dark); }
+      .board {
+        display: grid;
+        grid-template-columns: 1fr 1.4fr;
+        gap: 12px;
+        margin-top: 0;
+        align-items: stretch;
+        min-height: 0;
+      }
+      .target, .options {
+        border: 1px solid var(--soft);
+        border-radius: 14px;
+        background: #fbfbfe;
+        padding: 10px;
+        min-height: 0;
+      }
+      .target {
+        display: flex;
+        flex-direction: column;
+      }
+      .target h2, .options h2 {
+        margin: 0 0 10px;
+        font-size: 1rem;
+        color: var(--accent-dark);
+      }
+      canvas {
+        display: block;
+        width: 100%;
+        background: white;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+      }
+      #targetCanvas { flex: 1; height: auto; min-height: 0; }
+      .option-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+      }
+      .option {
+        border: 2px solid var(--line);
+        border-radius: 12px;
+        background: white;
+        padding: 6px;
+        cursor: pointer;
+      }
+      .option:hover { border-color: var(--accent); }
+      .option.correct { border-color: var(--good); background: #edf9f2; }
+      .option.wrong { border-color: var(--bad); background: #fff0f0; }
+      .option canvas { height: 132px; border: 0; }
+      .option-label {
+        display: flex;
+        justify-content: space-between;
+        color: var(--muted);
+        font-size: 0.84rem;
+        font-weight: 800;
+      }
+      .footer {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 12px;
+        align-items: center;
+        margin-top: 0;
+      }
+      .feedback {
+        min-height: 32px;
+        display: flex;
+        align-items: center;
+        padding: 4px 2px;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        color: var(--muted);
+        font-weight: 800;
+      }
+      .feedback.good { color: var(--good); }
+      .feedback.bad { color: var(--bad); }
+      .actions { display: flex; gap: 8px; }
+      .btn {
+        min-height: 42px;
+        padding: 10px 16px;
+        border: 0;
+        border-radius: 10px;
+        background: var(--accent);
+        color: white;
+        font-weight: 900;
+        cursor: pointer;
+      }
+      .btn.secondary {
+        background: transparent;
+        color: var(--accent-dark);
+        border: 2px solid var(--accent);
+      }
+      .stats {
+        display: flex;
+        gap: 12px;
+        color: var(--muted);
+        font-size: 0.9rem;
+        font-weight: 800;
+        margin-top: 6px;
+      }
+      .key {
+        display: inline-block;
+        padding: 2px 7px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        background: var(--soft);
+        color: var(--ink);
+        font-family: ui-monospace, Consolas, monospace;
+      }
+      @media (max-width: 760px) {
+        .board, .guide, .footer { grid-template-columns: 1fr; }
+        .option-grid { grid-template-columns: 1fr; }
+        #targetCanvas { height: 340px; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="game">
+      <div class="top">
+        <h1>Mental Rotation 3D</h1>
+        <span class="badge" id="levelBadge">Level 1</span>
+      </div>
+      <section class="guide">
+        <div><strong>Goal:</strong> choose the option that is the same block shape after rotation.</div>
+        <div><span class="key">1-4</span> answer <span class="key">N</span> next <span class="key">R</span> reset</div>
+      </section>
+      <section class="board">
+        <div class="target">
+          <h2>Target shape</h2>
+          <canvas id="targetCanvas" width="430" height="350"></canvas>
+        </div>
+        <div class="options">
+          <h2>Which one is the same shape?</h2>
+          <div class="option-grid" id="optionGrid"></div>
+        </div>
+      </section>
+      <section class="footer">
+        <div>
+          <div class="feedback" id="feedback">Choose the matching rotated shape.</div>
+          <div class="stats">
+            <span>Score: <strong id="score">0</strong></span>
+            <span>Question: <strong id="question">1</strong></span>
+            <span>Accuracy: <strong id="accuracy">0%</strong></span>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn secondary" id="resetBtn" type="button">Reset</button>
+          <button class="btn" id="nextBtn" type="button">Next</button>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      (function () {
+        "use strict";
+        const targetCanvas = document.getElementById("targetCanvas");
+        const optionGrid = document.getElementById("optionGrid");
+        const feedback = document.getElementById("feedback");
+        const scoreEl = document.getElementById("score");
+        const questionEl = document.getElementById("question");
+        const accuracyEl = document.getElementById("accuracy");
+        const levelBadge = document.getElementById("levelBadge");
+        const nextBtn = document.getElementById("nextBtn");
+        const resetBtn = document.getElementById("resetBtn");
+
+        const SHAPES = [
+          [[0,0,0],[1,0,0],[2,0,0],[0,1,0],[0,1,1]],
+          [[0,0,0],[1,0,0],[1,1,0],[2,1,0],[2,1,1]],
+          [[0,0,0],[0,1,0],[1,1,0],[1,1,1],[2,1,1]],
+          [[0,0,0],[1,0,0],[1,0,1],[1,1,1],[2,1,1],[2,2,1]],
+          [[0,0,0],[1,0,0],[2,0,0],[1,1,0],[1,1,1],[1,2,1]]
+        ];
+        const ROTATIONS = [
+          { ax: -0.55, ay: 0.7, az: 0.1 },
+          { ax: -0.6, ay: 1.7, az: -0.15 },
+          { ax: -0.45, ay: 2.6, az: 0.2 },
+          { ax: -0.8, ay: -0.55, az: 0.1 },
+          { ax: -0.35, ay: -1.4, az: -0.1 }
+        ];
+        let current = null;
+        let score = 0;
+        let answered = 0;
+        let question = 1;
+        let locked = false;
+
+        function normalize(points) {
+          const mins = [0,1,2].map((axis) => Math.min(...points.map((p) => p[axis])));
+          return points.map((p) => [p[0]-mins[0], p[1]-mins[1], p[2]-mins[2]])
+            .sort((a,b) => a[0]-b[0] || a[1]-b[1] || a[2]-b[2]);
+        }
+        function rotateY(points, times) {
+          let pts = points.map((p) => p.slice());
+          for (let t = 0; t < times; t++) pts = normalize(pts.map(([x,y,z]) => [z,y,-x]));
+          return pts;
+        }
+        function rotateX(points, times) {
+          let pts = points.map((p) => p.slice());
+          for (let t = 0; t < times; t++) pts = normalize(pts.map(([x,y,z]) => [x,z,-y]));
+          return pts;
+        }
+        function mirror(points) {
+          return normalize(points.map(([x,y,z]) => [-x,y,z]));
+        }
+        function moved(points) {
+          const pts = points.map((p) => p.slice());
+          const occupied = new Set(pts.map((p) => p.join(",")));
+          const source = pts[pts.length - 1];
+          const candidates = [
+            [source[0] + 1, source[1], source[2]],
+            [source[0], source[1] + 1, source[2]],
+            [source[0], source[1], source[2] + 1],
+            [source[0] - 1, source[1], source[2]]
+          ];
+          pts[pts.length - 1] =
+            candidates.find((candidate) => !occupied.has(candidate.join(","))) ||
+            [source[0] + 1, source[1] + 1, source[2]];
+          return normalize(pts);
+        }
+        function keyOf(points) {
+          return normalize(points).map((p) => p.join(",")).join("|");
+        }
+        function shade(color, amount) {
+          const n = parseInt(color.slice(1), 16);
+          const r = Math.max(0, Math.min(255, (n >> 16) + amount));
+          const g = Math.max(0, Math.min(255, ((n >> 8) & 255) + amount));
+          const b = Math.max(0, Math.min(255, (n & 255) + amount));
+          return `rgb(${r},${g},${b})`;
+        }
+        function rotatePoint(p, r) {
+          let [x,y,z] = p;
+          let cy = Math.cos(r.ay), sy = Math.sin(r.ay);
+          [x,z] = [x*cy + z*sy, -x*sy + z*cy];
+          let cx = Math.cos(r.ax), sx = Math.sin(r.ax);
+          [y,z] = [y*cx - z*sx, y*sx + z*cx];
+          let cz = Math.cos(r.az), sz = Math.sin(r.az);
+          [x,y] = [x*cz - y*sz, x*sz + y*cz];
+          return [x,y,z];
+        }
+        function project(p, scale, ox, oy) {
+          return [ox + p[0] * scale, oy - p[1] * scale];
+        }
+        function drawShape(canvas, points, rotation, color) {
+          const ctx = canvas.getContext("2d");
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          const centers = points.map(([x,y,z]) => [x-1, y-0.7, z-0.7]);
+          const rotated = centers.map((p) => rotatePoint(p, rotation));
+          const minX = Math.min(...rotated.map((p) => p[0]));
+          const maxX = Math.max(...rotated.map((p) => p[0]));
+          const minY = Math.min(...rotated.map((p) => p[1]));
+          const maxY = Math.max(...rotated.map((p) => p[1]));
+          const scale = Math.min(canvas.width / (maxX-minX+3), canvas.height / (maxY-minY+3));
+          const ox = canvas.width / 2 - ((minX + maxX) / 2) * scale;
+          const oy = canvas.height / 2 + ((minY + maxY) / 2) * scale;
+          const verts = [[-.5,-.5,-.5],[.5,-.5,-.5],[.5,.5,-.5],[-.5,.5,-.5],[-.5,-.5,.5],[.5,-.5,.5],[.5,.5,.5],[-.5,.5,.5]];
+          const faces = [
+            [0,1,2,3, -35], [4,7,6,5, 15], [3,2,6,7, 35],
+            [0,4,5,1, -15], [1,5,6,2, 5], [0,3,7,4, -5]
+          ];
+          const cubes = centers.map((center, i) => ({ center, depth: rotated[i][2] }))
+            .sort((a,b) => a.depth - b.depth);
+          cubes.forEach((cube) => {
+            const rv = verts.map((v) => rotatePoint([cube.center[0]+v[0], cube.center[1]+v[1], cube.center[2]+v[2]], rotation));
+            faces
+              .map((face) => {
+                const avgZ = face.slice(0,4).reduce((sum, idx) => sum + rv[idx][2], 0) / 4;
+                const avgY = face.slice(0,4).reduce((sum, idx) => sum + rv[idx][1], 0) / 4;
+                return { face, avgZ, avgY };
+              })
+              .filter((f) => f.avgZ > cube.depth - 0.55 || f.avgY > cube.center[1] - 0.2)
+              .sort((a,b) => a.avgZ - b.avgZ)
+              .forEach(({ face }) => {
+                const poly = face.slice(0,4).map((idx) => project(rv[idx], scale, ox, oy));
+                ctx.beginPath();
+                ctx.moveTo(poly[0][0], poly[0][1]);
+                poly.slice(1).forEach(([x,y]) => ctx.lineTo(x,y));
+                ctx.closePath();
+                ctx.fillStyle = shade(color, face[4]);
+                ctx.strokeStyle = "#ffffff";
+                ctx.lineWidth = 2;
+                ctx.fill();
+                ctx.stroke();
+              });
+          });
+        }
+        function shuffle(items) {
+          return items.map((value) => ({ value, sort: Math.random() }))
+            .sort((a,b) => a.sort - b.sort).map((item) => item.value);
+        }
+        function newQuestion() {
+          locked = false;
+          feedback.textContent = "Choose the matching rotated shape.";
+          feedback.className = "feedback";
+          optionGrid.innerHTML = "";
+          const base = SHAPES[Math.floor(Math.random() * SHAPES.length)];
+          const same = rotateX(rotateY(base, 1 + Math.floor(Math.random()*3)), Math.floor(Math.random()*4));
+          const variants = [
+            { points: same, correct: true, note: "same" },
+            { points: mirror(base), correct: false, note: "mirror" },
+            { points: moved(base), correct: false, note: "moved" },
+            { points: SHAPES[(SHAPES.indexOf(base)+1) % SHAPES.length], correct: false, note: "different" }
+          ];
+          current = shuffle(variants).map((item, index) => ({ ...item, index }));
+          levelBadge.textContent = `Level ${Math.min(5, Math.ceil(question / 3))}`;
+          drawShape(targetCanvas, base, ROTATIONS[question % ROTATIONS.length], "#5a4fcf");
+          current.forEach((opt, i) => {
+            const btn = document.createElement("button");
+            btn.className = "option";
+            btn.type = "button";
+            btn.innerHTML = `<div class="option-label"><span>Option ${i + 1}</span><span>${i + 1}</span></div><canvas width="320" height="155"></canvas>`;
+            btn.addEventListener("click", () => answer(i, btn));
+            optionGrid.appendChild(btn);
+            drawShape(btn.querySelector("canvas"), opt.points, ROTATIONS[(question + i + 1) % ROTATIONS.length], "#5a4fcf");
+          });
+          updateStats();
+        }
+        function answer(index, btn) {
+          if (locked) return;
+          locked = true;
+          answered++;
+          if (current[index].correct) {
+            score++;
+            btn.classList.add("correct");
+            feedback.textContent = "Correct. It is the same shape after rotation.";
+            feedback.className = "feedback good";
+          } else {
+            btn.classList.add("wrong");
+            feedback.textContent = `Not quite. That option is ${current[index].note}.`;
+            feedback.className = "feedback bad";
+            [...optionGrid.children].forEach((child, i) => {
+              if (current[i].correct) child.classList.add("correct");
+            });
+          }
+          updateStats();
+        }
+        function updateStats() {
+          scoreEl.textContent = String(score);
+          questionEl.textContent = String(question);
+          accuracyEl.textContent = answered ? `${Math.round((score / answered) * 100)}%` : "0%";
+        }
+        function next() { question++; newQuestion(); }
+        function reset() { score = 0; answered = 0; question = 1; newQuestion(); }
+        nextBtn.addEventListener("click", next);
+        resetBtn.addEventListener("click", reset);
+        window.addEventListener("keydown", (e) => {
+          if (e.key >= "1" && e.key <= "4") {
+            e.preventDefault();
+            const btn = optionGrid.children[Number(e.key) - 1];
+            if (btn) btn.click();
+          } else if (e.key === "n" || e.key === "N" || e.code === "Space") {
+            e.preventDefault();
+            next();
+          } else if (e.key === "r" || e.key === "R") {
+            e.preventDefault();
+            reset();
+          }
+        });
+        reset();
+      })();
+    </script>
+  </body>
+</html>
