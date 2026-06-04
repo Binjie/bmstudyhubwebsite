@@ -1,0 +1,77 @@
+{{ define "main" }}
+<section class="showcase-detail-hero">
+    <div class="container">
+        <a class="showcase-back-link" href='{{ "/showcase/" | relURL }}'>Back to Showcase</a>
+        <div class="showcase-detail-hero-layout">
+            <div class="showcase-detail-copy">
+                <p class="eyebrow">{{ .Params.category | default "Project Story" }}</p>
+                <h1 class="showcase-detail-title">{{ .Title }}</h1>
+                <p class="showcase-detail-description">{{ .Params.description }}</p>
+                <div class="showcase-detail-actions">
+                    {{ with .Params.embed_url }}
+                    <a class="btn btn-primary" href="{{ . | relURL }}" target="_blank" rel="noopener">{{ $.Params.demo_label | default "Open Product Demo" }}</a>
+                    {{ end }}
+                </div>
+            </div>
+            <aside class="showcase-detail-panel" aria-label="Project facts">
+                {{ if .Params.featured_image }}
+                <figure class="showcase-detail-logo">
+                    <img src="{{ .Params.featured_image | relURL }}" alt="{{ .Title }}">
+                </figure>
+                {{ end }}
+                <dl class="showcase-facts">
+                    {{ with .Date }}
+                    <div>
+                        <dt>Date</dt>
+                        <dd><time datetime='{{ .Format "2006-01-02" }}'>{{ .Format "January 2006" }}</time></dd>
+                    </div>
+                    {{ end }}
+                    {{ with .Params.status }}
+                    <div>
+                        <dt>Status</dt>
+                        <dd>{{ . }}</dd>
+                    </div>
+                    {{ end }}
+                    {{ with .Params.materials }}
+                    <div>
+                        <dt>Built With</dt>
+                        <dd>{{ delimit . ", " }}</dd>
+                    </div>
+                    {{ end }}
+                    {{ with .Params.embed_url }}
+                    <div>
+                        <dt>Product Page</dt>
+                        <dd><a href="{{ . | relURL }}" target="_blank" rel="noopener">Open demonstration</a></dd>
+                    </div>
+                    {{ end }}
+                </dl>
+            </aside>
+        </div>
+    </div>
+</section>
+
+<section class="showcase-article-section">
+    <div class="container">
+        <div class="showcase-article-layout">
+            <article class="showcase-article">
+                <div class="showcase-article-content">
+                    {{ .Content }}
+                </div>
+            </article>
+
+            <aside class="showcase-side-note" aria-label="Reading note">
+                <p class="eyebrow">Reading Focus</p>
+                <h2>Look for the decisions behind the result.</h2>
+                <p>Each showcase is written as a process record: the first idea, the parts that did not work, the improvements, and what the maker learned by finishing it.</p>
+                {{ with .Params.tags }}
+                <div class="showcase-tags">
+                    {{ range . }}
+                    <span>{{ . }}</span>
+                    {{ end }}
+                </div>
+                {{ end }}
+            </aside>
+        </div>
+    </div>
+</section>
+{{ end }}

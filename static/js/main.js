@@ -60,4 +60,54 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.feature-card, .course-card, .blog-card, .game-card').forEach(card => {
         observer.observe(card);
     });
+
+    // Showcase search and category filtering
+    const showcaseTools = document.querySelector('[data-showcase-tools]');
+    if (showcaseTools) {
+        const searchInput = showcaseTools.querySelector('[data-showcase-search]');
+        const filterButtons = showcaseTools.querySelectorAll('[data-showcase-filter]');
+        const showcaseItems = document.querySelectorAll('[data-showcase-item]');
+        const countEl = document.querySelector('[data-showcase-count]');
+        const emptyEl = document.querySelector('[data-showcase-empty]');
+        let activeCategory = 'all';
+
+        const updateShowcaseList = () => {
+            const query = searchInput.value.trim().toLowerCase();
+            let visibleCount = 0;
+
+            showcaseItems.forEach(item => {
+                const itemCategory = item.dataset.showcaseCategory || '';
+                const searchText = item.dataset.showcaseSearch || '';
+                const matchesCategory = activeCategory === 'all' || itemCategory === activeCategory;
+                const matchesSearch = !query || searchText.includes(query);
+                const isVisible = matchesCategory && matchesSearch;
+
+                item.hidden = !isVisible;
+                if (isVisible) visibleCount += 1;
+            });
+
+            if (countEl) {
+                countEl.textContent = visibleCount === 1 ? '1 item' : `${visibleCount} items`;
+            }
+
+            if (emptyEl) {
+                emptyEl.hidden = visibleCount > 0;
+            }
+        };
+
+        searchInput.addEventListener('input', updateShowcaseList);
+
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                activeCategory = button.dataset.showcaseFilter || 'all';
+                filterButtons.forEach(item => item.classList.remove('is-active'));
+                button.classList.add('is-active');
+                updateShowcaseList();
+            });
+        });
+
+        showcaseTools.addEventListener('submit', event => {
+            event.preventDefault();
+        });
+    }
 });

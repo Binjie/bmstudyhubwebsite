@@ -2,44 +2,44 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>AI Face Lab - Bulk Enrollment System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Face Lab - Enrollment Console</title>
     <style>
         body { font-family: 'Segoe UI', sans-serif; margin: 0; background: #121212; color: #e0e0e0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
         header { background: #1f1f1f; padding: 15px; text-align: center; border-bottom: 2px solid #333; }
-        
         .main-container { display: flex; flex: 1; overflow: hidden; }
-        .column { padding: 20px; display: flex; flex-direction: column; border-right: 1px solid #333; box-sizing: border-box; }
-        
-        /* 布局比例 / Column Ratios */
+        .column { padding: 20px; display: flex; flex-direction: column; border-right: 1px solid #333; box-sizing: border-box; min-width: 0; }
         .col-left { flex: 1.2; background: #1a1a1a; }
         .col-mid { flex: 1.5; background: #141414; }
         .col-right { flex: 2.3; background: #0a0a0a; border-right: none; }
-
         h3 { color: #3498db; margin-top: 0; font-size: 1.1em; border-bottom: 1px solid #333; padding-bottom: 10px; }
-        
-        /* 关键：视频与画布的绝对堆叠 / Video & Canvas Alignment */
-        .video-wrapper { 
-            position: relative; 
-            width: 100%; 
-            background: #000;
-            border-radius: 8px; 
-            overflow: hidden; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-        }
+        label { display: block; color: #b8c7d9; font-size: 0.82em; margin: 10px 0 6px; }
+        .video-wrapper { position: relative; width: 100%; background: #000; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
         video { width: 100%; height: auto; display: block; }
         canvas { position: absolute; top: 0; left: 0; }
-
-        /* UI Elements */
-        textarea { flex: 1; background: #000; color: #00ff00; font-family: 'Consolas', monospace; padding: 12px; border: 1px solid #444; resize: none; border-radius: 4px; }
+        input[type="text"] { width: 100%; box-sizing: border-box; background: #080808; color: #f1f1f1; border: 1px solid #444; border-radius: 4px; padding: 10px; }
+        textarea { flex: 1; min-height: 160px; background: #000; color: #00ff00; font-family: 'Consolas', monospace; padding: 12px; border: 1px solid #444; resize: none; border-radius: 4px; }
         .btn { cursor: pointer; padding: 12px; border: none; border-radius: 4px; font-weight: bold; margin-top: 10px; transition: 0.2s; }
+        .btn:disabled { cursor: not-allowed; opacity: 0.55; }
         .btn-save { background: #27ae60; color: white; }
         .btn-clear { background: #c0392b; color: white; margin-left: 10px; }
-        
-        #preview-thumbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); gap: 8px; margin-top: 15px; overflow-y: auto; max-height: 200px; }
-        .thumb { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 4px; border: 1px solid #444; }
-        
+        .btn-secondary { background: #34495e; color: white; }
+        .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .enroll-panel { border: 1px solid #333; border-radius: 8px; padding: 12px; margin-bottom: 12px; background: #161616; }
+        .drop-zone { border: 2px dashed #444; padding: 20px; text-align: center; cursor: pointer; border-radius: 8px; background: #101010; margin-top: 12px; }
+        .drop-zone p { margin: 8px 0 0; color: #cfd8e3; font-size: 0.86em; }
+        #preview-thumbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(88px, 1fr)); gap: 10px; margin-top: 15px; overflow-y: auto; flex: 1; min-height: 120px; align-content: start; }
+        .thumb-card { position: relative; aspect-ratio: 1; background: #090909; border: 1px solid #333; border-radius: 6px; overflow: hidden; }
+        .thumb { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .thumb-name { position: absolute; left: 0; right: 0; bottom: 0; padding: 5px 7px; font-size: 0.72em; color: #fff; background: linear-gradient(transparent, rgba(0,0,0,0.82)); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; box-sizing: border-box; }
+        .thumb-card button { position: absolute; top: 5px; right: 5px; width: 24px; height: 24px; border: 0; border-radius: 50%; background: rgba(160, 32, 24, 0.95); color: white; cursor: pointer; padding: 0; line-height: 24px; }
         #status-bar { background: #2980b9; padding: 8px 20px; font-size: 0.85em; }
         .welcome-log { margin-top: 15px; font-size: 1.2em; color: #f1c40f; min-height: 1.5em; text-align: center; }
+        @media (max-width: 900px) {
+            body { height: auto; overflow: auto; }
+            .main-container { flex-direction: column; overflow: visible; }
+            .column { border-right: 0; border-bottom: 1px solid #333; }
+        }
     </style>
 </head>
 <body>
@@ -51,12 +51,19 @@
 
 <div class="main-container">
     <div class="column col-left">
-        <h3>1. Bulk Enrollment</h3>
-        <p style="font-size: 0.8em; color: #888;">Filename should be: <b>Name.jpg</b> or <b>Name_1.jpg</b></p>
-        <div style="border: 2px dashed #444; padding: 30px; text-align: center; cursor: pointer;" onclick="document.getElementById('imageUpload').click()">
-            <input type="file" id="imageUpload" accept="image/*" multiple style="display:none">
-            <span style="font-size: 2em;">📁</span>
-            <p>Click to upload student photos</p>
+        <h3>1. Enrollment</h3>
+        <div class="enroll-panel">
+            <label for="personName">Name</label>
+            <input type="text" id="personName" placeholder="Student name">
+            <div class="drop-zone" onclick="document.getElementById('imageUpload').click()">
+                <input type="file" id="imageUpload" accept="image/*" multiple style="display:none">
+                <strong>Upload photo</strong>
+                <p>Select one or more face photos for this name.</p>
+            </div>
+            <div class="btn-row">
+                <button class="btn btn-secondary" id="captureBtn">Capture from Camera</button>
+                <button class="btn btn-secondary" id="clearNameBtn">Clear Name</button>
+            </div>
         </div>
         <div id="preview-thumbs"></div>
     </div>
@@ -65,7 +72,7 @@
         <h3>2. Live JSON Database</h3>
         <textarea id="dataEditor" spellcheck="false"></textarea>
         <div style="display:flex">
-            <button class="btn btn-save" style="flex:2" onclick="saveAndReload()">Apply & Restart System</button>
+            <button class="btn btn-save" style="flex:2" onclick="saveAndReload()">Apply JSON</button>
             <button class="btn btn-clear" style="flex:1" onclick="clearData()">Clear All</button>
         </div>
     </div>

@@ -2,15 +2,17 @@
     <div class="container">
         <div class="header-content">
             <div class="logo">
-                <div class="logo-mark">
-                    <div class="logo-icon">
-                        <img src='{{ "/images/logo_pure.png" | relURL }}' alt="{{ .Site.Title }} Logo" class="logo-image">
+                <a href='{{ "/" | relURL }}' class="logo-link" aria-label="Home">
+                    <div class="logo-mark">
+                        <div class="logo-icon">
+                            <img src='{{ "/images/logo_pure.png" | relURL }}' alt="{{ .Site.Title }} Logo" class="logo-image">
+                        </div>
+                        <div class="logo-text">
+                            <h1 aria-label="{{ .Site.Title }}"><span class="brand-blue">BM</span><span class="brand-orange">Study</span><span class="brand-blue">Hub</span></h1>
+                            <p class="tagline">Creative Learning Studio</p>
+                        </div>
                     </div>
-                    <div class="logo-text">
-                        <h1 aria-label="{{ .Site.Title }}"><span class="brand-blue">BM</span><span class="brand-orange">Study</span><span class="brand-blue">Hub</span></h1>
-                        <p class="tagline">Creative Learning Studio</p>
-                    </div>
-                </div>
+                </a>
             </div>
 
             <button class="nav-toggle" aria-label="Toggle navigation">
