@@ -117,7 +117,7 @@ It may also be helpful to create a labelled design map. This could divide the va
 
 ## Copyright and Attribution
 
-This vase is an original family design project. The original artwork, concept design, pattern combination, and first 3D printed prototype are documented here for BJ Studio teaching, portfolio, and non-commercial showcase purposes.
+This vase is an original family design project. The original artwork, concept design, pattern combination, and first 3D printed prototype are documented here for bmstudyhub teaching, portfolio, and non-commercial showcase purposes.
 
 Unless written permission is granted by the author and guardian, the design may not be copied, modified, sold, mass-produced, or used commercially.
 
@@ -125,8 +125,8 @@ Suggested attribution for future versions:
 
 ```text
 Vase design concept inspired by original artwork by [Child's Name].
-Design development, AI-assisted prompt writing, 3D modelling workflow and prototype documentation by BJ Studio.
-Copyright (c) 2026 [Family Name / BJ Studio]. All rights reserved.
+Design development, AI-assisted prompt writing, 3D modelling workflow and prototype documentation by bmstudyhub.
+Copyright (c) 2026 [Family Name / bmstudyhub]. All rights reserved.
 ```
 
 If the design is later entered into a competition, prepared for public sale, or licensed for production, it would be useful to keep the full creation record: the original drawing, prompt drafts, Meshy generation records, 3D model files, slicing files, prototype photos, and revision notes. Together, these materials form a clear evidence trail of the creative process and make future design protection or manufacturing discussions much easier.
