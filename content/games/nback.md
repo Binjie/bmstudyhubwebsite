@@ -9,6 +9,7 @@ embed_url: "/games/embed/nback.html"
 game_width: 1160
 game_height: 780
 difficulty: "Adjustable (1-back to 5-back)"
+difficulty_level: "Adjustable"
 duration: "3-8 minutes per session"
 category: "Cognitive Training"
 featured_image: "/images/n-back-preview.jpg"

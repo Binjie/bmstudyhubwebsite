@@ -1,0 +1,66 @@
+{{ define "main" }}
+<section class="showcase-detail-hero">
+    <div class="container">
+        <a class="showcase-back-link" href='{{ "/knowledge/" | relURL }}'>Back to Knowledge</a>
+        <div class="showcase-detail-hero-layout">
+            <div class="showcase-detail-copy">
+                <p class="eyebrow">{{ .Params.category | default "Knowledge Note" }}</p>
+                <h1 class="showcase-detail-title">{{ .Title }}</h1>
+                <p class="showcase-detail-description">{{ .Params.description }}</p>
+            </div>
+            <aside class="showcase-detail-panel" aria-label="Knowledge note facts">
+                {{ if .Params.featured_image }}
+                <figure class="showcase-detail-logo">
+                    <img src="{{ .Params.featured_image | relURL }}" alt="{{ .Title }}">
+                </figure>
+                {{ end }}
+                <dl class="showcase-facts">
+                    {{ with .Date }}
+                    <div>
+                        <dt>Updated</dt>
+                        <dd><time datetime='{{ .Format "2006-01-02" }}'>{{ .Format "January 2006" }}</time></dd>
+                    </div>
+                    {{ end }}
+                    {{ with .Params.field }}
+                    <div>
+                        <dt>Field</dt>
+                        <dd>{{ . }}</dd>
+                    </div>
+                    {{ end }}
+                    {{ with .Params.audience }}
+                    <div>
+                        <dt>Audience</dt>
+                        <dd>{{ . }}</dd>
+                    </div>
+                    {{ end }}
+                </dl>
+            </aside>
+        </div>
+    </div>
+</section>
+
+<section class="showcase-article-section">
+    <div class="container">
+        <div class="showcase-article-layout">
+            <article class="showcase-article">
+                <div class="showcase-article-content">
+                    {{ .Content }}
+                </div>
+            </article>
+
+            <aside class="showcase-side-note" aria-label="Knowledge note">
+                <p class="eyebrow">Reading Focus</p>
+                <h2>Connect the abstract idea to a concrete example.</h2>
+                <p>Each note is designed to start with intuition, then move toward the formal idea, examples, and everyday use.</p>
+                {{ with .Params.tags }}
+                <div class="showcase-tags">
+                    {{ range . }}
+                    <span>{{ . }}</span>
+                    {{ end }}
+                </div>
+                {{ end }}
+            </aside>
+        </div>
+    </div>
+</section>
+{{ end }}

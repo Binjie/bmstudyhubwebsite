@@ -9,6 +9,7 @@ embed_url: "/games/embed/mentalrotation.html"
 game_width: 1160
 game_height: 720
 difficulty: "Rotated 3D block shapes with mirror distractors"
+difficulty_level: "Advanced"
 duration: "3-8 minutes per session"
 category: "Spatial Reasoning"
 tags: ["mental-rotation", "3d-thinking", "spatial-reasoning", "geometry", "stem"]

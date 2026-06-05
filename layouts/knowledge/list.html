@@ -1,8 +1,8 @@
 {{ define "main" }}
-{{ $showcases := .Pages.ByDate.Reverse }}
+{{ $items := .Pages.ByDate.Reverse }}
 {{ $categories := slice }}
-{{ range $showcases }}
-    {{ $category := .Params.category | default "Project Story" }}
+{{ range $items }}
+    {{ $category := .Params.category | default "Knowledge Note" }}
     {{ $categories = $categories | append $category }}
 {{ end }}
 
@@ -10,28 +10,30 @@
     <div class="container">
         <div class="showcase-hero-layout">
             <div class="showcase-hero-copy">
-                <p class="eyebrow">Project Showcase</p>
+                <p class="eyebrow">Knowledge Notes</p>
                 <h1 class="showcase-hero-title">{{ .Title }}</h1>
                 <p class="showcase-hero-description">{{ .Params.description }}</p>
                 <div class="showcase-hero-text">
                     {{ .Content }}
                 </div>
             </div>
-            <div class="showcase-hero-panel showcase-project-panel" aria-label="Showcase reading tips">
-                <div class="showcase-project-feature">
-                    <span>Project Lens</span>
-                    <strong>Follow the path from a real question to a working prototype.</strong>
+            <div class="showcase-hero-panel knowledge-lens-panel" aria-label="Knowledge library focus areas">
+                <div class="knowledge-question-card">
+                    <span>Guiding Question</span>
+                    <strong>Where does this idea appear outside the textbook?</strong>
                 </div>
-                <div class="showcase-project-steps" aria-label="Showcase reading steps">
+                <div class="knowledge-lens-list">
                     <div>
-                        <span>01</span>
-                        <strong>Problem</strong>
-                        <p>What need or curiosity started the project?</p>
+                        <span>Idea</span>
+                        <p>The concept in plain language.</p>
                     </div>
                     <div>
-                        <span>02</span>
-                        <strong>Making</strong>
-                        <p>What changed through testing, feedback, and reflection?</p>
+                        <span>Picture</span>
+                        <p>A diagram, model, or mental image.</p>
+                    </div>
+                    <div>
+                        <span>Use</span>
+                        <p>A practical example students can recognize.</p>
                     </div>
                 </div>
             </div>
@@ -42,9 +44,9 @@
 <section class="showcase-list-section">
     <div class="container">
         <form class="showcase-tools" data-showcase-tools role="search">
-            <label class="showcase-search-label" for="showcase-search">Search showcase</label>
-            <input class="showcase-search-input" id="showcase-search" type="search" placeholder="Search cases" autocomplete="off" data-showcase-search>
-            <div class="showcase-filter-list" aria-label="Filter showcase categories">
+            <label class="showcase-search-label" for="knowledge-search">Search knowledge notes</label>
+            <input class="showcase-search-input" id="knowledge-search" type="search" placeholder="Search theorem, concept, or example" autocomplete="off" data-showcase-search>
+            <div class="showcase-filter-list" aria-label="Filter knowledge categories">
                 <button class="showcase-filter is-active" type="button" data-showcase-filter="all">All</button>
                 {{ range $categories | uniq | sort }}
                 <button class="showcase-filter" type="button" data-showcase-filter="{{ . | lower }}">{{ . }}</button>
@@ -53,8 +55,8 @@
         </form>
 
         <div class="showcase-list" data-showcase-list>
-            {{ range $showcases }}
-            {{ $category := .Params.category | default "Project Story" }}
+            {{ range $items }}
+            {{ $category := .Params.category | default "Knowledge Note" }}
             {{ $status := .Params.status | default "" }}
             {{ $tags := delimit (.Params.tags | default slice) " " }}
             {{ $summary := .Params.summary | default .Description | default .Summary }}
@@ -83,16 +85,13 @@
                     </div>
                 </a>
                 <div class="showcase-row-actions">
-                    <a class="showcase-text-link" href="{{ .RelPermalink }}">Read the story</a>
-                    {{ with .Params.embed_url }}
-                    <a class="showcase-demo-link" href="{{ . | relURL }}" target="_blank" rel="noopener">Open demo</a>
-                    {{ end }}
+                    <a class="showcase-text-link" href="{{ .RelPermalink }}">Read note</a>
                 </div>
             </article>
             {{ end }}
         </div>
 
-        <p class="showcase-empty" data-showcase-empty hidden>No showcase items match your search.</p>
+        <p class="showcase-empty" data-showcase-empty hidden>No knowledge notes match your search.</p>
     </div>
 </section>
 {{ end }}

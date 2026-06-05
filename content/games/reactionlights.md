@@ -9,6 +9,7 @@ embed_url: "/games/embed/reactionlights.html"
 game_width: 1160
 game_height: 780
 difficulty: "Quick reaction challenge"
+difficulty_level: "Beginner"
 duration: "1-3 minutes per session"
 category: "Reaction Speed"
 tags: ["reaction-time", "attention", "focus", "speed", "racing"]

@@ -5,7 +5,7 @@ summary: "A project story about turning a classroom attendance problem into a wo
 date: 2023-10-01
 category: "AI Prototype"
 status: "Interactive Demo"
-featured_image: "/images/showcase/face-check-in-logo.png"
+featured_image: "/images/showcase/facecheckin/face-check-in-logo.png"
 materials:
   - "face-api.js"
   - "JavaScript"

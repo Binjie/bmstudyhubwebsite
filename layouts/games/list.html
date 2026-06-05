@@ -1,4 +1,14 @@
 {{ define "main" }}
+{{ $games := .Pages.ByTitle }}
+{{ $difficultyOrder := slice "Beginner" "Intermediate" "Advanced" "Adjustable" }}
+{{ $difficulties := slice }}
+{{ $categories := slice }}
+{{ range $games }}
+    {{ $difficultyLevel := .Params.difficulty_level | default "Not Set" }}
+    {{ $category := .Params.category | default "Thinking Skill" }}
+    {{ $difficulties = $difficulties | append $difficultyLevel }}
+    {{ $categories = $categories | append $category }}
+{{ end }}
 <div class="games-hero">
     <div class="container">
         <div class="games-hero-layout">
@@ -43,40 +53,80 @@
         <div class="section-heading section-heading-row games-section-heading">
             <div>
                 <p class="eyebrow">Challenge Library</p>
-                <h2>Choose a learning habit to practise.</h2>
-                <p>Each game is short enough for regular practice, but designed to help students think more clearly, stay curious, and take ownership of the next step.</p>
+                <h2>Choose the right challenge level.</h2>
             </div>
         </div>
-    <div class="compact-games-grid">
-        {{ $tones := slice "violet" "gold" "teal" "coral" }}
-        {{ range $index, $page := .Pages.ByTitle }}
-        {{ $tone := index $tones (mod $index (len $tones)) }}
-        <article class="compact-game-card compact-game-card-{{ $tone }}">
-            <div class="compact-game-card-top">
-                <span class="compact-game-index">0{{ add $index 1 }}</span>
-                <span class="compact-game-badge">{{ .Params.category | default .Params.difficulty | default "Thinking Skill" }}</span>
-            </div>
-            <div class="compact-game-card-content">
-                <h3 class="compact-game-title">{{ .Title }}</h3>
-                <p class="compact-game-description">{{ .Description | default .Summary }}</p>
-                <div class="compact-game-meta">
-                    {{ with .Params.difficulty }}<span>{{ . }}</span>{{ end }}
-                    {{ with .Params.duration }}<span>{{ . }}</span>{{ end }}
-                </div>
-                <div class="compact-game-footer">
-                    <a href="{{ .RelPermalink }}" class="compact-game-button" target="_blank">
-                        Open Challenge
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                            <polyline points="15 3 21 3 21 9"></polyline>
-                            <line x1="10" y1="14" x2="21" y2="3"></line>
-                        </svg>
-                    </a>
+
+        <form class="games-tools" data-games-tools role="search">
+            <label class="showcase-search-label" for="games-search">Search games</label>
+            <input class="showcase-search-input" id="games-search" type="search" placeholder="Search by name, difficulty, or catalog" autocomplete="off" data-games-search>
+            <p class="games-search-help">Search by name, difficulty, catalog, or learning focus, then pick the game that gives each student the right amount of stretch.</p>
+            <div class="games-filter-group" aria-label="Filter game difficulty">
+                <span>Difficulty</span>
+                <div class="showcase-filter-list">
+                    <button class="showcase-filter is-active" type="button" data-games-difficulty="all">All</button>
+                    {{ range $difficultyOrder }}
+                    {{ if in $difficulties . }}
+                    <button class="showcase-filter" type="button" data-games-difficulty="{{ . | lower }}">{{ . }}</button>
+                    {{ end }}
+                    {{ end }}
+                    {{ range $difficulties | uniq | sort }}
+                    {{ if not (in $difficultyOrder .) }}
+                    <button class="showcase-filter" type="button" data-games-difficulty="{{ . | lower }}">{{ . }}</button>
+                    {{ end }}
+                    {{ end }}
                 </div>
             </div>
-        </article>
-        {{ end }}
+            <div class="games-filter-group" aria-label="Filter game catalog">
+                <span>Catalog</span>
+                <div class="showcase-filter-list">
+                    <button class="showcase-filter is-active" type="button" data-games-category="all">All</button>
+                    {{ range $categories | uniq | sort }}
+                    <button class="showcase-filter" type="button" data-games-category="{{ . | lower }}">{{ . }}</button>
+                    {{ end }}
+                </div>
+            </div>
+        </form>
+
+        <div class="compact-games-grid" data-games-list>
+            {{ $tones := slice "violet" "gold" "teal" "coral" }}
+            {{ range $index, $page := $games }}
+            {{ $tone := index $tones (mod $index (len $tones)) }}
+            {{ $category := .Params.category | default "Thinking Skill" }}
+            {{ $difficultyLevel := .Params.difficulty_level | default "Not Set" }}
+            {{ $difficulty := .Params.difficulty | default "" }}
+            {{ $duration := .Params.duration | default "" }}
+            {{ $tags := delimit (.Params.tags | default slice) " " }}
+            {{ $summary := .Description | default .Summary }}
+            {{ $searchText := printf "%s %s %s %s %s %s" .Title $difficultyLevel $difficulty $category $tags $summary | plainify | lower }}
+            <article class="compact-game-card compact-game-card-{{ $tone }}" data-games-item data-games-difficulty="{{ $difficultyLevel | lower }}" data-games-category="{{ $category | lower }}" data-games-search="{{ $searchText }}">
+                <div class="compact-game-card-top">
+                    <span class="compact-game-index">0{{ add $index 1 }}</span>
+                    <span class="compact-game-badge">{{ $difficultyLevel }}</span>
+                </div>
+                <div class="compact-game-card-content">
+                    <h3 class="compact-game-title">{{ .Title }}</h3>
+                    <p class="compact-game-description">{{ $summary }}</p>
+                    <div class="compact-game-meta">
+                        <span>{{ $category }}</span>
+                        {{ with $difficulty }}<span>{{ . }}</span>{{ end }}
+                        {{ with $duration }}<span>{{ . }}</span>{{ end }}
+                    </div>
+                    <div class="compact-game-footer">
+                        <a href="{{ .RelPermalink }}" class="compact-game-button" target="_blank">
+                            Open Challenge
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                <polyline points="15 3 21 3 21 9"></polyline>
+                                <line x1="10" y1="14" x2="21" y2="3"></line>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </article>
+            {{ end }}
         </div>
+        <p class="showcase-empty games-empty" data-games-empty hidden>No games match your search.</p>
     </div>
 </div>
 {{ end }}

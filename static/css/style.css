@@ -1123,7 +1123,40 @@ section {
 }
 
 .games-section-heading {
-    margin-bottom: 28px;
+    align-items: flex-end;
+    margin-bottom: 12px;
+}
+
+.games-tools {
+    background: #fbf9ff;
+    border: 1px solid rgba(106, 90, 205, 0.14);
+    border-radius: 8px;
+    display: grid;
+    gap: 10px;
+    grid-template-columns: minmax(210px, 1fr);
+    margin-bottom: 18px;
+    padding: 12px;
+}
+
+.games-search-help {
+    color: #6d667d;
+    font-size: 0.84rem;
+    line-height: 1.45;
+    margin: -2px 0 2px;
+}
+
+.games-filter-group {
+    align-items: center;
+    display: grid;
+    gap: 8px;
+}
+
+.games-filter-group > span {
+    color: #65501d;
+    font-size: 0.76rem;
+    font-weight: 800;
+    letter-spacing: 0;
+    text-transform: uppercase;
 }
 
 .compact-games-grid {
@@ -1172,6 +1205,10 @@ section {
 .compact-game-card:hover {
     border-color: rgba(106, 90, 205, 0.3);
     box-shadow: 0 18px 42px rgba(65, 53, 130, 0.14);
+}
+
+.compact-game-card[hidden] {
+    display: none;
 }
 
 .compact-game-card-top {
@@ -2467,6 +2504,125 @@ section.game-instructions-card {
     padding: 14px;
 }
 
+.showcase-project-panel {
+    display: grid;
+    gap: 14px;
+}
+
+.showcase-project-feature {
+    background: #fbf9ff;
+    border: 1px solid rgba(106, 90, 205, 0.14);
+    border-radius: 8px;
+    padding: 18px;
+}
+
+.showcase-project-feature span,
+.showcase-project-steps span,
+.tests-focus-goal span,
+.tests-focus-grid span,
+.knowledge-question-card span,
+.knowledge-lens-list span {
+    color: #8d6b00;
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0;
+    text-transform: uppercase;
+}
+
+.showcase-project-feature strong,
+.tests-focus-goal strong,
+.knowledge-question-card strong {
+    color: #30265f;
+    display: block;
+    font-size: 1.28rem;
+    line-height: 1.28;
+    margin-top: 8px;
+}
+
+.showcase-project-steps {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.showcase-project-steps div {
+    background: #ffffff;
+    border: 1px solid rgba(106, 90, 205, 0.14);
+    border-radius: 8px;
+    padding: 14px;
+}
+
+.showcase-project-steps strong,
+.tests-focus-grid strong {
+    color: #30265f;
+    display: block;
+    line-height: 1.28;
+    margin-top: 6px;
+}
+
+.showcase-project-steps p,
+.knowledge-lens-list p {
+    color: #5a546d;
+    font-size: 0.86rem;
+    line-height: 1.42;
+    margin: 7px 0 0;
+}
+
+.tests-focus-panel {
+    display: grid;
+    gap: 14px;
+}
+
+.tests-focus-goal {
+    background: linear-gradient(135deg, #fff7db, #fbf9ff);
+    border: 1px solid rgba(141, 107, 0, 0.16);
+    border-radius: 8px;
+    padding: 18px;
+}
+
+.tests-focus-grid {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.tests-focus-grid div {
+    background: #ffffff;
+    border: 1px solid rgba(106, 90, 205, 0.14);
+    border-radius: 8px;
+    min-height: 92px;
+    padding: 13px;
+}
+
+.knowledge-lens-panel {
+    display: grid;
+    gap: 14px;
+}
+
+.knowledge-question-card {
+    background: #eefbf8;
+    border: 1px solid rgba(67, 176, 158, 0.22);
+    border-radius: 8px;
+    padding: 18px;
+}
+
+.knowledge-lens-list {
+    display: grid;
+    gap: 10px;
+}
+
+.knowledge-lens-list div {
+    align-items: start;
+    background: #ffffff;
+    border: 1px solid rgba(67, 176, 158, 0.16);
+    border-radius: 8px;
+    display: grid;
+    gap: 8px;
+    grid-template-columns: 76px minmax(0, 1fr);
+    padding: 13px;
+}
+
 .showcase-list-section,
 .showcase-article-section {
     background: #ffffff;
@@ -2866,6 +3022,12 @@ section.game-instructions-card {
     max-width: 820px;
 }
 
+.showcase-article-content::after {
+    clear: both;
+    content: "";
+    display: block;
+}
+
 .showcase-article-content h2,
 .showcase-article-content h3 {
     color: #30265f;
@@ -2881,6 +3043,76 @@ section.game-instructions-card {
 .showcase-article-content ul,
 .showcase-article-content ol {
     padding-left: 24px;
+}
+
+.showcase-article-content .highlight,
+.showcase-article-content pre {
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+.showcase-article-content pre {
+    border-radius: 8px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
+.showcase-article-content code {
+    overflow-wrap: anywhere;
+}
+
+.showcase-article-content .highlight code,
+.showcase-article-content .highlight span {
+    white-space: inherit;
+}
+
+.showcase-article-content .highlight span {
+    display: inline !important;
+}
+
+.showcase-article-figure {
+    margin: 2rem 0;
+}
+
+.showcase-article-figure img {
+    display: block;
+    width: 100%;
+    max-height: 620px;
+    object-fit: contain;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: #f8fafc;
+}
+
+.showcase-article-figure-crop img {
+    aspect-ratio: 4 / 5;
+    max-height: none;
+    object-fit: cover;
+}
+
+.showcase-article-figure figcaption {
+    margin-top: 0.6rem;
+    color: var(--text-muted);
+    font-size: 0.92rem;
+    line-height: 1.6;
+}
+
+@media (min-width: 820px) {
+    .showcase-article-figure-left,
+    .showcase-article-figure-right {
+        width: min(42%, 340px);
+    }
+
+    .showcase-article-figure-left {
+        float: left;
+        margin: 0.35rem 1.6rem 1rem 0;
+    }
+
+    .showcase-article-figure-right {
+        float: right;
+        margin: 0.35rem 0 1rem 1.6rem;
+    }
 }
 
 .showcase-side-note {
@@ -2943,7 +3175,17 @@ section.game-instructions-card {
         grid-template-columns: 1fr;
     }
 
-    .showcase-tools {
+    .showcase-project-steps,
+    .tests-focus-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .knowledge-lens-list div {
+        grid-template-columns: 1fr;
+    }
+
+    .showcase-tools,
+    .games-tools {
         grid-template-columns: 1fr;
         padding: 14px;
     }

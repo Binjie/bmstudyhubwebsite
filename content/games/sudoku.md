@@ -8,6 +8,7 @@ embed_url: "/games/embed/sudoku.html"
 game_width: 1160
 game_height: 780
 difficulty: "Beginner to Expert"
+difficulty_level: "Adjustable"
 category: "Logic Puzzle"
 tags: ["sudoku", "logic", "problem-solving", "number-sense", "concentration"]
 ---

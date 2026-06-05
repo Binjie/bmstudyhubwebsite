@@ -9,6 +9,7 @@ embed_url: "/games/embed/spatialmemory.html"
 game_width: 1160
 game_height: 780
 difficulty: "Adjustable grid size (3x3-6x6) and growing sequence"
+difficulty_level: "Adjustable"
 duration: "2-5 minutes per session"
 category: "Cognitive Training"
 featured_image: "/images/spatial-memory-preview.jpg"

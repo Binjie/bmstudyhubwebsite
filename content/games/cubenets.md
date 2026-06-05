@@ -9,6 +9,7 @@ embed_url: "/games/embed/cubenets.html"
 game_width: 1160
 game_height: 720
 difficulty: "Color and face-position matching"
+difficulty_level: "Intermediate"
 duration: "3-8 minutes per session"
 category: "Spatial Reasoning"
 tags: ["cube-nets", "3d-thinking", "geometry", "spatial-reasoning", "stem"]

@@ -70,9 +70,19 @@ title = "BMStudyHub"
   weight = 5
 
 [[menu.main]]
+  name = "Tests"
+  url = "/tests/"
+  weight = 6
+
+[[menu.main]]
+  name = "Knowledge"
+  url = "/knowledge/"
+  weight = 7
+
+[[menu.main]]
   name = "Contact"
   url = "/contact/"
-  weight = 6
+  weight = 8
 
 # Social links
 [[params.social]]
