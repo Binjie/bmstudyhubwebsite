@@ -110,4 +110,63 @@ document.addEventListener('DOMContentLoaded', function() {
             event.preventDefault();
         });
     }
+
+    // Games search plus difficulty and catalog filtering
+    const gamesTools = document.querySelector('[data-games-tools]');
+    if (gamesTools) {
+        const searchInput = gamesTools.querySelector('[data-games-search]');
+        const difficultyButtons = gamesTools.querySelectorAll('[data-games-difficulty]');
+        const categoryButtons = gamesTools.querySelectorAll('[data-games-category]');
+        const gameItems = document.querySelectorAll('[data-games-item]');
+        const emptyEl = document.querySelector('[data-games-empty]');
+        let activeDifficulty = 'all';
+        let activeCategory = 'all';
+
+        const updateGamesList = () => {
+            const query = searchInput.value.trim().toLowerCase();
+            let visibleCount = 0;
+
+            gameItems.forEach(item => {
+                const itemDifficulty = item.dataset.gamesDifficulty || '';
+                const itemCategory = item.dataset.gamesCategory || '';
+                const searchText = item.dataset.gamesSearch || '';
+                const matchesDifficulty = activeDifficulty === 'all' || itemDifficulty === activeDifficulty;
+                const matchesCategory = activeCategory === 'all' || itemCategory === activeCategory;
+                const matchesSearch = !query || searchText.includes(query);
+                const isVisible = matchesDifficulty && matchesCategory && matchesSearch;
+
+                item.hidden = !isVisible;
+                if (isVisible) visibleCount += 1;
+            });
+
+            if (emptyEl) {
+                emptyEl.hidden = visibleCount > 0;
+            }
+        };
+
+        searchInput.addEventListener('input', updateGamesList);
+
+        difficultyButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                activeDifficulty = button.dataset.gamesDifficulty || 'all';
+                difficultyButtons.forEach(item => item.classList.remove('is-active'));
+                button.classList.add('is-active');
+                updateGamesList();
+            });
+        });
+
+        categoryButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                activeCategory = button.dataset.gamesCategory || 'all';
+                categoryButtons.forEach(item => item.classList.remove('is-active'));
+                button.classList.add('is-active');
+                updateGamesList();
+            });
+        });
+
+        gamesTools.addEventListener('submit', event => {
+            event.preventDefault();
+        });
+    }
+
 });
