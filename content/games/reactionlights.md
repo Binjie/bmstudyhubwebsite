@@ -19,12 +19,12 @@ keywords: "reaction time test, racing start lights, reflex game, attention game"
 
 Wait for the five red lights to turn on one by one. After all five lights are lit, the game adds a random delay before the lights go out.
 
-Click the screen or press **Space** as soon as the lights go out.
+Press the mouse button or press **Space** as soon as the lights go out.
 
 ## Scoring
 
-- A valid round measures the time between **lights out** and your click or key press.
-- Clicking before lights out is a **false start**.
+- A valid round measures the time between **lights out** and your mouse or key press.
+- Pressing before lights out is a **false start**.
 - The game tracks your **best time**, **average time**, and **false starts** across a short set of rounds.
 
 ## Practice Tips

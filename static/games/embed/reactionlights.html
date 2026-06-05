@@ -427,7 +427,7 @@
       <header class="header">
         <div class="title-group">
           <h1>Reaction Start Lights</h1>
-          <p class="subtitle">Wait for lights out, then click or press Space.</p>
+          <p class="subtitle">Wait for lights out, then press the mouse or Space.</p>
         </div>
         <span class="round-pill" id="roundLabel">Round 0 / 5</span>
       </header>
@@ -695,7 +695,7 @@
             lightsOutAt = performance.now();
             clearLamps();
             setGoLamps();
-            setText("Go!", "-", "Click or press Space now.");
+            setText("Go!", "-", "Press the mouse or Space now.");
           });
         }
 
@@ -761,7 +761,12 @@
           }
         }
 
-        stage.addEventListener("click", react);
+        stage.addEventListener("pointerdown", function (event) {
+          if (event.button !== 0) return;
+          event.preventDefault();
+          stage.focus({ preventScroll: true });
+          react();
+        });
         startButton.addEventListener("click", startRound);
         resetButton.addEventListener("click", resetResults);
         window.addEventListener("keydown", handleKeydown);
