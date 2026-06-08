@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Brachistochrone Animation</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #30265f;
+      --muted: #5a546d;
+      --line: rgba(48, 38, 95, 0.18);
+      --gold: #f4c430;
+      --teal: #43b09e;
+      --plum: #6a5acd;
+      --bg: #fbf9ff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(135deg, #ffffff, #fbf9ff 58%, #fff8dc);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    .demo {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      display: grid;
+      gap: 8px;
+      grid-template-rows: auto minmax(0, 1fr) auto;
+      height: 100vh;
+      min-height: 0;
+      padding: 10px;
+    }
+
+    .topbar {
+      display: block;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 0.92rem;
+      line-height: 1.25;
+      margin: 0 0 2px;
+    }
+
+    p {
+      color: var(--muted);
+      font-size: 0.72rem;
+      line-height: 1.28;
+      margin: 0;
+    }
+
+    canvas {
+      background: rgba(255, 255, 255, 0.66);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      display: block;
+      height: 100%;
+      min-height: 0;
+      width: 100%;
+    }
+
+    .legend {
+      display: grid;
+      gap: 6px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .legend div {
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      min-width: 0;
+      padding: 5px 6px;
+    }
+
+    .label {
+      display: block;
+      font-size: 0.58rem;
+      font-weight: 800;
+      letter-spacing: 0;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .time {
+      color: var(--ink);
+      display: block;
+      font-size: 0.68rem;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-top: 2px;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 620px) {
+      body {
+        overflow: auto;
+      }
+
+      canvas {
+        min-height: 0;
+      }
+
+      .legend {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="demo">
+    <div class="topbar">
+      <div>
+        <h1>Shortest Distance vs. Shortest Time</h1>
+        <p>The brachistochrone curve drops steeply first, gains speed early, and reaches the same endpoint before the other paths.</p>
+      </div>
+    </div>
+
+    <canvas id="scene" aria-label="Animated comparison of straight, circular, and brachistochrone paths"></canvas>
+
+    <section class="legend" aria-label="Path timing comparison">
+      <div>
+        <span class="label" style="color:#6a5acd">Brachistochrone</span>
+        <span class="time" id="cycloidTime">0.00 s</span>
+      </div>
+      <div>
+        <span class="label" style="color:#43b09e">Circular Arc</span>
+        <span class="time" id="arcTime">0.00 s</span>
+      </div>
+      <div>
+        <span class="label" style="color:#b97800">Straight</span>
+        <span class="time" id="lineTime">0.00 s</span>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const canvas = document.getElementById("scene");
+    const ctx = canvas.getContext("2d");
+    const timeEls = {
+      cycloid: document.getElementById("cycloidTime"),
+      arc: document.getElementById("arcTime"),
+      line: document.getElementById("lineTime")
+    };
+
+    let startTime = performance.now();
+    let scale = 1;
+    let tracks = null;
+    let totalCycleMs = 6200;
+    const gravity = 980;
+
+    function resize() {
+      const rect = canvas.getBoundingClientRect();
+      scale = window.devicePixelRatio || 1;
+      canvas.width = Math.max(1, Math.floor(rect.width * scale));
+      canvas.height = Math.max(1, Math.floor(rect.height * scale));
+      ctx.setTransform(scale, 0, 0, scale, 0, 0);
+      tracks = null;
+    }
+
+    function cycloidPoint(t, start, end) {
+      const thetaEnd = 2.412;
+      const theta = thetaEnd * t;
+      const a = (end.y - start.y) / (1 - Math.cos(thetaEnd));
+      return {
+        x: start.x + a * (theta - Math.sin(theta)),
+        y: start.y + a * (1 - Math.cos(theta))
+      };
+    }
+
+    function linePoint(t, start, end) {
+      return {
+        x: start.x + (end.x - start.x) * t,
+        y: start.y + (end.y - start.y) * t
+      };
+    }
+
+    function makeCircularArc(start, end) {
+      const dx = end.x - start.x;
+      const dy = end.y - start.y;
+      const control = {
+        x: start.x + dx * 0.56,
+        y: start.y + dy * 0.08
+      };
+
+      return function arcPoint(t) {
+        const u = 1 - t;
+        return {
+          x: u * u * start.x + 2 * u * t * control.x + t * t * end.x,
+          y: u * u * start.y + 2 * u * t * control.y + t * t * end.y
+        };
+      };
+    }
+
+    function sampleTrack(pointFn, start, samples = 360) {
+      const points = [];
+      const times = [0];
+      let total = 0;
+
+      for (let i = 0; i <= samples; i += 1) {
+        points.push(pointFn(i / samples));
+      }
+
+      for (let i = 1; i < points.length; i += 1) {
+        const previous = points[i - 1];
+        const current = points[i];
+        const ds = Math.hypot(current.x - previous.x, current.y - previous.y);
+        const midY = (previous.y + current.y) / 2;
+        const drop = Math.max(midY - start.y, 0.35);
+        const speed = Math.sqrt(2 * gravity * drop);
+        total += ds / speed;
+        times.push(total);
+      }
+
+      return { points, times, total };
+    }
+
+    function pointAtTime(track, seconds) {
+      if (seconds <= 0) return track.points[0];
+      if (seconds >= track.total) return track.points[track.points.length - 1];
+
+      let low = 0;
+      let high = track.times.length - 1;
+      while (low < high) {
+        const mid = Math.floor((low + high) / 2);
+        if (track.times[mid] < seconds) low = mid + 1;
+        else high = mid;
+      }
+
+      const i = Math.max(1, low);
+      const t0 = track.times[i - 1];
+      const t1 = track.times[i];
+      const blend = (seconds - t0) / (t1 - t0 || 1);
+      const p0 = track.points[i - 1];
+      const p1 = track.points[i];
+      return {
+        x: p0.x + (p1.x - p0.x) * blend,
+        y: p0.y + (p1.y - p0.y) * blend
+      };
+    }
+
+    function drawPath(track, color, width) {
+      ctx.beginPath();
+      track.points.forEach((p, i) => {
+        if (i === 0) ctx.moveTo(p.x, p.y);
+        else ctx.lineTo(p.x, p.y);
+      });
+      ctx.strokeStyle = color;
+      ctx.lineWidth = width;
+      ctx.lineCap = "round";
+      ctx.stroke();
+    }
+
+    function drawBall(p, color, label, labelOffsetY = -10) {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 8, 0, Math.PI * 2);
+      ctx.fillStyle = color;
+      ctx.fill();
+      ctx.strokeStyle = "#fff";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.fillStyle = "#30265f";
+      ctx.font = "700 11px -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif";
+      ctx.fillText(label, p.x + 12, p.y + labelOffsetY);
+    }
+
+    function formatTime(seconds) {
+      return `${seconds.toFixed(2)} s`;
+    }
+
+    function buildTracks(start, end) {
+      const arcFn = makeCircularArc(start, end);
+      const nextTracks = {
+        cycloid: sampleTrack((t) => cycloidPoint(t, start, end), start),
+        arc: sampleTrack(arcFn, start),
+        line: sampleTrack((t) => linePoint(t, start, end), start)
+      };
+      const longest = Math.max(nextTracks.cycloid.total, nextTracks.arc.total, nextTracks.line.total);
+      totalCycleMs = Math.max(4200, longest * 1000 + 1600);
+      return nextTracks;
+    }
+
+    function render(now) {
+      const width = canvas.clientWidth;
+      const height = canvas.clientHeight;
+      ctx.clearRect(0, 0, width, height);
+
+      const trackHeight = height - 58;
+      const thetaEnd = 2.412;
+      const cycloidScale = trackHeight / (1 - Math.cos(thetaEnd));
+      const trackWidth = cycloidScale * (thetaEnd - Math.sin(thetaEnd));
+      const left = (width - trackWidth) / 2;
+      const start = { x: left, y: 28 };
+      const end = { x: left + trackWidth, y: start.y + trackHeight };
+      if (!tracks) tracks = buildTracks(start, end);
+
+      const elapsedMs = (now - startTime) % totalCycleMs;
+      const simSeconds = Math.min(elapsedMs / 1000, Math.max(tracks.cycloid.total, tracks.arc.total, tracks.line.total));
+
+      ctx.strokeStyle = "rgba(48, 38, 95, 0.08)";
+      ctx.lineWidth = 1;
+      for (let y = 40; y < height; y += 40) {
+        ctx.beginPath();
+        ctx.moveTo(24, y);
+        ctx.lineTo(width - 24, y);
+        ctx.stroke();
+      }
+
+      drawPath(tracks.cycloid, "#6a5acd", 4);
+      drawPath(tracks.arc, "#43b09e", 3);
+      drawPath(tracks.line, "#c28a16", 3);
+
+      ctx.fillStyle = "#30265f";
+      ctx.font = "800 11px -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif";
+      ctx.fillText("Start", start.x - 16, start.y - 10);
+      ctx.fillText("Finish", end.x - 34, end.y + 18);
+
+      drawBall(pointAtTime(tracks.cycloid, simSeconds), "#6a5acd", "Brachistochrone", -12);
+      drawBall(pointAtTime(tracks.arc, simSeconds), "#43b09e", "Circular Arc", 16);
+      drawBall(pointAtTime(tracks.line, simSeconds), "#f4c430", "Line", -12);
+
+      timeEls.cycloid.textContent = simSeconds >= tracks.cycloid.total ? `Arrived: ${formatTime(tracks.cycloid.total)}` : formatTime(simSeconds);
+      timeEls.arc.textContent = simSeconds >= tracks.arc.total ? `Arrived: ${formatTime(tracks.arc.total)}` : formatTime(simSeconds);
+      timeEls.line.textContent = simSeconds >= tracks.line.total ? `Arrived: ${formatTime(tracks.line.total)}` : formatTime(simSeconds);
+
+      requestAnimationFrame(render);
+    }
+
+    window.addEventListener("resize", resize);
+    resize();
+    requestAnimationFrame(render);
+  </script>
+</body>
+</html>
