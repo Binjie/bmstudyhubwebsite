@@ -1,0 +1,70 @@
+{{ define "main" }}
+<section class="showcase-detail-hero notes-detail-hero">
+    <div class="container">
+        <a class="showcase-back-link" href='{{ "/note/" | relURL }}'>Back to Notes</a>
+        <div class="showcase-detail-hero-layout">
+            <div class="showcase-detail-copy">
+                <p class="eyebrow">{{ .Params.category | default "Daily Notes" }}</p>
+                <h1 class="showcase-detail-title">{{ .Title }}</h1>
+                <p class="showcase-detail-description">{{ .Params.description }}</p>
+            </div>
+            <aside class="showcase-detail-panel" aria-label="Note facts">
+                <dl class="showcase-facts">
+                    <div>
+                        <dt>Published</dt>
+                        <dd><time datetime='{{ .Date.Format "2006-01-02" }}'>{{ .Date.Format "January 2, 2006" }}</time></dd>
+                    </div>
+                    {{ if gt .Lastmod .Date }}
+                    <div>
+                        <dt>Updated</dt>
+                        <dd><time datetime='{{ .Lastmod.Format "2006-01-02" }}'>{{ .Lastmod.Format "January 2, 2006" }}</time></dd>
+                    </div>
+                    {{ end }}
+                    {{ with .Params.mood }}
+                    <div>
+                        <dt>Note Type</dt>
+                        <dd>{{ . }}</dd>
+                    </div>
+                    {{ end }}
+                    {{ with .Params.tags }}
+                    <div>
+                        <dt>Tags</dt>
+                        <dd>{{ delimit . ", " }}</dd>
+                    </div>
+                    {{ end }}
+                </dl>
+            </aside>
+        </div>
+    </div>
+</section>
+
+<section class="showcase-article-section">
+    <div class="container">
+        <div class="showcase-article-layout">
+            <article class="showcase-article">
+                {{ with .Params.featured_image }}
+                <figure class="showcase-featured-image notes-featured-image">
+                    <img src="{{ . | relURL }}" alt="{{ $.Title }}">
+                </figure>
+                {{ end }}
+                <div class="showcase-article-content">
+                    {{ .Content }}
+                </div>
+            </article>
+
+            <aside class="showcase-side-note" aria-label="Note categories">
+                <p class="eyebrow">Notebook Map</p>
+                <h2>Keep the main shelf simple and let tags carry the detail.</h2>
+                <p>Use broad categories such as Knowledge, Making, Sport, and Life. Use tags for specific ideas, people, materials, questions, or sports.</p>
+                {{ with .Params.tags }}
+                <div class="showcase-tags">
+                    {{ range . }}
+                    <span>{{ . }}</span>
+                    {{ end }}
+                </div>
+                {{ end }}
+            </aside>
+        </div>
+    </div>
+</section>
+{{ end }}

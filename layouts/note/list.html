@@ -1,0 +1,70 @@
+{{ define "main" }}
+{{ $notes := .Pages.ByLastmod.Reverse }}
+{{ $categories := slice }}
+{{ range $notes }}
+    {{ $category := .Params.category | default "Daily Notes" }}
+    {{ $categories = $categories | append $category }}
+{{ end }}
+
+<section class="notes-list-section">
+    <div class="container">
+        <div class="notes-list-heading">
+            <div>
+                <p class="eyebrow">Studio Notes</p>
+                <h1>{{ .Title }}</h1>
+            </div>
+            <p class="notes-count" data-notes-count>{{ len $notes }} notes</p>
+        </div>
+
+        <form class="showcase-tools notes-tools" data-notes-tools role="search">
+            <label class="showcase-search-label" for="notes-search">Search notes</label>
+            <input class="showcase-search-input" id="notes-search" type="search" placeholder="Search notes, categories, tags, or ideas" autocomplete="off" data-notes-search>
+            <div class="showcase-filter-list" aria-label="Filter note categories">
+                <button class="showcase-filter is-active" type="button" data-notes-filter="all">All</button>
+                {{ range $categories | uniq | sort }}
+                <button class="showcase-filter" type="button" data-notes-filter="{{ . | lower }}">{{ . }}</button>
+                {{ end }}
+            </div>
+        </form>
+
+        <div class="notes-board" data-notes-list>
+            {{ range $index, $page := $notes }}
+            {{ $category := .Params.category | default "Daily Notes" }}
+            {{ $mood := .Params.mood | default "Observation" }}
+            {{ $tags := delimit (.Params.tags | default slice) " " }}
+            {{ $summary := .Params.summary | default .Description | default .Summary }}
+            {{ $imageCount := len (.Params.images | default slice) }}
+            {{ if .Params.featured_image }}{{ $imageCount = add $imageCount 1 }}{{ end }}
+            {{ $searchText := printf "%s %s %s %s %s %s" .Title $category $mood $tags $summary .Plain | plainify | lower }}
+            <article class="notes-row" data-notes-item data-notes-category="{{ $category | lower }}" data-notes-search="{{ $searchText }}">
+                <a class="notes-row-link" href="{{ .RelPermalink }}" aria-label="Read {{ .Title }}">
+                    <div class="notes-row-main">
+                        <div class="showcase-card-meta">
+                            <span>{{ $category }}</span>
+                            <span>{{ $mood }}</span>
+                            {{ if gt $imageCount 0 }}<span>{{ $imageCount }} image{{ if ne $imageCount 1 }}s{{ end }}</span>{{ end }}
+                        </div>
+                        <h2>{{ .Title }}</h2>
+                        <p>{{ $summary }}</p>
+                        {{ with .Params.tags }}
+                        <div class="showcase-row-tags" aria-label="Tags">
+                            {{ range . }}<span>{{ . }}</span>{{ end }}
+                        </div>
+                        {{ end }}
+                    </div>
+                </a>
+                <div class="notes-row-time">
+                    <time datetime='{{ .Date.Format "2006-01-02" }}'>{{ .Date.Format "2006.01.02" }}</time>
+                    {{ if gt .Lastmod .Date }}
+                    <span>Updated {{ .Lastmod.Format "2006.01.02" }}</span>
+                    {{ end }}
+                </div>
+            </article>
+            {{ end }}
+        </div>
+
+        <p class="showcase-empty" data-notes-empty hidden>No notes match your search.</p>
+        <button class="notes-load-more" type="button" data-notes-load-more hidden>Load more notes</button>
+    </div>
+</section>
+{{ end }}

@@ -366,7 +366,7 @@ function speakWelcome(label) {
 }
 
 function getWelcomeText(label) {
-    return containsChinese(label) ? `欢迎，${label}` : `Welcome, ${label}!`;
+    return `Welcome, ${label}!`;
 }
 
 function containsChinese(value) {

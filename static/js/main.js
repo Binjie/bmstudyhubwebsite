@@ -169,4 +169,77 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Notes search, category filtering, and progressive loading
+    const notesTools = document.querySelector('[data-notes-tools]');
+    if (notesTools) {
+        const searchInput = notesTools.querySelector('[data-notes-search]');
+        const filterButtons = notesTools.querySelectorAll('[data-notes-filter]');
+        const noteItems = Array.from(document.querySelectorAll('[data-notes-item]'));
+        const countEl = document.querySelector('[data-notes-count]');
+        const emptyEl = document.querySelector('[data-notes-empty]');
+        const loadMoreButton = document.querySelector('[data-notes-load-more]');
+        const pageSize = 8;
+        let activeCategory = 'all';
+        let visibleLimit = pageSize;
+
+        const updateNotesList = () => {
+            const query = searchInput.value.trim().toLowerCase();
+            const matchedItems = noteItems.filter(item => {
+                const itemCategory = item.dataset.notesCategory || '';
+                const searchText = item.dataset.notesSearch || '';
+                const matchesCategory = activeCategory === 'all' || itemCategory === activeCategory;
+                const matchesSearch = !query || searchText.includes(query);
+                return matchesCategory && matchesSearch;
+            });
+
+            noteItems.forEach(item => {
+                item.hidden = true;
+            });
+
+            matchedItems.slice(0, visibleLimit).forEach(item => {
+                item.hidden = false;
+            });
+
+            if (countEl) {
+                countEl.textContent = matchedItems.length === 1 ? '1 note' : `${matchedItems.length} notes`;
+            }
+
+            if (emptyEl) {
+                emptyEl.hidden = matchedItems.length > 0;
+            }
+
+            if (loadMoreButton) {
+                loadMoreButton.hidden = matchedItems.length <= visibleLimit;
+            }
+        };
+
+        searchInput.addEventListener('input', () => {
+            visibleLimit = pageSize;
+            updateNotesList();
+        });
+
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                activeCategory = button.dataset.notesFilter || 'all';
+                visibleLimit = pageSize;
+                filterButtons.forEach(item => item.classList.remove('is-active'));
+                button.classList.add('is-active');
+                updateNotesList();
+            });
+        });
+
+        if (loadMoreButton) {
+            loadMoreButton.addEventListener('click', () => {
+                visibleLimit += pageSize;
+                updateNotesList();
+            });
+        }
+
+        notesTools.addEventListener('submit', event => {
+            event.preventDefault();
+        });
+
+        updateNotesList();
+    }
+
 });
