@@ -5,7 +5,7 @@
   if (!root) return;
 
   const STORAGE_KEY = "bmstudyhub.mathLevelCheck.v1";
-  const DATA_VERSION = 2;
+  const DATA_VERSION = 3;
   const DURATION_SECONDS = 60 * 60;
   const EXAM_SIZE = 40;
 
@@ -136,12 +136,79 @@
     return escapeHtml(text);
   }
 
+  function renderDiagram(diagram) {
+    if (!diagram) return "";
+    if (diagram.type === "circle") {
+      return `
+        <figure class="test-diagram" aria-label="Circle diagram">
+          <svg viewBox="0 0 260 150" role="img">
+            <circle cx="120" cy="75" r="54" class="diagram-fill"></circle>
+            <line x1="120" y1="75" x2="174" y2="75" class="diagram-line"></line>
+            <text x="142" y="66">${escapeHtml(diagram.radius)} cm</text>
+            <text x="103" y="82" class="diagram-point">O</text>
+          </svg>
+        </figure>`;
+    }
+    if (diagram.type === "rightTriangle") {
+      const maxBase = 175;
+      const maxHeight = 112;
+      const scale = Math.min(maxBase / diagram.a, maxHeight / diagram.b);
+      const base = Math.max(58, Math.round(diagram.a * scale));
+      const height = Math.max(58, Math.round(diagram.b * scale));
+      const x0 = 52;
+      const y0 = 142;
+      const x1 = x0 + base;
+      const y1 = y0 - height;
+      const labelX = x0 + base / 2 - 12;
+      const labelY = y0 + 24;
+      const sideLabelY = y0 - height / 2 + 5;
+      const hypLabelX = x0 + base / 2 + 22;
+      const hypLabelY = y0 - height / 2 - 12;
+      return `
+        <figure class="test-diagram" aria-label="Right triangle diagram">
+          <svg viewBox="0 0 280 170" role="img">
+            <polygon points="${x0},${y0} ${x1},${y0} ${x0},${y1}" class="diagram-fill"></polygon>
+            <path d="M${x0} ${y0} L${x1} ${y0} L${x0} ${y1} Z" class="diagram-line"></path>
+            <path d="M${x0} ${y0 - 20} L${x0 + 20} ${y0 - 20} L${x0 + 20} ${y0}" class="diagram-line thin"></path>
+            <text x="${labelX}" y="${labelY}">${escapeHtml(diagram.a)} cm</text>
+            <text x="15" y="${sideLabelY}">${escapeHtml(diagram.b)} cm</text>
+            <text x="${hypLabelX}" y="${hypLabelY}">?</text>
+          </svg>
+        </figure>`;
+    }
+    if (diagram.type === "prism") {
+      const largest = Math.max(diagram.l, diagram.w, diagram.h);
+      const boxWidth = Math.round(48 + (diagram.l / largest) * 116);
+      const boxHeight = Math.round(34 + (diagram.h / largest) * 92);
+      const depth = Math.round(18 + (diagram.w / largest) * 42);
+      const x = 58;
+      const y = 42;
+      const x2 = x + boxWidth;
+      const y2 = y + boxHeight;
+      const dx = depth;
+      const dy = -Math.round(depth * 0.58);
+      return `
+        <figure class="test-diagram" aria-label="Rectangular prism diagram">
+          <svg viewBox="0 0 300 190" role="img">
+            <polygon points="${x},${y} ${x2},${y} ${x2 + dx},${y + dy} ${x + dx},${y + dy}" class="diagram-fill"></polygon>
+            <polygon points="${x2},${y} ${x2 + dx},${y + dy} ${x2 + dx},${y2 + dy} ${x2},${y2}" class="diagram-fill side"></polygon>
+            <polygon points="${x},${y} ${x2},${y} ${x2},${y2} ${x},${y2}" class="diagram-fill front"></polygon>
+            <path d="M${x} ${y} H${x2} L${x2 + dx} ${y + dy} H${x + dx} Z M${x2} ${y} V${y2} L${x2 + dx} ${y2 + dy} V${y + dy} M${x} ${y} V${y2} H${x2} M${x} ${y2} L${x + dx} ${y2 + dy} H${x2 + dx} M${x + dx} ${y + dy} V${y2 + dy}" class="diagram-line"></path>
+            <text x="${x + boxWidth / 2 - 18}" y="${y2 + 23}">${escapeHtml(diagram.l)} cm</text>
+            <text x="${x2 + dx + 4}" y="${y + boxHeight / 2}">${escapeHtml(diagram.w)} cm</text>
+            <text x="24" y="${y + boxHeight / 2}">${escapeHtml(diagram.h)} cm</text>
+          </svg>
+        </figure>`;
+    }
+    return "";
+  }
+
   function countFromPercent(rng, pct, min, max) {
     const step = 100 / gcd(pct, 100);
     return step * int(rng, Math.ceil(min / step), Math.floor(max / step));
   }
 
-  function q(topic, skill, difficulty, type, question, answer, options, tolerance) {
+  function q(topic, skill, difficulty, type, question, answer, options, tolerance, diagram) {
     return {
       id: "",
       topic,
@@ -152,6 +219,7 @@
       answer: String(answer),
       options: options || null,
       tolerance: tolerance || 0,
+      diagram: diagram || null,
       marks: difficulty === "hard" ? 3 : difficulty === "medium" ? 2 : 1
     };
   }
@@ -200,14 +268,14 @@
     ],
     Geometry: [
       (r) => { const a = int(r, 25, 85), b = int(r, 25, 85); return q("Geometry", "Triangle angles", "easy", "fill", `Two angles in a triangle are ${a} degrees and ${b} degrees. Find the third angle.`, 180 - a - b); },
-      (r) => { const rds = int(r, 3, 12); return q("Geometry", "Circle area", "medium", "fill", `A circle has radius ${rds} cm. Find its area to 1 decimal place.`, round(Math.PI * rds * rds, 1), null, 0.12); },
-      (r) => { const a = int(r, 3, 14), b = int(r, 3, 14); return q("Geometry", "Pythagoras", "medium", "fill", `A right triangle has shorter sides ${a} cm and ${b} cm. Find the hypotenuse to 2 decimal places.`, round(Math.sqrt(a * a + b * b), 2), null, 0.03); },
+      (r) => { const rds = int(r, 3, 12); return q("Geometry", "Circle area", "medium", "fill", `A circle has radius ${rds} cm. Find its area to 1 decimal place.`, round(Math.PI * rds * rds, 1), null, 0.12, { type: "circle", radius: rds }); },
+      (r) => { const a = int(r, 3, 14), b = int(r, 3, 14); return q("Geometry", "Pythagoras", "medium", "fill", `A right triangle has shorter sides ${a} cm and ${b} cm. Find the hypotenuse to 2 decimal places.`, round(Math.sqrt(a * a + b * b), 2), null, 0.03, { type: "rightTriangle", a, b }); },
       (r) => { const scale = int(r, 2, 6), side = int(r, 3, 12); return q("Geometry", "Similarity", "medium", "fill", `A shape is enlarged by scale factor ${scale}. If one original side is ${side} cm, what is the matching new side?`, scale * side); },
       (r) => { const n = int(r, 5, 12); return buildChoice(r, "Geometry", "Polygons", "hard", `What is the sum of the interior angles of a ${n}-sided polygon?`, (n - 2) * 180, [n * 180, (n - 1) * 180, (n - 2) * 90]); }
     ],
     Measurement: [
       (r) => { const km = int(r, 2, 18), m = int(r, 100, 900); return q("Measurement", "Metric conversion", "easy", "fill", `Convert ${km}.${m} km to metres.`, km * 1000 + m); },
-      (r) => { const l = int(r, 5, 24), w = int(r, 4, 18), h = int(r, 3, 15); return q("Measurement", "Volume", "easy", "fill", `Find the volume of a rectangular prism ${l} cm by ${w} cm by ${h} cm.`, l * w * h); },
+      (r) => { const l = int(r, 5, 24), w = int(r, 4, 18), h = int(r, 3, 15); return q("Measurement", "Volume", "easy", "fill", `Find the volume of a rectangular prism ${l} cm by ${w} cm by ${h} cm.`, l * w * h, null, 0, { type: "prism", l, w, h }); },
       (r) => { const speed = int(r, 40, 110), time = int(r, 2, 6); return q("Measurement", "Speed distance time", "medium", "fill", `A car travels at ${speed} km/h for ${time} hours. How far does it travel?`, speed * time); },
       (r) => { const area = int(r, 24, 160), base = pick(r, [4, 5, 6, 8, 10]); return q("Measurement", "Triangle area", "medium", "fill", `A triangle has area ${math(`${area}\\text{ cm}^2`)} and base ${base} cm. Find its height.`, round((2 * area) / base, 2), null, 0.03); }
     ],
@@ -484,6 +552,7 @@
           <span>${question.topic} / ${question.skill}</span>
           <span>${question.marks} mark${question.marks > 1 ? "s" : ""}</span>
         </div>
+        ${renderDiagram(question.diagram)}
         <p>${escapeHtml(question.question)}</p>
         ${input}
       </li>
@@ -560,6 +629,7 @@
           <span>${question.topic} / ${question.skill}</span>
           <span>${marked.correct ? "Correct" : "Check"}</span>
         </div>
+        ${renderDiagram(question.diagram)}
         <p>${escapeHtml(question.question)}</p>
         <p><strong>Your answer:</strong> ${escapeHtml(marked.answer || "No answer")}</p>
         <p><strong>Expected answer:</strong> ${displayAnswer(marked.expected)}</p>

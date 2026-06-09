@@ -3830,6 +3830,68 @@ section.game-instructions-card {
     margin-bottom: 12px;
 }
 
+.test-diagram {
+    background: #fbf9ff;
+    border: 1px solid rgba(106, 90, 205, 0.14);
+    border-radius: 8px;
+    margin: 8px 0 14px;
+    max-width: 460px;
+    overflow: hidden;
+    padding: 10px;
+}
+
+.test-diagram svg {
+    display: block;
+    height: auto;
+    width: 100%;
+}
+
+.test-diagram text {
+    fill: #30265f;
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.diagram-fill {
+    fill: #eefbf8;
+    stroke: rgba(67, 176, 158, 0.55);
+    stroke-width: 2;
+}
+
+.diagram-fill.side {
+    fill: #fff8dc;
+}
+
+.diagram-fill.front {
+    fill: #f6f2ff;
+}
+
+.diagram-line {
+    fill: none;
+    stroke: #30265f;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 3;
+}
+
+.diagram-line.thin {
+    stroke-width: 2;
+}
+
+.diagram-line.dashed {
+    stroke-dasharray: 6 6;
+    stroke-width: 2;
+}
+
+.diagram-point {
+    font-size: 12px;
+}
+
+.science-diagram {
+    max-width: 560px;
+}
+
 .math-test-options {
     display: grid;
     gap: 8px;
