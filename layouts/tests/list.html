@@ -47,7 +47,7 @@
 
 <section class="showcase-list-section">
     <div class="container">
-        <form class="showcase-tools" data-showcase-tools role="search">
+        <form class="showcase-tools tests-tools" data-showcase-tools role="search">
             <label class="showcase-search-label" for="tests-search">Search tests</label>
             <input class="showcase-search-input" id="tests-search" type="search" placeholder="Search tests, skills, or examples" autocomplete="off" data-showcase-search>
             <div class="showcase-filter-list" aria-label="Filter test categories">
@@ -58,14 +58,14 @@
             </div>
         </form>
 
-        <div class="showcase-list" data-showcase-list>
+        <div class="showcase-list tests-list" data-showcase-list>
             {{ range $items }}
             {{ $category := .Params.category | default "Thinking Test" }}
             {{ $status := .Params.status | default "" }}
             {{ $tags := delimit (.Params.tags | default slice) " " }}
             {{ $summary := .Params.summary | default .Description | default .Summary }}
             {{ $searchText := printf "%s %s %s %s %s" .Title $category $status $tags $summary | plainify | lower }}
-            <article class="showcase-row" data-showcase-item data-showcase-category="{{ $category | lower }}" data-showcase-search="{{ $searchText }}">
+            <article class="showcase-row tests-row" data-showcase-item data-showcase-category="{{ $category | lower }}" data-showcase-search="{{ $searchText }}">
                 <a class="showcase-row-link" href="{{ .RelPermalink }}" aria-label="Open {{ .Title }}">
                     <div class="showcase-row-media">
                         {{ if .Params.featured_image }}
@@ -88,9 +88,6 @@
                         {{ end }}
                     </div>
                 </a>
-                <div class="showcase-row-actions">
-                    <a class="showcase-text-link" href="{{ .RelPermalink }}">View test guide</a>
-                </div>
             </article>
             {{ end }}
         </div>

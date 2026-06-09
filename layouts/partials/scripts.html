@@ -1,1 +1,21 @@
 <script src='{{ "js/main.js" | relURL }}'></script>
+{{ if or .Params.math (or .Params.math_level_test .Params.science_level_test) }}
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [["$", "$"], ["\\(", "\\)"]],
+      displayMath: [["$$", "$$"], ["\\[", "\\]"]]
+    },
+    options: {
+      skipHtmlTags: ["script", "noscript", "style", "textarea", "pre", "code"]
+    }
+  };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+{{ end }}
+{{ if .Params.math_level_test }}
+<script defer src='{{ "js/math-level-test.js?v=9" | relURL }}'></script>
+{{ end }}
+{{ if .Params.science_level_test }}
+<script defer src='{{ "js/science-level-test.js?v=2" | relURL }}'></script>
+{{ end }}

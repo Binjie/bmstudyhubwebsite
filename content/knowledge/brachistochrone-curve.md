@@ -8,6 +8,7 @@ field: "Calculus of Variations"
 audience: "Middle school and above"
 featured_image: "/images/home-math-background.png"
 tags: ["brachistochrone", "cycloid", "gravity", "calculus", "history of mathematics"]
+math: true
 ---
 
 ## The Fastest Path Down
@@ -57,36 +58,74 @@ The story becomes clearer if we follow the mathematics in the order a solver mig
 
 Galileo had already studied falling motion and guessed that a circular arc might be the fastest curve. That guess was reasonable: a circle is smooth, simple, and drops quickly. But it was not the final answer.
 
-Johann Bernoulli sharpened the question in 1696. He asked mathematicians to find the curve that minimizes travel time. The first ingredient is speed. If the bead has fallen a vertical distance `y`, conservation of energy gives:
+Johann Bernoulli sharpened the question in 1696. He asked mathematicians to find the curve that minimizes travel time. The first ingredient is speed. If the bead has fallen a vertical distance $y$, conservation of energy gives:
 
-```text
-v = sqrt(2gy)
-```
+$$
+v=\sqrt{2gy}
+$$
 
-That formula says: the lower the bead has fallen, the faster it is moving. So a path that falls sharply at first can gain speed early.
+Read it like this:
 
-But speed alone is not enough. The bead must travel along the whole track. If a tiny piece of the track has length `ds`, then the time for that tiny piece is roughly:
+- $v$ means speed
+- $g$ means gravity
+- $y$ means how far the bead has dropped vertically
+- $\sqrt{\phantom{x}}$ means square root
 
-```text
-small time = ds / v
-```
+The important part is not the square root itself. The important part is this: when $y$ becomes bigger, $v$ becomes bigger. In ordinary words, the lower the bead has fallen, the faster it is moving.
 
-Adding those tiny times along the full curve gives:
+That explains why the purple curve begins by dropping steeply. It quickly makes $y$ large, so the bead gains speed early.
 
-```text
-T = integral(ds / sqrt(2gy))
-```
+But speed alone is not enough. The bead also has to travel along the track. Imagine cutting the track into many tiny pieces. For one tiny piece:
 
-So Bernoulli's challenge becomes a very precise question: which curve makes this total time `T` as small as possible?
+$$
+\Delta t=\frac{\Delta s}{v}
+$$
 
-The answer found by Bernoulli, Newton, Leibniz, L'Hopital, and Jakob Bernoulli was the same: the curve is a cycloid. A cycloid can be written with one moving angle, usually called `theta`:
+This is just the familiar idea:
 
-```text
-x = a(theta - sin theta)
-y = a(1 - cos theta)
-```
+$$
+\text{time}=\frac{\text{distance}}{\text{speed}}
+$$
 
-Here `a` controls the size of the curve. As `theta` increases, the point moves along the same kind of curve that a dot on a rolling wheel would draw.
+Using the speed formula above, the tiny time becomes:
+
+$$
+\Delta t=\frac{\Delta s}{\sqrt{2gy}}
+$$
+
+Now add all the tiny times along the whole track:
+
+$$
+T\approx \sum \frac{\Delta s}{\sqrt{2gy}}
+$$
+
+Here $\sum$ means "add them all." This version is easier to read before calculus. Later, mathematicians write the same idea with an integral:
+
+$$
+T=\int \frac{ds}{\sqrt{2gy}}
+$$
+
+So Bernoulli's challenge becomes a precise question: which curve makes this total time $T$ as small as possible?
+
+The answer found by Bernoulli, Newton, Leibniz, L'Hopital, and Jakob Bernoulli was the same: the curve is a cycloid. A cycloid can be written with one moving angle, usually called $\theta$:
+
+$$
+x=a(\theta-\sin\theta)
+$$
+
+$$
+y=a(1-\cos\theta)
+$$
+
+Here $a$ controls the size of the curve, and $\theta$ is the angle that changes as the wheel rolls. This is the same kind of curve traced by a dot on the rim of a rolling wheel.
+
+## A Helpful Video
+
+3Blue1Brown has a beautiful visual explanation of this problem. The video below starts near the section that connects the motion idea to the brachistochrone curve.
+
+<div class="video-embed">
+  <iframe src="https://www.youtube-nocookie.com/embed/Cld0p3a43fU?start=94" title="3Blue1Brown explanation of the brachistochrone problem" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+</div>
 
 ## Who Asked It? Who Solved It?
 
@@ -159,4 +198,5 @@ Real roller coasters must also consider safety, comfort, friction, wheels, suppo
 
 - [Encyclopaedia Britannica, "Brachistochrone"](https://www.britannica.com/science/brachistochrone)
 - [Wolfram MathWorld, "Brachistochrone Problem"](https://mathworld.wolfram.com/BrachistochroneProblem.html)
+- [3Blue1Brown, brachistochrone video explanation](https://www.youtube.com/watch?v=Cld0p3a43fU&t=94s)
 - Portraits from Wikimedia Commons public-domain image files for Johann Bernoulli, Isaac Newton, Gottfried Wilhelm Leibniz, Jakob Bernoulli, and Guillaume de l'Hopital

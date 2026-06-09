@@ -1,5 +1,6 @@
 {{ define "main" }}
-<section class="showcase-detail-hero">
+{{ $isGeneratedTest := or .Params.math_level_test .Params.science_level_test }}
+<section class='showcase-detail-hero{{ if $isGeneratedTest }} test-detail-hero-compact{{ end }}'>
     <div class="container">
         <a class="showcase-back-link" href='{{ "/tests/" | relURL }}'>Back to Tests</a>
         <div class="showcase-detail-hero-layout">
@@ -39,15 +40,16 @@
     </div>
 </section>
 
-<section class="showcase-article-section">
+<section class='showcase-article-section{{ if $isGeneratedTest }} test-main-section{{ end }}'>
     <div class="container">
-        <div class="showcase-article-layout">
+        <div class='showcase-article-layout{{ if $isGeneratedTest }} test-layout-full{{ end }}'>
             <article class="showcase-article">
                 <div class="showcase-article-content">
                     {{ .Content }}
                 </div>
             </article>
 
+            {{ if not $isGeneratedTest }}
             <aside class="showcase-side-note" aria-label="Test note">
                 <p class="eyebrow">How To Use</p>
                 <h2>Treat the result as a conversation starter.</h2>
@@ -60,6 +62,7 @@
                 </div>
                 {{ end }}
             </aside>
+            {{ end }}
         </div>
     </div>
 </section>
