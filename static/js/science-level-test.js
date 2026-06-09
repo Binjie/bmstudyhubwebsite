@@ -5,7 +5,7 @@
   if (!root) return;
 
   const STORAGE_KEY = "bmstudyhub.scienceLevelCheck.v1";
-  const DATA_VERSION = 1;
+  const DATA_VERSION = 3;
   const DURATION_SECONDS = 60 * 60;
   const EXAM_SIZE = 40;
 
@@ -69,7 +69,7 @@
     return "\\(" + text + "\\)";
   }
 
-  function q(topic, skill, difficulty, type, question, answer, options, tolerance) {
+  function q(topic, skill, difficulty, type, question, answer, options, tolerance, diagram) {
     return {
       id: "",
       topic,
@@ -80,6 +80,7 @@
       answer: String(answer),
       options: options || null,
       tolerance: tolerance || 0,
+      diagram: diagram || null,
       marks: difficulty === "hard" ? 3 : difficulty === "medium" ? 2 : 1
     };
   }
@@ -107,12 +108,65 @@
     return escapeHtml(text);
   }
 
+  function renderDiagram(diagram) {
+    if (!diagram) return "";
+    if (diagram.type === "foodChain") {
+      return `
+        <figure class="test-diagram science-diagram" aria-label="Food chain diagram">
+          <svg viewBox="0 0 430 150" role="img">
+            <defs><marker id="science-arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#30265f"></path></marker></defs>
+            <rect x="22" y="48" width="90" height="54" rx="8" class="diagram-fill"></rect>
+            <rect x="170" y="48" width="90" height="54" rx="8" class="diagram-fill side"></rect>
+            <rect x="318" y="48" width="90" height="54" rx="8" class="diagram-fill front"></rect>
+            <path d="M118 75 H160" class="diagram-line" marker-end="url(#science-arrow)"></path>
+            <path d="M266 75 H308" class="diagram-line" marker-end="url(#science-arrow)"></path>
+            <text x="67" y="80" text-anchor="middle">grass</text>
+            <text x="215" y="80" text-anchor="middle">rabbit</text>
+            <text x="363" y="80" text-anchor="middle">hawk</text>
+            <text x="67" y="122" text-anchor="middle">producer</text>
+          </svg>
+        </figure>`;
+    }
+    if (diagram.type === "seriesCircuit") {
+      return `
+        <figure class="test-diagram science-diagram" aria-label="Series circuit diagram">
+          <svg viewBox="0 0 430 170" role="img">
+            <path d="M76 86 H128 M168 86 H226 M266 86 H326 V132 H238 M194 132 H76 V86" class="diagram-line"></path>
+            <line x1="210" y1="108" x2="210" y2="156" class="diagram-line"></line>
+            <line x1="224" y1="118" x2="224" y2="146" class="diagram-line thin"></line>
+            <circle cx="148" cy="86" r="20" class="diagram-fill"></circle>
+            <path d="M136 98 L160 74 M136 74 L160 98" class="diagram-line thin"></path>
+            <circle cx="246" cy="86" r="20" class="diagram-fill"></circle>
+            <path d="M234 98 L258 74 M234 74 L258 98" class="diagram-line thin"></path>
+            <text x="217" y="104" text-anchor="middle">battery</text>
+            <text x="197" y="32" text-anchor="middle">bulbs in series</text>
+          </svg>
+        </figure>`;
+    }
+    if (diagram.type === "reflection") {
+      return `
+        <figure class="test-diagram science-diagram" aria-label="Light reflection diagram">
+          <svg viewBox="0 0 360 170" role="img">
+            <defs><marker id="light-arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#30265f"></path></marker></defs>
+            <line x1="42" y1="126" x2="318" y2="126" class="diagram-line"></line>
+            <line x1="180" y1="28" x2="180" y2="146" class="diagram-line dashed"></line>
+            <path d="M74 34 L178 124" class="diagram-line" marker-end="url(#light-arrow)"></path>
+            <path d="M182 124 L286 34" class="diagram-line" marker-end="url(#light-arrow)"></path>
+            <text x="86" y="62">incoming light</text>
+            <text x="224" y="62">reflected light</text>
+            <text x="192" y="150">mirror</text>
+          </svg>
+        </figure>`;
+    }
+    return "";
+  }
+
   const generators = {
     "Scientific Investigation": [
       (r) => buildChoice(r, "Scientific Investigation", "Variables", "easy", "In an experiment testing how fertiliser affects plant height, what is the independent variable?", "amount of fertiliser", ["plant height", "type of ruler", "final result"]),
       (r) => buildChoice(r, "Scientific Investigation", "Controls", "medium", "Why should all plants in a fertiliser experiment receive the same amount of water?", "to control another variable", ["to increase fertiliser", "to change the hypothesis", "to avoid measuring height"]),
       (r) => buildChoice(r, "Scientific Investigation", "Reliability", "medium", "Which action most improves reliability in a school science investigation?", "repeat the test and average results", ["use only one trial", "change several variables", "ignore unusual data"]),
-      (r) => { const readings = [int(r, 18, 26), int(r, 18, 26), int(r, 18, 26)]; return q("Scientific Investigation", "Averaging data", "easy", "Find the mean of the readings " + readings.join(", ") + ".", round(readings.reduce((a, b) => a + b, 0) / readings.length, 1), null, 0.11); }
+      (r) => { const readings = [int(r, 18, 26), int(r, 18, 26), int(r, 18, 26)]; return q("Scientific Investigation", "Averaging data", "easy", "fill", "Find the mean of the readings " + readings.join(", ") + ".", round(readings.reduce((a, b) => a + b, 0) / readings.length, 1), null, 0.11); }
     ],
     "Cells and Life Processes": [
       (r) => buildChoice(r, "Cells and Life Processes", "Cell organelles", "easy", "Which cell part controls most cell activities and contains DNA?", "nucleus", ["cell wall", "chloroplast", "vacuole"]),
@@ -128,7 +182,7 @@
       (r) => buildChoice(r, "Human Body Systems", "Homeostasis", "hard", "Sweating on a hot day mainly helps the body to:", "cool down by evaporation", ["increase body temperature", "make more glucose", "slow oxygen uptake"])
     ],
     "Ecology and Evolution": [
-      (r) => buildChoice(r, "Ecology and Evolution", "Food webs", "easy", "In a food chain, what is the role of grass?", "producer", ["primary consumer", "decomposer", "predator"]),
+      (r) => { const item = buildChoice(r, "Ecology and Evolution", "Food webs", "easy", "In the food chain shown, what is the role of grass?", "producer", ["primary consumer", "decomposer", "predator"]); item.diagram = { type: "foodChain" }; return item; },
       (r) => buildChoice(r, "Ecology and Evolution", "Energy flow", "medium", "Why is less energy available at higher trophic levels?", "energy is lost as heat and movement", ["energy is created by predators", "plants absorb animals", "decomposers stop energy flow"]),
       (r) => buildChoice(r, "Ecology and Evolution", "Adaptation", "medium", "A thick waxy leaf surface helps a plant mainly by:", "reducing water loss", ["increasing animal pollination", "making soil minerals", "stopping photosynthesis"]),
       (r) => buildChoice(r, "Ecology and Evolution", "Natural selection", "hard", "Natural selection is most likely when individuals in a population:", "vary in traits that affect survival and reproduction", ["are all genetically identical", "never compete", "cannot pass traits to offspring"]),
@@ -140,26 +194,26 @@
       (r) => buildChoice(r, "Matter and Chemistry", "Atoms", "medium", "Which subatomic particle has a negative charge?", "electron", ["proton", "neutron", "nucleus"]),
       (r) => buildChoice(r, "Matter and Chemistry", "Acids and bases", "medium", "A solution with pH 3 is best described as:", "acidic", ["neutral", "alkaline", "pure water"]),
       (r) => buildChoice(r, "Matter and Chemistry", "Chemical reactions", "medium", "Which sign suggests a chemical reaction has occurred?", "a gas is produced", ["a solid is cut in half", "water is poured", "sand is mixed with salt"]),
-      (r) => { const protons = int(r, 3, 18), neutrons = int(r, 3, 22); return q("Matter and Chemistry", "Mass number", "medium", "An atom has " + protons + " protons and " + neutrons + " neutrons. What is its mass number?", protons + neutrons); }
+      (r) => { const protons = int(r, 3, 18), neutrons = int(r, 3, 22); return q("Matter and Chemistry", "Mass number", "medium", "fill", "An atom has " + protons + " protons and " + neutrons + " neutrons. What is its mass number?", protons + neutrons); }
     ],
     "Forces and Motion": [
-      (r) => { const mass = int(r, 2, 12), acceleration = int(r, 2, 8); return q("Forces and Motion", "Newton's second law", "medium", "Find the force when mass is " + mass + " kg and acceleration is " + acceleration + " m/s^2. Use " + math("F = ma") + ".", mass * acceleration); },
-      (r) => { const distance = int(r, 20, 180), time = int(r, 2, 12); return q("Forces and Motion", "Speed", "easy", "An object travels " + distance + " m in " + time + " s. Find its average speed in m/s.", round(distance / time, 2), null, 0.03); },
+      (r) => { const mass = int(r, 2, 12), acceleration = int(r, 2, 8); return q("Forces and Motion", "Newton's second law", "medium", "fill", "Find the force when mass is " + mass + " kg and acceleration is " + acceleration + " m/s^2. Use " + math("F = ma") + ".", mass * acceleration); },
+      (r) => { const distance = int(r, 20, 180), time = int(r, 2, 12); return q("Forces and Motion", "Speed", "easy", "fill", "An object travels " + distance + " m in " + time + " s. Find its average speed in m/s.", round(distance / time, 2), null, 0.03); },
       (r) => buildChoice(r, "Forces and Motion", "Balanced forces", "medium", "If forces on an object are balanced, the object:", "has no change in motion", ["must speed up", "must stop instantly", "has no mass"]),
       (r) => buildChoice(r, "Forces and Motion", "Gravity", "easy", "Weight is the force caused by:", "gravity acting on mass", ["friction acting on air", "sound waves", "magnetism only"]),
-      (r) => { const force = int(r, 20, 120), area = int(r, 2, 12); return q("Forces and Motion", "Pressure", "hard", "Find pressure when force is " + force + " N and area is " + area + " m^2. Use " + math("P = F/A") + ".", round(force / area, 2), null, 0.03); }
+      (r) => { const force = int(r, 20, 120), area = int(r, 2, 12); return q("Forces and Motion", "Pressure", "hard", "fill", "Find pressure when force is " + force + " N and area is " + area + " m^2. Use " + math("P = F/A") + ".", round(force / area, 2), null, 0.03); }
     ],
     "Energy and Electricity": [
       (r) => buildChoice(r, "Energy and Electricity", "Energy transfers", "easy", "A battery-powered torch mainly changes chemical energy into:", "light and heat energy", ["sound only", "gravitational energy", "nuclear energy"]),
-      (r) => { const voltage = int(r, 3, 24), current = int(r, 1, 8); return q("Energy and Electricity", "Electrical power", "medium", "Find power when voltage is " + voltage + " V and current is " + current + " A. Use " + math("P = VI") + ".", voltage * current); },
-      (r) => { const voltage = int(r, 6, 24), resistance = pick(r, [2, 3, 4, 6, 8, 12]); return q("Energy and Electricity", "Ohm's law", "medium", "Find current when voltage is " + voltage + " V and resistance is " + resistance + " ohms. Use " + math("I = V/R") + ".", round(voltage / resistance, 2), null, 0.03); },
-      (r) => buildChoice(r, "Energy and Electricity", "Circuits", "medium", "In a series circuit, adding more identical bulbs usually makes each bulb:", "dimmer", ["brighter", "unchanged", "turn into a switch"]),
+      (r) => { const voltage = int(r, 3, 24), current = int(r, 1, 8); return q("Energy and Electricity", "Electrical power", "medium", "fill", "Find power when voltage is " + voltage + " V and current is " + current + " A. Use " + math("P = VI") + ".", voltage * current); },
+      (r) => { const voltage = int(r, 6, 24), resistance = pick(r, [2, 3, 4, 6, 8, 12]); return q("Energy and Electricity", "Ohm's law", "medium", "fill", "Find current when voltage is " + voltage + " V and resistance is " + resistance + " ohms. Use " + math("I = V/R") + ".", round(voltage / resistance, 2), null, 0.03); },
+      (r) => { const item = buildChoice(r, "Energy and Electricity", "Circuits", "medium", "In a series circuit like the one shown, adding more identical bulbs usually makes each bulb:", "dimmer", ["brighter", "unchanged", "turn into a switch"]); item.diagram = { type: "seriesCircuit" }; return item; },
       (r) => buildChoice(r, "Energy and Electricity", "Heat transfer", "easy", "Heat transfer through direct contact is called:", "conduction", ["radiation", "reflection", "evaporation"])
     ],
     "Waves and Light": [
-      (r) => buildChoice(r, "Waves and Light", "Reflection", "easy", "When light bounces off a mirror, this is called:", "reflection", ["refraction", "diffusion", "absorption only"]),
+      (r) => { const item = buildChoice(r, "Waves and Light", "Reflection", "easy", "When light bounces off a mirror as shown, this is called:", "reflection", ["refraction", "diffusion", "absorption only"]); item.diagram = { type: "reflection" }; return item; },
       (r) => buildChoice(r, "Waves and Light", "Refraction", "medium", "Light changes direction when it enters water from air because it:", "changes speed", ["stops moving", "becomes sound", "loses all energy"]),
-      (r) => { const frequency = int(r, 2, 12), wavelength = int(r, 2, 8); return q("Waves and Light", "Wave speed", "medium", "Find wave speed if frequency is " + frequency + " Hz and wavelength is " + wavelength + " m. Use " + math("v = f\\lambda") + ".", frequency * wavelength); }
+      (r) => { const frequency = int(r, 2, 12), wavelength = int(r, 2, 8); return q("Waves and Light", "Wave speed", "medium", "fill", "Find wave speed if frequency is " + frequency + " Hz and wavelength is " + wavelength + " m. Use " + math("v = f\\lambda") + ".", frequency * wavelength); }
     ],
     "Earth and Space Science": [
       (r) => buildChoice(r, "Earth and Space Science", "Rock cycle", "medium", "Sedimentary rock is often formed by:", "compaction and cementation of sediments", ["melting in the Sun", "evaporation of metal", "photosynthesis"]),
@@ -404,6 +458,7 @@
           <span>${question.topic} / ${question.skill}</span>
           <span>${question.marks} mark${question.marks > 1 ? "s" : ""}</span>
         </div>
+        ${renderDiagram(question.diagram)}
         <p>${escapeHtml(question.question)}</p>
         ${input}
       </li>
@@ -480,6 +535,7 @@
           <span>${question.topic} / ${question.skill}</span>
           <span>${marked.correct ? "Correct" : "Check"}</span>
         </div>
+        ${renderDiagram(question.diagram)}
         <p>${escapeHtml(question.question)}</p>
         <p><strong>Your answer:</strong> ${escapeHtml(marked.answer || "No answer")}</p>
         <p><strong>Expected answer:</strong> ${displayAnswer(marked.expected)}</p>
