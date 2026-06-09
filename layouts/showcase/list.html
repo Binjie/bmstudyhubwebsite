@@ -82,12 +82,11 @@
                         {{ end }}
                     </div>
                 </a>
+                {{ with .Params.embed_url }}
                 <div class="showcase-row-actions">
-                    <a class="showcase-text-link" href="{{ .RelPermalink }}">Read the story</a>
-                    {{ with .Params.embed_url }}
                     <a class="showcase-demo-link" href="{{ . | relURL }}" target="_blank" rel="noopener">Open demo</a>
-                    {{ end }}
                 </div>
+                {{ end }}
             </article>
             {{ end }}
         </div>

@@ -1,6 +1,8 @@
 ---
-title: "Our Courses"
-description: "Explore our range of STEM courses designed for young learners"
+title: "Small-Group Learning Courses"
+description: "Small-group learning support for primary, intermediate, and secondary students."
 ---
 
-We offer a variety of courses that make learning STEM subjects fun and engaging. Our programs are designed to nurture curiosity and develop problem-solving skills.
+BMStudyHub offers focused small-group lessons for students from primary through to secondary school. We keep classes calm and practical, with enough space for students to ask questions and be noticed.
+
+Students do not all need the same lesson. We use level checks, regular feedback, and targeted practice to shape a learning plan that fits each student's pace, gaps, and school goals.

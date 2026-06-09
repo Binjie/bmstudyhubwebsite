@@ -582,6 +582,88 @@ section {
     padding: 15px 25px 25px;
 }
 
+/* Courses */
+.courses-hero {
+    background: linear-gradient(135deg, #ffffff 0%, #f7fbff 48%, #fff8dc 100%);
+}
+
+.courses-plan-panel {
+    display: grid;
+    gap: 14px;
+}
+
+.courses-plan-card {
+    background: #fff8dc;
+    border: 1px solid rgba(244, 196, 48, 0.36);
+    border-radius: 8px;
+    padding: 18px;
+}
+
+.courses-plan-card span,
+.courses-plan-list span {
+    color: #8d6b00;
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0;
+    text-transform: uppercase;
+}
+
+.courses-plan-card strong {
+    color: #30265f;
+    display: block;
+    font-size: 1.28rem;
+    line-height: 1.28;
+    margin-top: 8px;
+}
+
+.courses-plan-list {
+    display: grid;
+    gap: 10px;
+}
+
+.courses-plan-list div {
+    background: #ffffff;
+    border: 1px solid rgba(106, 90, 205, 0.14);
+    border-radius: 8px;
+    display: grid;
+    gap: 8px;
+    grid-template-columns: 76px minmax(0, 1fr);
+    padding: 13px;
+}
+
+.courses-plan-list p {
+    color: #5a546d;
+    font-size: 0.86rem;
+    line-height: 1.42;
+    margin: 0;
+}
+
+.courses-list-section {
+    padding-top: 28px;
+}
+
+.courses-list {
+    border-color: rgba(244, 196, 48, 0.28);
+}
+
+.course-row:hover {
+    background: #fffdf6;
+}
+
+.course-row-link {
+    grid-template-columns: 86px minmax(0, 1fr);
+    text-decoration: none;
+}
+
+.course-row-media {
+    background: linear-gradient(135deg, #30265f, #4fb6a7 58%, #f4c430);
+}
+
+.course-row-main h3 {
+    margin-bottom: 7px;
+}
+
 .content-meta {
     display: flex;
     gap: 20px;
@@ -2817,13 +2899,12 @@ section.game-instructions-card {
 
 .showcase-row-actions {
     align-items: center;
-    border-left: 1px solid rgba(106, 90, 205, 0.12);
     display: flex;
     flex-direction: column;
     gap: 8px;
     justify-content: center;
-    padding: 14px;
-    width: 176px;
+    padding: 14px 14px 14px 0;
+    width: auto;
 }
 
 .showcase-empty {
@@ -3313,10 +3394,9 @@ section.game-instructions-card {
 
     .showcase-row-actions {
         align-items: center;
-        border-left: 0;
-        border-top: 1px solid rgba(106, 90, 205, 0.12);
         flex-direction: row;
         justify-content: flex-start;
+        padding: 0 14px 14px;
         width: auto;
     }
 }

@@ -1,25 +1,25 @@
 ---
-title: "Mathematics Programs"
-description: "Fun and interactive math learning"
-date: 2023-10-15
-featured_image: "/images/placeholder/math.jpg"
+title: "Mathematics"
+description: "Build number confidence, clear working habits, and stronger problem-solving skills."
+weight: 1
+featured_image: "/images/home-math-background.png"
+levels: "Primary - Secondary"
 ---
 
-Our mathematics programs make learning math fun and engaging. We use interactive methods to help students develop strong mathematical foundations.
+Maths lessons focus on clear understanding, careful working, and confidence with unfamiliar questions. Students learn why a method works, how to choose a strategy, and how to show their thinking clearly.
 
-## Program Highlights
+## Best For
 
-* **Elementary Math**: Building blocks of mathematics
-* **Problem Solving**: Critical thinking and logic development
-* **Math Games**: Learning through play
-* **Competition Prep**: Math Olympiad training
+- Students who need stronger foundations in number, fractions, algebra, or geometry.
+- Students who understand ideas in class but lose marks through weak working or exam habits.
+- Students ready for extension, enrichment, or more challenging problem solving.
 
-## Age Groups
-- 6-8 years: Basic concepts and number sense
-- 9-12 years: Problem solving and logical thinking
-- 13-15 years: Advanced topics and competition preparation
+## Focus Areas
 
-## Schedule
-- Regular classes: Weekends (1 hours per session)
-- Summer intensive: July-August
-- Holiday workshops: During school breaks
+- Number sense, calculation accuracy, fractions, decimals, percentages, and ratio.
+- Algebra, equations, graphs, geometry, measurement, statistics, and probability.
+- Word problems, logical reasoning, checking strategies, and assessment preparation.
+
+## Class Style
+
+Lessons usually combine short explanations, guided examples, independent practice, and review of common mistakes. Each student has targeted tasks, so students in the same small group may still work on different priorities.

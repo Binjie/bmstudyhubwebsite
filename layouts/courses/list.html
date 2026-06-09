@@ -1,0 +1,62 @@
+{{ define "main" }}
+<section class="showcase-hero showcase-hero-compact courses-hero">
+    <div class="container">
+        <div class="showcase-hero-layout">
+            <div class="showcase-hero-copy">
+                <p class="eyebrow">Learning Courses</p>
+                <h1 class="showcase-hero-title">{{ .Title }}</h1>
+                <p class="showcase-hero-description">{{ .Params.description }}</p>
+                {{ with strings.TrimSpace .RawContent }}
+                <div class="showcase-hero-text">
+                    {{ . | markdownify }}
+                </div>
+                {{ end }}
+            </div>
+            <div class="showcase-hero-panel courses-plan-panel" aria-label="Course learning approach">
+                <div class="courses-plan-card">
+                    <span>Learning Plan</span>
+                    <strong>Start from the student, then build the path.</strong>
+                </div>
+                <div class="courses-plan-list">
+                    <div>
+                        <span>Check</span>
+                        <p>Find current strengths, gaps, and school priorities.</p>
+                    </div>
+                    <div>
+                        <span>Teach</span>
+                        <p>Use small-group lessons with room for questions.</p>
+                    </div>
+                    <div>
+                        <span>Adjust</span>
+                        <p>Review progress and refine the next steps.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="showcase-list-section courses-list-section">
+    <div class="container">
+        <div class="showcase-list courses-list">
+            {{ range .Pages.ByWeight }}
+            <article class="showcase-row course-row">
+                <a class="showcase-row-link course-row-link" href="{{ .RelPermalink }}" aria-label="View {{ .Title }}">
+                    <div class="showcase-row-media course-row-media">
+                        {{ if .Params.featured_image }}
+                        <img src="{{ .Params.featured_image | relURL }}" alt="{{ .Title }}">
+                        {{ else }}
+                        <span>{{ substr .Title 0 1 }}</span>
+                        {{ end }}
+                    </div>
+                    <div class="showcase-row-main course-row-main">
+                        <h3>{{ .Title }}</h3>
+                        <p>{{ .Params.description }}</p>
+                    </div>
+                </a>
+            </article>
+            {{ end }}
+        </div>
+    </div>
+</section>
+{{ end }}
