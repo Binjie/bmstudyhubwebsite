@@ -5,7 +5,7 @@
 <section class="game-detail-page">
     <div class="container">
         <header class="game-detail-header">
-            <p class="eyebrow">{{ .Params.category | default "Thinking Game" }}</p>
+            <p class="eyebrow">{{ .Params.category | default (cond (eq .Site.Language.Lang "zh") "思维游戏" "Thinking Game") }}</p>
             <h1>{{ .Title }}</h1>
             <p>{{ .Params.description }}</p>
             <div class="game-detail-meta">
@@ -14,16 +14,16 @@
             </div>
         </header>
 
-        <section class="game-play-section" aria-label="Game area">
+        <section class="game-play-section" aria-label="{{ if eq .Site.Language.Lang "zh" }}游戏区域{{ else }}Game area{{ end }}">
             <div class="game-play-toolbar">
                 <div>
-                    <span class="game-play-label">Play Area</span>
+                    <span class="game-play-label">{{ if eq .Site.Language.Lang "zh" }}游戏区域{{ else }}Play Area{{ end }}</span>
                     <strong>{{ .Title }}</strong>
                 </div>
                 <div class="game-play-actions">
                     {{ if .Params.embed_url }}
                     <button class="game-play-button game-play-button-primary" type="button" id="gameFullscreenButton" aria-pressed="false">
-                        Open Full Screen
+                        {{ if eq .Site.Language.Lang "zh" }}全屏打开{{ else }}Open Full Screen{{ end }}
                     </button>
                     {{ end }}
                 </div>
@@ -48,10 +48,10 @@
             </div>
         </section>
 
-        <section class="game-instructions-card" aria-label="Game instructions">
+        <section class="game-instructions-card" aria-label="{{ if eq .Site.Language.Lang "zh" }}游戏说明{{ else }}Game instructions{{ end }}">
             <div class="game-instructions-heading">
-                <p class="eyebrow">How to Play</p>
-                <h2>Read this before you start, or come back when you get stuck.</h2>
+                <p class="eyebrow">{{ if eq .Site.Language.Lang "zh" }}玩法说明{{ else }}How to Play{{ end }}</p>
+                <h2>{{ if eq .Site.Language.Lang "zh" }}开始前可以先读一遍，卡住时也可以回来查看。{{ else }}Read this before you start, or come back when you get stuck.{{ end }}</h2>
             </div>
             <div class="game-instructions-content">
                 {{ .Content }}
@@ -75,7 +75,7 @@
         if (!fullscreenButton) return;
 
         const active = isGameFullscreen();
-        fullscreenButton.textContent = active ? 'Exit Full Screen' : 'Open Full Screen';
+        fullscreenButton.textContent = active ? '{{ if eq .Site.Language.Lang "zh" }}退出全屏{{ else }}Exit Full Screen{{ end }}' : '{{ if eq .Site.Language.Lang "zh" }}全屏打开{{ else }}Open Full Screen{{ end }}';
         fullscreenButton.setAttribute('aria-pressed', String(active));
     }
 

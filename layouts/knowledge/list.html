@@ -2,7 +2,7 @@
 {{ $items := .Pages.ByDate.Reverse }}
 {{ $categories := slice }}
 {{ range $items }}
-    {{ $category := .Params.category | default "Knowledge Note" }}
+    {{ $category := .Params.category | default (cond (eq $.Site.Language.Lang "zh") "知识札记" "Knowledge Note") }}
     {{ $categories = $categories | append $category }}
 {{ end }}
 
@@ -10,30 +10,30 @@
     <div class="container">
         <div class="showcase-hero-layout">
             <div class="showcase-hero-copy">
-                <p class="eyebrow">Knowledge Notes</p>
+                <p class="eyebrow">{{ if eq .Site.Language.Lang "zh" }}知识札记{{ else }}Knowledge Notes{{ end }}</p>
                 <h1 class="showcase-hero-title">{{ .Title }}</h1>
                 <p class="showcase-hero-description">{{ .Params.description }}</p>
                 <div class="showcase-hero-text">
                     {{ .Content }}
                 </div>
             </div>
-            <div class="showcase-hero-panel knowledge-lens-panel" aria-label="Knowledge library focus areas">
+            <div class="showcase-hero-panel knowledge-lens-panel" aria-label="{{ if eq .Site.Language.Lang "zh" }}知识库关注点{{ else }}Knowledge library focus areas{{ end }}">
                 <div class="knowledge-question-card">
-                    <span>Guiding Question</span>
-                    <strong>Where does this idea appear outside the textbook?</strong>
+                    <span>{{ if eq .Site.Language.Lang "zh" }}引导问题{{ else }}Guiding Question{{ end }}</span>
+                    <strong>{{ if eq .Site.Language.Lang "zh" }}这个想法在课本之外会出现在哪里？{{ else }}Where does this idea appear outside the textbook?{{ end }}</strong>
                 </div>
                 <div class="knowledge-lens-list">
                     <div>
-                        <span>Idea</span>
-                        <p>The concept in plain language.</p>
+                        <span>{{ if eq .Site.Language.Lang "zh" }}概念{{ else }}Idea{{ end }}</span>
+                        <p>{{ if eq .Site.Language.Lang "zh" }}用清楚的语言解释核心概念。{{ else }}The concept in plain language.{{ end }}</p>
                     </div>
                     <div>
-                        <span>Picture</span>
-                        <p>A diagram, model, or mental image.</p>
+                        <span>{{ if eq .Site.Language.Lang "zh" }}图像{{ else }}Picture{{ end }}</span>
+                        <p>{{ if eq .Site.Language.Lang "zh" }}一个图示、模型或脑中的画面。{{ else }}A diagram, model, or mental image.{{ end }}</p>
                     </div>
                     <div>
-                        <span>Use</span>
-                        <p>A practical example students can recognize.</p>
+                        <span>{{ if eq .Site.Language.Lang "zh" }}应用{{ else }}Use{{ end }}</span>
+                        <p>{{ if eq .Site.Language.Lang "zh" }}学生能够辨认的实际例子。{{ else }}A practical example students can recognize.{{ end }}</p>
                     </div>
                 </div>
             </div>
@@ -44,10 +44,10 @@
 <section class="showcase-list-section">
     <div class="container">
         <form class="showcase-tools" data-showcase-tools role="search">
-            <label class="showcase-search-label" for="knowledge-search">Search knowledge notes</label>
-            <input class="showcase-search-input" id="knowledge-search" type="search" placeholder="Search theorem, concept, or example" autocomplete="off" data-showcase-search>
-            <div class="showcase-filter-list" aria-label="Filter knowledge categories">
-                <button class="showcase-filter is-active" type="button" data-showcase-filter="all">All</button>
+            <label class="showcase-search-label" for="knowledge-search">{{ if eq .Site.Language.Lang "zh" }}搜索知识札记{{ else }}Search knowledge notes{{ end }}</label>
+            <input class="showcase-search-input" id="knowledge-search" type="search" placeholder="{{ if eq .Site.Language.Lang "zh" }}搜索定理、概念或例子{{ else }}Search theorem, concept, or example{{ end }}" autocomplete="off" data-showcase-search>
+            <div class="showcase-filter-list" aria-label="{{ if eq .Site.Language.Lang "zh" }}筛选知识分类{{ else }}Filter knowledge categories{{ end }}">
+                <button class="showcase-filter is-active" type="button" data-showcase-filter="all">{{ i18n "all" }}</button>
                 {{ range $categories | uniq | sort }}
                 <button class="showcase-filter" type="button" data-showcase-filter="{{ . | lower }}">{{ . }}</button>
                 {{ end }}
@@ -56,13 +56,13 @@
 
         <div class="showcase-list" data-showcase-list>
             {{ range $items }}
-            {{ $category := .Params.category | default "Knowledge Note" }}
+            {{ $category := .Params.category | default (cond (eq $.Site.Language.Lang "zh") "知识札记" "Knowledge Note") }}
             {{ $status := .Params.status | default "" }}
             {{ $tags := delimit (.Params.tags | default slice) " " }}
             {{ $summary := .Params.summary | default .Description | default .Summary }}
             {{ $searchText := printf "%s %s %s %s %s" .Title $category $status $tags $summary | plainify | lower }}
             <article class="showcase-row" data-showcase-item data-showcase-category="{{ $category | lower }}" data-showcase-search="{{ $searchText }}">
-                <a class="showcase-row-link" href="{{ .RelPermalink }}" aria-label="Read {{ .Title }}">
+                <a class="showcase-row-link" href="{{ .RelPermalink }}" aria-label="{{ i18n "read" }} {{ .Title }}">
                     <div class="showcase-row-media">
                         {{ if .Params.featured_image }}
                         <img src="{{ .Params.featured_image | relURL }}" alt="{{ .Title }}">
@@ -88,7 +88,7 @@
             {{ end }}
         </div>
 
-        <p class="showcase-empty" data-showcase-empty hidden>No knowledge notes match your search.</p>
+        <p class="showcase-empty" data-showcase-empty hidden>{{ if eq .Site.Language.Lang "zh" }}没有匹配的知识札记。{{ else }}No knowledge notes match your search.{{ end }}</p>
     </div>
 </section>
 {{ end }}

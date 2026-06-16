@@ -3,7 +3,7 @@
     <div class="container">
         <div class="showcase-hero-layout">
             <div class="showcase-hero-copy">
-                <p class="eyebrow">Learning Courses</p>
+                <p class="eyebrow">{{ if eq .Site.Language.Lang "zh" }}学习课程{{ else }}Learning Courses{{ end }}</p>
                 <h1 class="showcase-hero-title">{{ .Title }}</h1>
                 <p class="showcase-hero-description">{{ .Params.description }}</p>
                 {{ with strings.TrimSpace .RawContent }}
@@ -12,23 +12,23 @@
                 </div>
                 {{ end }}
             </div>
-            <div class="showcase-hero-panel courses-plan-panel" aria-label="Course learning approach">
+            <div class="showcase-hero-panel courses-plan-panel" aria-label="{{ if eq .Site.Language.Lang "zh" }}课程学习方式{{ else }}Course learning approach{{ end }}">
                 <div class="courses-plan-card">
-                    <span>Learning Plan</span>
-                    <strong>Start from the student, then build the path.</strong>
+                    <span>{{ if eq .Site.Language.Lang "zh" }}学习计划{{ else }}Learning Plan{{ end }}</span>
+                    <strong>{{ if eq .Site.Language.Lang "zh" }}从学生当前状态出发，再搭建学习路径。{{ else }}Start from the student, then build the path.{{ end }}</strong>
                 </div>
                 <div class="courses-plan-list">
                     <div>
-                        <span>Check</span>
-                        <p>Find current strengths, gaps, and school priorities.</p>
+                        <span>{{ if eq .Site.Language.Lang "zh" }}诊断{{ else }}Check{{ end }}</span>
+                        <p>{{ if eq .Site.Language.Lang "zh" }}了解当前优势、薄弱点和学校学习重点。{{ else }}Find current strengths, gaps, and school priorities.{{ end }}</p>
                     </div>
                     <div>
-                        <span>Teach</span>
-                        <p>Use small-group lessons with room for questions.</p>
+                        <span>{{ if eq .Site.Language.Lang "zh" }}讲解{{ else }}Teach{{ end }}</span>
+                        <p>{{ if eq .Site.Language.Lang "zh" }}通过小组课程保留充分提问和反馈空间。{{ else }}Use small-group lessons with room for questions.{{ end }}</p>
                     </div>
                     <div>
-                        <span>Adjust</span>
-                        <p>Review progress and refine the next steps.</p>
+                        <span>{{ if eq .Site.Language.Lang "zh" }}调整{{ else }}Adjust{{ end }}</span>
+                        <p>{{ if eq .Site.Language.Lang "zh" }}复盘进度，并继续细化下一步学习。{{ else }}Review progress and refine the next steps.{{ end }}</p>
                     </div>
                 </div>
             </div>
@@ -41,7 +41,7 @@
         <div class="showcase-list courses-list">
             {{ range .Pages.ByWeight }}
             <article class="showcase-row course-row">
-                <a class="showcase-row-link course-row-link" href="{{ .RelPermalink }}" aria-label="View {{ .Title }}">
+                <a class="showcase-row-link course-row-link" href="{{ .RelPermalink }}" aria-label="{{ i18n "view" }} {{ .Title }}">
                     <div class="showcase-row-media course-row-media">
                         {{ if .Params.featured_image }}
                         <img src="{{ .Params.featured_image | relURL }}" alt="{{ .Title }}">

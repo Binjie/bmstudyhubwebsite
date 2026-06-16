@@ -1,0 +1,74 @@
+[home]
+other = "首页"
+
+[toggleNavigation]
+other = "打开导航"
+
+[languageSwitcher]
+other = "语言"
+
+[english]
+other = "EN"
+
+[chinese]
+other = "中文"
+
+[quickLinks]
+other = "快速链接"
+
+[contactInfo]
+other = "联系方式"
+
+[email]
+other = "邮箱"
+
+[copyright]
+other = "版权所有。"
+
+[footerDescription]
+other = "一个连接数学、科技、文化与动手实践的创意学习工作室。"
+
+[view]
+other = "查看"
+
+[read]
+other = "阅读"
+
+[open]
+other = "打开"
+
+[all]
+other = "全部"
+
+[search]
+other = "搜索"
+
+[updated]
+other = "更新于"
+
+[openDemo]
+other = "打开演示"
+
+[openProductDemo]
+other = "打开作品演示"
+
+[openDemonstration]
+other = "打开演示"
+
+[readMore]
+other = "继续阅读"
+
+[noItems]
+other = "没有匹配的内容。"
+
+[backToNotes]
+other = "返回札记"
+
+[backToKnowledge]
+other = "返回知识"
+
+[backToTests]
+other = "返回测试"
+
+[backToShowcase]
+other = "返回作品"

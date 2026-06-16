@@ -3,6 +3,33 @@
 
     <section class="home-section home-section-soft">
         <div class="container">
+            {{ if eq .Site.Language.Lang "zh" }}
+            <div class="section-heading">
+                <p class="eyebrow">课程</p>
+                <h2>课程信息</h2>
+                <p>为希望夯实基础、拓展创意科技能力的学生，提供清晰、灵活的小组学习选择。</p>
+            </div>
+            <div class="course-summary-grid">
+                <article class="course-summary-card">
+                    <span class="course-tag">数学</span>
+                    <h3>数学课程</h3>
+                    <p>夯实基础、训练解题表达、逻辑思维，并适度加入竞赛风格题目。</p>
+                    <a href='{{ "/courses/" | relLangURL }}' class="text-link">查看课程详情</a>
+                </article>
+                <article class="course-summary-card">
+                    <span class="course-tag">科技</span>
+                    <h3>编程、AI 与机器人</h3>
+                    <p>围绕创意编程、智能系统、机器人概念和动手项目展开学习。</p>
+                    <a href='{{ "/showcase/" | relLangURL }}' class="text-link">查看项目示例</a>
+                </article>
+                <article class="course-summary-card">
+                    <span class="course-tag">工作坊</span>
+                    <h3>假期与工作室活动</h3>
+                    <p>短期主题活动，把制作、实验和有引导的反思结合起来。</p>
+                    <a href='{{ "/contact/" | relLangURL }}' class="text-link">咨询名额</a>
+                </article>
+            </div>
+            {{ else }}
             <div class="section-heading">
                 <p class="eyebrow">Courses</p>
                 <h2>Course Information</h2>
@@ -13,21 +40,22 @@
                     <span class="course-tag">Mathematics</span>
                     <h3>Mathematics Programs</h3>
                     <p>Foundation building, problem solving, logical thinking, and selected competition-style practice.</p>
-                    <a href="/courses/" class="text-link">View course details</a>
+                    <a href='{{ "/courses/" | relLangURL }}' class="text-link">View course details</a>
                 </article>
                 <article class="course-summary-card">
                     <span class="course-tag">Technology</span>
                     <h3>Coding, AI and Robotics</h3>
                     <p>Creative programming, intelligent systems, robotics concepts, and hands-on technical projects.</p>
-                    <a href="/showcase/" class="text-link">See project examples</a>
+                    <a href='{{ "/showcase/" | relLangURL }}' class="text-link">See project examples</a>
                 </article>
                 <article class="course-summary-card">
                     <span class="course-tag">Workshops</span>
                     <h3>Holiday and Studio Workshops</h3>
                     <p>Short-form workshops for curious learners, combining making, experimentation, and guided reflection.</p>
-                    <a href="/contact/" class="text-link">Ask about availability</a>
+                    <a href='{{ "/contact/" | relLangURL }}' class="text-link">Ask about availability</a>
                 </article>
             </div>
+            {{ end }}
         </div>
     </section>
 
@@ -35,24 +63,24 @@
         <div class="container">
             <div class="section-heading section-heading-row">
                 <div>
-                    <p class="eyebrow">Showcase</p>
-                    <h2>Student Projects and Teaching Examples</h2>
+                    <p class="eyebrow">{{ if eq .Site.Language.Lang "zh" }}作品{{ else }}Showcase{{ end }}</p>
+                    <h2>{{ if eq .Site.Language.Lang "zh" }}学生项目与教学案例{{ else }}Student Projects and Teaching Examples{{ end }}</h2>
                 </div>
-                <a href="/showcase/" class="btn btn-secondary">View All Showcase</a>
+                <a href='{{ "/showcase/" | relLangURL }}' class="btn btn-secondary">{{ if eq .Site.Language.Lang "zh" }}查看全部作品{{ else }}View All Showcase{{ end }}</a>
             </div>
             <div class="showcase-preview-grid">
                 {{ range first 3 (where .Site.RegularPages "Section" "showcase") }}
                 <article class="showcase-preview-card">
-                    <span class="course-tag">Project</span>
+                    <span class="course-tag">{{ if eq .Site.Language.Lang "zh" }}项目{{ else }}Project{{ end }}</span>
                     <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
                     <p>{{ .Description | default .Summary | plainify | truncate 145 }}</p>
-                    <a href="{{ .RelPermalink }}" class="text-link">Explore project</a>
+                    <a href="{{ .RelPermalink }}" class="text-link">{{ if eq .Site.Language.Lang "zh" }}查看项目{{ else }}Explore project{{ end }}</a>
                 </article>
                 {{ else }}
                 <article class="showcase-preview-card">
-                    <span class="course-tag">Coming Soon</span>
-                    <h3>More projects will be added</h3>
-                    <p>Student work, classroom prototypes, and teaching examples will appear here as the showcase grows.</p>
+                    <span class="course-tag">{{ if eq .Site.Language.Lang "zh" }}即将更新{{ else }}Coming Soon{{ end }}</span>
+                    <h3>{{ if eq .Site.Language.Lang "zh" }}更多项目会陆续加入{{ else }}More projects will be added{{ end }}</h3>
+                    <p>{{ if eq .Site.Language.Lang "zh" }}学生作品、课堂原型和教学案例会随着作品库一起成长。{{ else }}Student work, classroom prototypes, and teaching examples will appear here as the showcase grows.{{ end }}</p>
                 </article>
                 {{ end }}
             </div>
@@ -63,10 +91,10 @@
         <div class="container">
             <div class="notes-layout">
                 <div class="notes-copy">
-                    <p class="eyebrow">Studio Notes</p>
-                    <h2>Knowledge from everyday life, culture, and teaching reflections.</h2>
-                    <p>Personal observations about objects, craft, science, culture, and learning.</p>
-                    <a href="/note/" class="btn btn-primary">Read Notes</a>
+                    <p class="eyebrow">{{ if eq .Site.Language.Lang "zh" }}工作室札记{{ else }}Studio Notes{{ end }}</p>
+                    <h2>{{ if eq .Site.Language.Lang "zh" }}从日常生活、文化和教学反思中整理知识。{{ else }}Knowledge from everyday life, culture, and teaching reflections.{{ end }}</h2>
+                    <p>{{ if eq .Site.Language.Lang "zh" }}关于物件、手作、科学、文化与学习的个人观察。{{ else }}Personal observations about objects, craft, science, culture, and learning.{{ end }}</p>
+                    <a href='{{ "/note/" | relLangURL }}' class="btn btn-primary">{{ if eq .Site.Language.Lang "zh" }}阅读札记{{ else }}Read Notes{{ end }}</a>
                 </div>
                 <figure class="notes-image">
                     <img src='{{ "/images/home-studio-notes.png" | relURL }}' alt="A visual process of making a ceramic bowl from clay to shaping, glazing, firing, and finishing">
@@ -79,27 +107,27 @@
         <div class="container">
             <div class="studio-manifesto">
                 <div class="studio-manifesto-copy">
-                    <p class="eyebrow">About the Studio</p>
-                    <h2>Learning that connects school knowledge with real-world thinking.</h2>
-                    <p>BMStudyHub is a personal learning studio shaped around curiosity, clear explanation, and creative practice.</p>
+                    <p class="eyebrow">{{ if eq .Site.Language.Lang "zh" }}关于工作室{{ else }}About the Studio{{ end }}</p>
+                    <h2>{{ if eq .Site.Language.Lang "zh" }}把学校知识和真实世界的思考连接起来。{{ else }}Learning that connects school knowledge with real-world thinking.{{ end }}</h2>
+                    <p>{{ if eq .Site.Language.Lang "zh" }}BMStudyHub 是一个以好奇心、清晰讲解和创意实践为核心的个人学习工作室。{{ else }}BMStudyHub is a personal learning studio shaped around curiosity, clear explanation, and creative practice.{{ end }}</p>
                 </div>
                 <div class="studio-principles">
                     <div class="studio-principle">
                         <div>
-                            <strong>Think Clearly</strong>
-                            <p>Questions, structure, and careful reasoning.</p>
+                            <strong>{{ if eq .Site.Language.Lang "zh" }}清晰思考{{ else }}Think Clearly{{ end }}</strong>
+                            <p>{{ if eq .Site.Language.Lang "zh" }}问题、结构与严谨推理。{{ else }}Questions, structure, and careful reasoning.{{ end }}</p>
                         </div>
                     </div>
                     <div class="studio-principle">
                         <div>
-                            <strong>Build Creatively</strong>
-                            <p>Projects, coding, AI, robotics, and making.</p>
+                            <strong>{{ if eq .Site.Language.Lang "zh" }}创意建造{{ else }}Build Creatively{{ end }}</strong>
+                            <p>{{ if eq .Site.Language.Lang "zh" }}项目、编程、AI、机器人和制作。{{ else }}Projects, coding, AI, robotics, and making.{{ end }}</p>
                         </div>
                     </div>
                     <div class="studio-principle">
                         <div>
-                            <strong>Learn with Context</strong>
-                            <p>Culture, objects, stories, and everyday examples.</p>
+                            <strong>{{ if eq .Site.Language.Lang "zh" }}在情境中学习{{ else }}Learn with Context{{ end }}</strong>
+                            <p>{{ if eq .Site.Language.Lang "zh" }}文化、物件、故事和日常例子。{{ else }}Culture, objects, stories, and everyday examples.{{ end }}</p>
                         </div>
                     </div>
                 </div>

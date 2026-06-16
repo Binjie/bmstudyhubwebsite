@@ -2,24 +2,28 @@
     <div class="container">
         <div class="header-content">
             <div class="logo">
-                <a href='{{ "/" | relURL }}' class="logo-link" aria-label="Home">
+                <a href='{{ "/" | relLangURL }}' class="logo-link" aria-label="{{ i18n "home" }}">
                     <div class="logo-mark">
                         <div class="logo-icon">
                             <img src='{{ "/images/logo_pure.png" | relURL }}' alt="{{ .Site.Title }} Logo" class="logo-image">
                         </div>
                         <div class="logo-text">
                             <h1 aria-label="{{ .Site.Title }}"><span class="brand-blue">BM</span><span class="brand-orange">Study</span><span class="brand-blue">Hub</span></h1>
-                            <p class="tagline">Creative Learning Studio</p>
+                            <p class="tagline">{{ if eq .Site.Language.Lang "zh" }}创意学习工作室{{ else }}Creative Learning Studio{{ end }}</p>
                         </div>
                     </div>
                 </a>
             </div>
 
-            <button class="nav-toggle" aria-label="Toggle navigation">
-                <span class="hamburger"></span>
-            </button>
-
             {{ partial "nav.html" . }}
+
+            <div class="header-actions">
+                {{ partial "language-switcher.html" . }}
+
+                <button class="nav-toggle" aria-label="{{ i18n "toggleNavigation" }}">
+                    <span class="hamburger"></span>
+                </button>
+            </div>
         </div>
     </div>
 </header>

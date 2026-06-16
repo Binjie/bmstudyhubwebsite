@@ -198,6 +198,7 @@ a:hover {
     justify-content: space-between;
     align-items: center;
     padding: 15px 0 0 0;
+    gap: 1rem;
 }
 
 .logo a {
@@ -243,6 +244,12 @@ a:hover {
     padding: 10px;
 }
 
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+}
+
 .hamburger {
     display: block;
     width: 25px;
@@ -273,6 +280,7 @@ a:hover {
     display: flex;
     align-items: center;
     gap: 30px;
+    margin-left: auto;
 }
 
 .nav-menu {
@@ -280,6 +288,38 @@ a:hover {
     list-style: none;
     gap: 25px;
     font-size: 20px;
+}
+
+.language-switcher {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.2rem;
+    border: 1px solid rgba(106, 90, 205, 0.22);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.78);
+}
+
+.language-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.45rem;
+    min-height: 2rem;
+    padding: 0 0.65rem;
+    border-radius: 999px;
+    color: var(--text-light);
+    font-size: 0.82rem;
+    font-weight: 700;
+    line-height: 1;
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.language-link:hover,
+.language-link.is-active {
+    background: var(--accent-color);
+    color: var(--white);
 }
 
 .nav-link {
@@ -833,6 +873,26 @@ section {
         display: block;
     }
 
+    .header-content {
+        gap: 0.55rem;
+    }
+
+    .header-actions {
+        margin-left: auto;
+        flex-shrink: 0;
+    }
+
+    .language-switcher {
+        padding: 0.16rem;
+    }
+
+    .language-link {
+        min-width: 2.2rem;
+        min-height: 1.85rem;
+        padding: 0 0.5rem;
+        font-size: 0.78rem;
+    }
+
     .site-nav {
         position: fixed;
         top: 90px;
@@ -840,6 +900,7 @@ section {
         width: 100%;
         background-color: var(--white);
         flex-direction: column;
+        align-items: center;
         padding: 20px;
         box-shadow: 0 5px 15px var(--shadow);
         transform: translateY(-100%);
@@ -3185,6 +3246,14 @@ section.game-instructions-card {
     clear: both;
 }
 
+.showcase-article-content .vase-design-next-version-break {
+    margin-top: 1.1rem;
+}
+
+.showcase-article-content .vase-design-next-version-break + h2 {
+    margin-top: 0;
+}
+
 .showcase-article-content .knowledge-callout {
     background: #eefbf8;
     border: 1px solid rgba(67, 176, 158, 0.24);
@@ -3349,6 +3418,16 @@ section.game-instructions-card {
     .showcase-article-figure-right {
         float: right;
         margin: 0.35rem 0 1rem 1.6rem;
+    }
+
+    .showcase-article-content .vase-design-concept-figure {
+        margin-bottom: 1.8rem;
+        margin-left: 2.1rem;
+    }
+
+    .showcase-article-content .vase-design-prototype-figure {
+        margin-top: 1.15rem;
+        margin-right: 2.1rem;
     }
 }
 

@@ -2,27 +2,37 @@
     <div class="container">
         <div class="studio-hero-content">
             <div class="studio-hero-text">
+                {{ if eq .Site.Language.Lang "zh" }}
+                <p class="eyebrow">BMStudyHub 学习工作室</p>
+                <h1 class="studio-hero-title">面向数学、科技、文化与动手思考的创意学习空间。</h1>
+                <p class="studio-hero-subtitle">我们通过清晰讲解、项目探索和贴近生活的例子，帮助孩子建立信心，把知识真正连接到现实问题中。</p>
+                <div class="studio-hero-buttons">
+                    <a href='{{ "/courses/" | relLangURL }}' class="btn btn-primary btn-large">查看课程</a>
+                    <a href='{{ "/showcase/" | relLangURL }}' class="btn btn-secondary btn-large">浏览作品</a>
+                </div>
+                {{ else }}
                 <p class="eyebrow">BMStudyHub Learning Studio</p>
                 <h1 class="studio-hero-title">A creative studio for mathematics, technology, culture, and hands-on thinking.</h1>
                 <p class="studio-hero-subtitle">I help young learners build confidence through thoughtful lessons, project-based exploration, and everyday examples that connect knowledge with real life.</p>
                 <div class="studio-hero-buttons">
-                    <a href="/courses/" class="btn btn-primary btn-large">View Courses</a>
-                    <a href="/showcase/" class="btn btn-secondary btn-large">Explore Showcase</a>
+                    <a href='{{ "/courses/" | relLangURL }}' class="btn btn-primary btn-large">View Courses</a>
+                    <a href='{{ "/showcase/" | relLangURL }}' class="btn btn-secondary btn-large">Explore Showcase</a>
                 </div>
+                {{ end }}
             </div>
 
             <div class="studio-hero-carousel" aria-label="BMStudyHub learning studio images">
                 <figure class="carousel-slide carousel-slide-1">
                     <img src='{{ "/images/home-teaching-studio.png" | relURL }}' alt="A teacher guiding students through mathematics and creative technology work">
-                    <figcaption>Guided learning in a warm studio setting.</figcaption>
+                    <figcaption>{{ if eq .Site.Language.Lang "zh" }}温暖工作室中的引导式学习。{{ else }}Guided learning in a warm studio setting.{{ end }}</figcaption>
                 </figure>
                 <figure class="carousel-slide carousel-slide-2">
                     <img src='{{ "/images/home-math-background.png" | relURL }}' alt="Mathematics diagrams, geometry tools, and pattern explorations">
-                    <figcaption>Mathematics as structure, pattern, and visual thinking.</figcaption>
+                    <figcaption>{{ if eq .Site.Language.Lang "zh" }}把数学看作结构、图形和可视化思考。{{ else }}Mathematics as structure, pattern, and visual thinking.{{ end }}</figcaption>
                 </figure>
                 <figure class="carousel-slide carousel-slide-3">
                     <img src='{{ "/images/home-studio-hero.png" | relURL }}' alt="A creative learning studio desk with robotics, coding, mathematics, ceramic sketches, and cultural materials">
-                    <figcaption>Technology, culture, and making in one learning space.</figcaption>
+                    <figcaption>{{ if eq .Site.Language.Lang "zh" }}科技、文化与制作在同一个学习空间里相遇。{{ else }}Technology, culture, and making in one learning space.{{ end }}</figcaption>
                 </figure>
             </div>
         </div>

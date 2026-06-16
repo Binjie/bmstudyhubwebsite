@@ -3,11 +3,28 @@ relativeURLs = true
 canonifyURLs = true
 
 languageCode = "en-us"
+defaultContentLanguage = "en"
+defaultContentLanguageInSubdir = false
 title = "BMStudyHub"
 
 [caches]
   [caches.images]
     dir = ':cacheDir/images'
+
+[languages]
+  [languages.en]
+    languageName = "English"
+    languageCode = "en-us"
+    weight = 1
+    title = "BMStudyHub"
+    contentDir = "content"
+
+  [languages.zh]
+    languageName = "中文"
+    languageCode = "zh-cn"
+    weight = 2
+    title = "BMStudyHub"
+    contentDir = "content"
 
 # Main configuration
 [params]
@@ -44,44 +61,84 @@ title = "BMStudyHub"
     ]
 
 # Menu configuration
-[[menu.main]]
+[[languages.en.menu.main]]
   name = "Home"
-  url = "/"
+  pageRef = "/"
   weight = 1
 
-[[menu.main]]
+[[languages.en.menu.main]]
   name = "Courses"
-  url = "/courses/"
+  pageRef = "/courses"
   weight = 2
 
-[[menu.main]]
+[[languages.en.menu.main]]
   name = "Notes"
-  url = "/note/"
+  pageRef = "/note"
   weight = 3
 
-[[menu.main]]
+[[languages.en.menu.main]]
   name = "Showcase"
-  url = "/showcase/"
+  pageRef = "/showcase"
   weight = 4
 
-[[menu.main]]
+[[languages.en.menu.main]]
   name = "Games"
-  url = "/games/"
+  pageRef = "/games"
   weight = 5
 
-[[menu.main]]
+[[languages.en.menu.main]]
   name = "Tests"
-  url = "/tests/"
+  pageRef = "/tests"
   weight = 6
 
-[[menu.main]]
+[[languages.en.menu.main]]
   name = "Knowledge"
-  url = "/knowledge/"
+  pageRef = "/knowledge"
   weight = 7
 
-[[menu.main]]
+[[languages.en.menu.main]]
   name = "Contact"
-  url = "/contact/"
+  pageRef = "/contact"
+  weight = 8
+
+[[languages.zh.menu.main]]
+  name = "首页"
+  pageRef = "/"
+  weight = 1
+
+[[languages.zh.menu.main]]
+  name = "课程"
+  pageRef = "/courses"
+  weight = 2
+
+[[languages.zh.menu.main]]
+  name = "札记"
+  pageRef = "/note"
+  weight = 3
+
+[[languages.zh.menu.main]]
+  name = "作品"
+  pageRef = "/showcase"
+  weight = 4
+
+[[languages.zh.menu.main]]
+  name = "游戏"
+  pageRef = "/games"
+  weight = 5
+
+[[languages.zh.menu.main]]
+  name = "测试"
+  pageRef = "/tests"
+  weight = 6
+
+[[languages.zh.menu.main]]
+  name = "知识"
+  pageRef = "/knowledge"
+  weight = 7
+
+[[languages.zh.menu.main]]
+  name = "联系"
+  pageRef = "/contact"
   weight = 8
 
 # Social links

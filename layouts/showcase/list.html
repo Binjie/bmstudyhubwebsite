@@ -2,7 +2,7 @@
 {{ $showcases := .Pages.ByDate.Reverse }}
 {{ $categories := slice }}
 {{ range $showcases }}
-    {{ $category := .Params.category | default "Project Story" }}
+    {{ $category := .Params.category | default (cond (eq $.Site.Language.Lang "zh") "项目故事" "Project Story") }}
     {{ $categories = $categories | append $category }}
 {{ end }}
 
@@ -10,28 +10,28 @@
     <div class="container">
         <div class="showcase-hero-layout">
             <div class="showcase-hero-copy">
-                <p class="eyebrow">Project Showcase</p>
+                <p class="eyebrow">{{ if eq .Site.Language.Lang "zh" }}项目作品{{ else }}Project Showcase{{ end }}</p>
                 <h1 class="showcase-hero-title">{{ .Title }}</h1>
                 <p class="showcase-hero-description">{{ .Params.description }}</p>
                 <div class="showcase-hero-text">
                     {{ .Content }}
                 </div>
             </div>
-            <div class="showcase-hero-panel showcase-project-panel" aria-label="Showcase reading tips">
+            <div class="showcase-hero-panel showcase-project-panel" aria-label="{{ if eq .Site.Language.Lang "zh" }}作品阅读提示{{ else }}Showcase reading tips{{ end }}">
                 <div class="showcase-project-feature">
-                    <span>Project Lens</span>
-                    <strong>Follow the path from a real question to a working prototype.</strong>
+                    <span>{{ if eq .Site.Language.Lang "zh" }}项目视角{{ else }}Project Lens{{ end }}</span>
+                    <strong>{{ if eq .Site.Language.Lang "zh" }}跟随一个真实问题走向可运行原型的过程。{{ else }}Follow the path from a real question to a working prototype.{{ end }}</strong>
                 </div>
-                <div class="showcase-project-steps" aria-label="Showcase reading steps">
+                <div class="showcase-project-steps" aria-label="{{ if eq .Site.Language.Lang "zh" }}作品阅读步骤{{ else }}Showcase reading steps{{ end }}">
                     <div>
                         <span>01</span>
-                        <strong>Problem</strong>
-                        <p>What need or curiosity started the project?</p>
+                        <strong>{{ if eq .Site.Language.Lang "zh" }}问题{{ else }}Problem{{ end }}</strong>
+                        <p>{{ if eq .Site.Language.Lang "zh" }}是什么需求或好奇心启动了项目？{{ else }}What need or curiosity started the project?{{ end }}</p>
                     </div>
                     <div>
                         <span>02</span>
-                        <strong>Making</strong>
-                        <p>What changed through testing, feedback, and reflection?</p>
+                        <strong>{{ if eq .Site.Language.Lang "zh" }}制作{{ else }}Making{{ end }}</strong>
+                        <p>{{ if eq .Site.Language.Lang "zh" }}在测试、反馈和反思中发生了哪些变化？{{ else }}What changed through testing, feedback, and reflection?{{ end }}</p>
                     </div>
                 </div>
             </div>
@@ -42,10 +42,10 @@
 <section class="showcase-list-section">
     <div class="container">
         <form class="showcase-tools" data-showcase-tools role="search">
-            <label class="showcase-search-label" for="showcase-search">Search showcase</label>
-            <input class="showcase-search-input" id="showcase-search" type="search" placeholder="Search cases" autocomplete="off" data-showcase-search>
-            <div class="showcase-filter-list" aria-label="Filter showcase categories">
-                <button class="showcase-filter is-active" type="button" data-showcase-filter="all">All</button>
+            <label class="showcase-search-label" for="showcase-search">{{ if eq .Site.Language.Lang "zh" }}搜索作品{{ else }}Search showcase{{ end }}</label>
+            <input class="showcase-search-input" id="showcase-search" type="search" placeholder="{{ if eq .Site.Language.Lang "zh" }}搜索案例{{ else }}Search cases{{ end }}" autocomplete="off" data-showcase-search>
+            <div class="showcase-filter-list" aria-label="{{ if eq .Site.Language.Lang "zh" }}筛选作品分类{{ else }}Filter showcase categories{{ end }}">
+                <button class="showcase-filter is-active" type="button" data-showcase-filter="all">{{ i18n "all" }}</button>
                 {{ range $categories | uniq | sort }}
                 <button class="showcase-filter" type="button" data-showcase-filter="{{ . | lower }}">{{ . }}</button>
                 {{ end }}
@@ -54,13 +54,13 @@
 
         <div class="showcase-list" data-showcase-list>
             {{ range $showcases }}
-            {{ $category := .Params.category | default "Project Story" }}
+            {{ $category := .Params.category | default (cond (eq $.Site.Language.Lang "zh") "项目故事" "Project Story") }}
             {{ $status := .Params.status | default "" }}
             {{ $tags := delimit (.Params.tags | default slice) " " }}
             {{ $summary := .Params.summary | default .Description | default .Summary }}
             {{ $searchText := printf "%s %s %s %s %s" .Title $category $status $tags $summary | plainify | lower }}
             <article class="showcase-row" data-showcase-item data-showcase-category="{{ $category | lower }}" data-showcase-search="{{ $searchText }}">
-                <a class="showcase-row-link" href="{{ .RelPermalink }}" aria-label="Read {{ .Title }}">
+                <a class="showcase-row-link" href="{{ .RelPermalink }}" aria-label="{{ i18n "read" }} {{ .Title }}">
                     <div class="showcase-row-media">
                         {{ if .Params.featured_image }}
                         <img src="{{ .Params.featured_image | relURL }}" alt="{{ .Title }}">
@@ -84,14 +84,14 @@
                 </a>
                 {{ with .Params.embed_url }}
                 <div class="showcase-row-actions">
-                    <a class="showcase-demo-link" href="{{ . | relURL }}" target="_blank" rel="noopener">Open demo</a>
+                    <a class="showcase-demo-link" href="{{ . | relURL }}" target="_blank" rel="noopener">{{ i18n "openDemo" }}</a>
                 </div>
                 {{ end }}
             </article>
             {{ end }}
         </div>
 
-        <p class="showcase-empty" data-showcase-empty hidden>No showcase items match your search.</p>
+        <p class="showcase-empty" data-showcase-empty hidden>{{ if eq .Site.Language.Lang "zh" }}没有匹配的作品。{{ else }}No showcase items match your search.{{ end }}</p>
     </div>
 </section>
 {{ end }}

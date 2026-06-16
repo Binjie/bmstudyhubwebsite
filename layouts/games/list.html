@@ -4,8 +4,8 @@
 {{ $difficulties := slice }}
 {{ $categories := slice }}
 {{ range $games }}
-    {{ $difficultyLevel := .Params.difficulty_level | default "Not Set" }}
-    {{ $category := .Params.category | default "Thinking Skill" }}
+    {{ $difficultyLevel := .Params.difficulty_level | default (cond (eq $.Site.Language.Lang "zh") "未设置" "Not Set") }}
+    {{ $category := .Params.category | default (cond (eq $.Site.Language.Lang "zh") "思维能力" "Thinking Skill") }}
     {{ $difficulties = $difficulties | append $difficultyLevel }}
     {{ $categories = $categories | append $category }}
 {{ end }}
@@ -13,34 +13,34 @@
     <div class="container">
         <div class="games-hero-layout">
             <div class="games-hero-copy">
-                <p class="eyebrow">Practice Lab</p>
+                <p class="eyebrow">{{ if eq .Site.Language.Lang "zh" }}练习实验室{{ else }}Practice Lab{{ end }}</p>
                 <h1 class="games-hero-title">{{ .Title }}</h1>
                 <p class="games-hero-description">{{ .Params.description }}</p>
                 <div class="games-hero-text">
                     {{ .Content }}
                 </div>
             </div>
-            <div class="games-hero-panel" aria-label="Learning habit focus areas">
+            <div class="games-hero-panel" aria-label="{{ if eq .Site.Language.Lang "zh" }}学习习惯关注点{{ else }}Learning habit focus areas{{ end }}">
                 <div class="games-focus-card games-focus-card-large">
-                    <span>Core Goal</span>
-                    <strong>Help children become thoughtful, curious, and self-driven learners.</strong>
+                    <span>{{ if eq .Site.Language.Lang "zh" }}核心目标{{ else }}Core Goal{{ end }}</span>
+                    <strong>{{ if eq .Site.Language.Lang "zh" }}帮助孩子成为会思考、有好奇心、能主动学习的人。{{ else }}Help children become thoughtful, curious, and self-driven learners.{{ end }}</strong>
                 </div>
                 <div class="games-focus-grid">
                     <div class="games-focus-card">
-                        <span>Notice</span>
-                        <strong>Look closely before rushing to answer</strong>
+                        <span>{{ if eq .Site.Language.Lang "zh" }}观察{{ else }}Notice{{ end }}</span>
+                        <strong>{{ if eq .Site.Language.Lang "zh" }}先看清楚，再回答{{ else }}Look closely before rushing to answer{{ end }}</strong>
                     </div>
                     <div class="games-focus-card">
-                        <span>Question</span>
-                        <strong>Ask what changed, why, and what to try next</strong>
+                        <span>{{ if eq .Site.Language.Lang "zh" }}提问{{ else }}Question{{ end }}</span>
+                        <strong>{{ if eq .Site.Language.Lang "zh" }}追问哪里变了、为什么、下一步试什么{{ else }}Ask what changed, why, and what to try next{{ end }}</strong>
                     </div>
                     <div class="games-focus-card">
-                        <span>Strategy</span>
-                        <strong>Plan, test, adjust, and keep improving</strong>
+                        <span>{{ if eq .Site.Language.Lang "zh" }}策略{{ else }}Strategy{{ end }}</span>
+                        <strong>{{ if eq .Site.Language.Lang "zh" }}计划、尝试、调整，并继续改进{{ else }}Plan, test, adjust, and keep improving{{ end }}</strong>
                     </div>
                     <div class="games-focus-card">
-                        <span>Confidence</span>
-                        <strong>Build the courage to learn independently</strong>
+                        <span>{{ if eq .Site.Language.Lang "zh" }}信心{{ else }}Confidence{{ end }}</span>
+                        <strong>{{ if eq .Site.Language.Lang "zh" }}建立独立学习的勇气{{ else }}Build the courage to learn independently{{ end }}</strong>
                     </div>
                 </div>
             </div>
@@ -52,19 +52,19 @@
     <div class="container">
         <div class="section-heading section-heading-row games-section-heading">
             <div>
-                <p class="eyebrow">Challenge Library</p>
-                <h2>Choose the right challenge level.</h2>
+                <p class="eyebrow">{{ if eq .Site.Language.Lang "zh" }}挑战库{{ else }}Challenge Library{{ end }}</p>
+                <h2>{{ if eq .Site.Language.Lang "zh" }}选择合适的挑战难度。{{ else }}Choose the right challenge level.{{ end }}</h2>
             </div>
         </div>
 
         <form class="games-tools" data-games-tools role="search">
-            <label class="showcase-search-label" for="games-search">Search games</label>
-            <input class="showcase-search-input" id="games-search" type="search" placeholder="Search by name, difficulty, or catalog" autocomplete="off" data-games-search>
-            <p class="games-search-help">Search by name, difficulty, catalog, or learning focus, then pick the game that gives each student the right amount of stretch.</p>
-            <div class="games-filter-group" aria-label="Filter game difficulty">
-                <span>Difficulty</span>
+            <label class="showcase-search-label" for="games-search">{{ if eq .Site.Language.Lang "zh" }}搜索游戏{{ else }}Search games{{ end }}</label>
+            <input class="showcase-search-input" id="games-search" type="search" placeholder="{{ if eq .Site.Language.Lang "zh" }}按名称、难度或分类搜索{{ else }}Search by name, difficulty, or catalog{{ end }}" autocomplete="off" data-games-search>
+            <p class="games-search-help">{{ if eq .Site.Language.Lang "zh" }}可以按名称、难度、分类或学习重点搜索，再选择最适合学生当前状态的挑战。{{ else }}Search by name, difficulty, catalog, or learning focus, then pick the game that gives each student the right amount of stretch.{{ end }}</p>
+            <div class="games-filter-group" aria-label="{{ if eq .Site.Language.Lang "zh" }}筛选游戏难度{{ else }}Filter game difficulty{{ end }}">
+                <span>{{ if eq .Site.Language.Lang "zh" }}难度{{ else }}Difficulty{{ end }}</span>
                 <div class="showcase-filter-list">
-                    <button class="showcase-filter is-active" type="button" data-games-difficulty="all">All</button>
+                    <button class="showcase-filter is-active" type="button" data-games-difficulty="all">{{ i18n "all" }}</button>
                     {{ range $difficultyOrder }}
                     {{ if in $difficulties . }}
                     <button class="showcase-filter" type="button" data-games-difficulty="{{ . | lower }}">{{ . }}</button>
@@ -77,10 +77,10 @@
                     {{ end }}
                 </div>
             </div>
-            <div class="games-filter-group" aria-label="Filter game catalog">
-                <span>Catalog</span>
+            <div class="games-filter-group" aria-label="{{ if eq .Site.Language.Lang "zh" }}筛选游戏分类{{ else }}Filter game catalog{{ end }}">
+                <span>{{ if eq .Site.Language.Lang "zh" }}分类{{ else }}Catalog{{ end }}</span>
                 <div class="showcase-filter-list">
-                    <button class="showcase-filter is-active" type="button" data-games-category="all">All</button>
+                    <button class="showcase-filter is-active" type="button" data-games-category="all">{{ i18n "all" }}</button>
                     {{ range $categories | uniq | sort }}
                     <button class="showcase-filter" type="button" data-games-category="{{ . | lower }}">{{ . }}</button>
                     {{ end }}
@@ -92,8 +92,8 @@
             {{ $tones := slice "violet" "gold" "teal" "coral" }}
             {{ range $index, $page := $games }}
             {{ $tone := index $tones (mod $index (len $tones)) }}
-            {{ $category := .Params.category | default "Thinking Skill" }}
-            {{ $difficultyLevel := .Params.difficulty_level | default "Not Set" }}
+            {{ $category := .Params.category | default (cond (eq $.Site.Language.Lang "zh") "思维能力" "Thinking Skill") }}
+            {{ $difficultyLevel := .Params.difficulty_level | default (cond (eq $.Site.Language.Lang "zh") "未设置" "Not Set") }}
             {{ $difficulty := .Params.difficulty | default "" }}
             {{ $duration := .Params.duration | default "" }}
             {{ $tags := delimit (.Params.tags | default slice) " " }}
@@ -114,7 +114,7 @@
                     </div>
                     <div class="compact-game-footer">
                         <a href="{{ .RelPermalink }}" class="compact-game-button" target="_blank">
-                            Open Challenge
+                            {{ if eq $.Site.Language.Lang "zh" }}开始挑战{{ else }}Open Challenge{{ end }}
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
                                 <polyline points="15 3 21 3 21 9"></polyline>
@@ -126,7 +126,7 @@
             </article>
             {{ end }}
         </div>
-        <p class="showcase-empty games-empty" data-games-empty hidden>No games match your search.</p>
+        <p class="showcase-empty games-empty" data-games-empty hidden>{{ if eq .Site.Language.Lang "zh" }}没有匹配的游戏。{{ else }}No games match your search.{{ end }}</p>
     </div>
 </div>
 {{ end }}

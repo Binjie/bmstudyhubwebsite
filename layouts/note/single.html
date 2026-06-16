@@ -1,34 +1,34 @@
 {{ define "main" }}
 <section class="showcase-detail-hero notes-detail-hero">
     <div class="container">
-        <a class="showcase-back-link" href='{{ "/note/" | relURL }}'>Back to Notes</a>
+        <a class="showcase-back-link" href='{{ "/note/" | relLangURL }}'>{{ i18n "backToNotes" }}</a>
         <div class="showcase-detail-hero-layout">
             <div class="showcase-detail-copy">
-                <p class="eyebrow">{{ .Params.category | default "Daily Notes" }}</p>
+                <p class="eyebrow">{{ .Params.category | default (cond (eq .Site.Language.Lang "zh") "日常札记" "Daily Notes") }}</p>
                 <h1 class="showcase-detail-title">{{ .Title }}</h1>
                 <p class="showcase-detail-description">{{ .Params.description }}</p>
             </div>
-            <aside class="showcase-detail-panel" aria-label="Note facts">
+            <aside class="showcase-detail-panel" aria-label="{{ if eq .Site.Language.Lang "zh" }}札记资料{{ else }}Note facts{{ end }}">
                 <dl class="showcase-facts">
                     <div>
-                        <dt>Published</dt>
+                        <dt>{{ if eq $.Site.Language.Lang "zh" }}发布{{ else }}Published{{ end }}</dt>
                         <dd><time datetime='{{ .Date.Format "2006-01-02" }}'>{{ .Date.Format "January 2, 2006" }}</time></dd>
                     </div>
                     {{ if gt .Lastmod .Date }}
                     <div>
-                        <dt>Updated</dt>
+                        <dt>{{ i18n "updated" }}</dt>
                         <dd><time datetime='{{ .Lastmod.Format "2006-01-02" }}'>{{ .Lastmod.Format "January 2, 2006" }}</time></dd>
                     </div>
                     {{ end }}
                     {{ with .Params.mood }}
                     <div>
-                        <dt>Note Type</dt>
+                        <dt>{{ if eq $.Site.Language.Lang "zh" }}札记类型{{ else }}Note Type{{ end }}</dt>
                         <dd>{{ . }}</dd>
                     </div>
                     {{ end }}
                     {{ with .Params.tags }}
                     <div>
-                        <dt>Tags</dt>
+                        <dt>{{ if eq $.Site.Language.Lang "zh" }}标签{{ else }}Tags{{ end }}</dt>
                         <dd>{{ delimit . ", " }}</dd>
                     </div>
                     {{ end }}
@@ -52,10 +52,10 @@
                 </div>
             </article>
 
-            <aside class="showcase-side-note" aria-label="Note categories">
-                <p class="eyebrow">Notebook Map</p>
-                <h2>Keep the main shelf simple and let tags carry the detail.</h2>
-                <p>Use broad categories such as Knowledge, Making, Sport, and Life. Use tags for specific ideas, people, materials, questions, or sports.</p>
+            <aside class="showcase-side-note" aria-label="{{ if eq .Site.Language.Lang "zh" }}札记分类{{ else }}Note categories{{ end }}">
+                <p class="eyebrow">{{ if eq .Site.Language.Lang "zh" }}札记地图{{ else }}Notebook Map{{ end }}</p>
+                <h2>{{ if eq .Site.Language.Lang "zh" }}主分类保持简单，细节交给标签。{{ else }}Keep the main shelf simple and let tags carry the detail.{{ end }}</h2>
+                <p>{{ if eq .Site.Language.Lang "zh" }}用较宽的分类整理内容，例如知识、制作、运动和生活；用标签记录具体想法、人物、材料、问题或项目。{{ else }}Use broad categories such as Knowledge, Making, Sport, and Life. Use tags for specific ideas, people, materials, questions, or sports.{{ end }}</p>
                 {{ with .Params.tags }}
                 <div class="showcase-tags">
                     {{ range . }}

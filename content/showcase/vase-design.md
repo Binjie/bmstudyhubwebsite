@@ -57,7 +57,7 @@ sharp contours and intricate textures.
 
 The prompt was useful because it turned a child's drawing into something a 3D tool could understand. It also showed why human review still matters: the prompt mentioned the Auckland Sky Tower, but the real inspiration was the Canton Tower in Guangzhou. AI gave us a fast draft; we still needed to correct the meaning.
 
-<figure class="showcase-article-figure showcase-article-figure-right showcase-article-figure-crop">
+<figure class="showcase-article-figure showcase-article-figure-right showcase-article-figure-crop vase-design-concept-figure">
     <img src="/images/showcase/vasedesign/ai-to-pic.jpg" alt="AI generated 3D vase concept from Meshy">
     <figcaption>The 3D concept generated in Meshy after organising the prompt with Gemini.</figcaption>
 </figure>
@@ -68,10 +68,12 @@ This project is a simple example of product design: start from a personal idea, 
 
 The first 3D print is not the final answer. It is a test we can hold in our hands. It helps us see whether the proportions feel right, whether the patterns are clear, and which details should be simplified or strengthened in the next version.
 
-<figure class="showcase-article-figure showcase-article-figure-left showcase-article-figure-crop">
+<figure class="showcase-article-figure showcase-article-figure-left showcase-article-figure-crop vase-design-prototype-figure">
     <img src="/images/showcase/vasedesign/first-version.jpg" alt="First 3D printed vase prototype">
     <figcaption>The first 3D printed prototype: a physical test for shape, detail, and future revision.</figcaption>
 </figure>
+
+<div class="article-clear vase-design-next-version-break"></div>
 
 ## Next Version Ideas
 

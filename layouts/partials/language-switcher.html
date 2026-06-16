@@ -1,0 +1,11 @@
+<div class="language-switcher" aria-label="{{ i18n "languageSwitcher" }}">
+    {{ $current := . }}
+    {{ range .Site.Languages }}
+        {{ $lang := .Lang }}
+        {{ $translation := index (where $current.AllTranslations "Language.Lang" $lang) 0 }}
+        {{ $href := cond (ne $translation nil) $translation.RelPermalink (relLangURL "/") }}
+        <a class="language-link {{ if eq $current.Site.Language.Lang $lang }}is-active{{ end }}" href="{{ $href }}" hreflang="{{ .LanguageCode | default .Lang }}" data-language-link data-language="{{ $lang }}">
+            {{ if eq $lang "zh" }}{{ i18n "chinese" }}{{ else }}{{ i18n "english" }}{{ end }}
+        </a>
+    {{ end }}
+</div>

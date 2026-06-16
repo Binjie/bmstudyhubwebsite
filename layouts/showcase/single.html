@@ -1,19 +1,19 @@
 {{ define "main" }}
 <section class="showcase-detail-hero">
     <div class="container">
-        <a class="showcase-back-link" href='{{ "/showcase/" | relURL }}'>Back to Showcase</a>
+        <a class="showcase-back-link" href='{{ "/showcase/" | relLangURL }}'>{{ i18n "backToShowcase" }}</a>
         <div class="showcase-detail-hero-layout">
             <div class="showcase-detail-copy">
-                <p class="eyebrow">{{ .Params.category | default "Project Story" }}</p>
+                <p class="eyebrow">{{ .Params.category | default (cond (eq .Site.Language.Lang "zh") "项目故事" "Project Story") }}</p>
                 <h1 class="showcase-detail-title">{{ .Title }}</h1>
                 <p class="showcase-detail-description">{{ .Params.description }}</p>
                 <div class="showcase-detail-actions">
                     {{ with .Params.embed_url }}
-                    <a class="btn btn-primary" href="{{ . | relURL }}" target="_blank" rel="noopener">{{ $.Params.demo_label | default "Open Product Demo" }}</a>
+                    <a class="btn btn-primary" href="{{ . | relURL }}" target="_blank" rel="noopener">{{ $.Params.demo_label | default (i18n "openProductDemo") }}</a>
                     {{ end }}
                 </div>
             </div>
-            <aside class="showcase-detail-panel" aria-label="Project facts">
+            <aside class="showcase-detail-panel" aria-label="{{ if eq .Site.Language.Lang "zh" }}项目资料{{ else }}Project facts{{ end }}">
                 {{ if .Params.featured_image }}
                 <figure class="showcase-detail-logo">
                     <img src="{{ .Params.featured_image | relURL }}" alt="{{ .Title }}">
@@ -22,26 +22,26 @@
                 <dl class="showcase-facts">
                     {{ with .Date }}
                     <div>
-                        <dt>Date</dt>
+                        <dt>{{ if eq $.Site.Language.Lang "zh" }}日期{{ else }}Date{{ end }}</dt>
                         <dd><time datetime='{{ .Format "2006-01-02" }}'>{{ .Format "January 2006" }}</time></dd>
                     </div>
                     {{ end }}
                     {{ with .Params.status }}
                     <div>
-                        <dt>Status</dt>
+                        <dt>{{ if eq $.Site.Language.Lang "zh" }}状态{{ else }}Status{{ end }}</dt>
                         <dd>{{ . }}</dd>
                     </div>
                     {{ end }}
                     {{ with .Params.materials }}
                     <div>
-                        <dt>Built With</dt>
+                        <dt>{{ if eq $.Site.Language.Lang "zh" }}使用材料/工具{{ else }}Built With{{ end }}</dt>
                         <dd>{{ delimit . ", " }}</dd>
                     </div>
                     {{ end }}
                     {{ with .Params.embed_url }}
                     <div>
-                        <dt>Product Page</dt>
-                        <dd><a href="{{ . | relURL }}" target="_blank" rel="noopener">Open demonstration</a></dd>
+                        <dt>{{ if eq $.Site.Language.Lang "zh" }}作品页面{{ else }}Product Page{{ end }}</dt>
+                        <dd><a href="{{ . | relURL }}" target="_blank" rel="noopener">{{ i18n "openDemonstration" }}</a></dd>
                     </div>
                     {{ end }}
                 </dl>
@@ -59,10 +59,10 @@
                 </div>
             </article>
 
-            <aside class="showcase-side-note" aria-label="Reading note">
-                <p class="eyebrow">Reading Focus</p>
-                <h2>Look for the decisions behind the result.</h2>
-                <p>Each showcase is written as a process record: the first idea, the parts that did not work, the improvements, and what the maker learned by finishing it.</p>
+            <aside class="showcase-side-note" aria-label="{{ if eq .Site.Language.Lang "zh" }}阅读提示{{ else }}Reading note{{ end }}">
+                <p class="eyebrow">{{ if eq .Site.Language.Lang "zh" }}阅读重点{{ else }}Reading Focus{{ end }}</p>
+                <h2>{{ if eq .Site.Language.Lang "zh" }}留意成果背后的选择。{{ else }}Look for the decisions behind the result.{{ end }}</h2>
+                <p>{{ if eq .Site.Language.Lang "zh" }}每个作品都按过程记录来写：最初想法、没有成功的部分、改进过程，以及完成作品后学到的东西。{{ else }}Each showcase is written as a process record: the first idea, the parts that did not work, the improvements, and what the maker learned by finishing it.{{ end }}</p>
                 {{ with .Params.tags }}
                 <div class="showcase-tags">
                     {{ range . }}

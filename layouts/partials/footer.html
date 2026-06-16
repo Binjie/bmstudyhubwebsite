@@ -4,15 +4,15 @@
             <div class="footer-col">
                 <div class="footer-logo">
                     <div class="logo-icon small">
-                        <img src="/images/logo_pure.png" alt="{{ .Site.Title }}" class="logo-image">
+                        <img src='{{ "/images/logo_pure.png" | relURL }}' alt="{{ .Site.Title }}" class="logo-image">
                     </div>
                     <h3>{{ .Site.Title }}</h3>
                 </div>
-                <p class="footer-description">A creative learning studio for mathematics, technology, culture, and hands-on thinking.</p>
+                <p class="footer-description">{{ i18n "footerDescription" }}</p>
             </div>
 
             <div class="footer-col">
-                <h4>Quick Links</h4>
+                <h4>{{ i18n "quickLinks" }}</h4>
                 <ul class="footer-links">
                     {{ range .Site.Menus.main }}
                     <li><a href="{{ .URL }}">{{ .Name }}</a></li>
@@ -21,15 +21,15 @@
             </div>
 
             <div class="footer-col">
-                <h4>Contact Info</h4>
+                <h4>{{ i18n "contactInfo" }}</h4>
                 <ul class="contact-info">
-                    <li><strong>Email:</strong> {{ .Site.Params.email }}</li>
+                    <li><strong>{{ i18n "email" }}:</strong> {{ .Site.Params.email }}</li>
                 </ul>
             </div>
         </div>
 
         <div class="footer-bottom">
-            <p>&copy; {{ now.Format "2006" }} {{ .Site.Title }}. All rights reserved.</p>
+            <p>&copy; {{ now.Format "2006" }} {{ .Site.Title }}. {{ i18n "copyright" }}</p>
         </div>
     </div>
 </footer>

@@ -1,0 +1,74 @@
+[home]
+other = "Home"
+
+[toggleNavigation]
+other = "Toggle navigation"
+
+[languageSwitcher]
+other = "Language"
+
+[english]
+other = "EN"
+
+[chinese]
+other = "中文"
+
+[quickLinks]
+other = "Quick Links"
+
+[contactInfo]
+other = "Contact Info"
+
+[email]
+other = "Email"
+
+[copyright]
+other = "All rights reserved."
+
+[footerDescription]
+other = "A creative learning studio for mathematics, technology, culture, and hands-on thinking."
+
+[view]
+other = "View"
+
+[read]
+other = "Read"
+
+[open]
+other = "Open"
+
+[all]
+other = "All"
+
+[search]
+other = "Search"
+
+[updated]
+other = "Updated"
+
+[openDemo]
+other = "Open demo"
+
+[openProductDemo]
+other = "Open Product Demo"
+
+[openDemonstration]
+other = "Open demonstration"
+
+[readMore]
+other = "Read More"
+
+[noItems]
+other = "No items match your search."
+
+[backToNotes]
+other = "Back to Notes"
+
+[backToKnowledge]
+other = "Back to Knowledge"
+
+[backToTests]
+other = "Back to Tests"
+
+[backToShowcase]
+other = "Back to Showcase"
