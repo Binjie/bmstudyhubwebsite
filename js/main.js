@@ -1,5 +1,32 @@
 // Mobile navigation toggle
 document.addEventListener('DOMContentLoaded', function() {
+    const currentLang = document.documentElement.lang || 'en';
+    const isChinese = currentLang.toLowerCase().startsWith('zh');
+    const languageLinks = document.querySelectorAll('[data-language-link]');
+
+    languageLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            try {
+                localStorage.setItem('bmstudyhub-language', this.dataset.language || '');
+            } catch (error) {
+                // Language storage is optional; normal navigation still works.
+            }
+        });
+    });
+
+    try {
+        const savedLanguage = localStorage.getItem('bmstudyhub-language');
+        const path = window.location.pathname.replace(/\/index\.html$/, '/');
+        const browserLanguage = (navigator.languages && navigator.languages[0]) || navigator.language || '';
+
+        if (!savedLanguage && (path === '/' || path === '') && browserLanguage.toLowerCase().startsWith('zh')) {
+            window.location.replace('/zh/');
+            return;
+        }
+    } catch (error) {
+        // Browser language detection is a convenience only.
+    }
+
     // Mobile nav toggle
     const navToggle = document.querySelector('.nav-toggle');
     const siteNav = document.querySelector('.site-nav');
@@ -87,7 +114,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             if (countEl) {
-                countEl.textContent = visibleCount === 1 ? '1 item' : `${visibleCount} items`;
+                countEl.textContent = isChinese ? `${visibleCount} 项` : (visibleCount === 1 ? '1 item' : `${visibleCount} items`);
             }
 
             if (emptyEl) {
@@ -201,7 +228,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             if (countEl) {
-                countEl.textContent = matchedItems.length === 1 ? '1 note' : `${matchedItems.length} notes`;
+                countEl.textContent = isChinese ? `${matchedItems.length} 篇札记` : (matchedItems.length === 1 ? '1 note' : `${matchedItems.length} notes`);
             }
 
             if (emptyEl) {

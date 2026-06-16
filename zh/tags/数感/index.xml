@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>数感 on BMStudyHub</title><link>https://www.bmstudyhub.top/zh/tags/%E6%95%B0%E6%84%9F/</link><description>Recent content in 数感 on BMStudyHub</description><generator>Hugo</generator><language>zh-cn</language><lastBuildDate>Mon, 01 Jun 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://www.bmstudyhub.top/zh/tags/%E6%95%B0%E6%84%9F/index.xml" rel="self" type="application/rss+xml"/><item><title>互动数独</title><link>https://www.bmstudyhub.top/zh/games/sudoku/</link><pubDate>Sun, 01 Oct 2023 00:00:00 +0000</pubDate><guid>https://www.bmstudyhub.top/zh/games/sudoku/</guid><description>&lt;h2 id="玩法"&gt;玩法&lt;/h2&gt;
+&lt;p&gt;填写 9x9 网格，让每一行、每一列和每一个 3x3 宫格都恰好包含数字 1 到 9。&lt;/p&gt;
+&lt;p&gt;已给出的数字不能改变。你的任务是通过推理找出空格中的数字。&lt;/p&gt;
+&lt;h2 id="操作"&gt;操作&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;点击格子，再按数字按钮或键盘上的 1 到 9。&lt;/li&gt;
+&lt;li&gt;使用 Backspace、Delete、0 或 C 清除当前格。&lt;/li&gt;
+&lt;li&gt;使用方向键移动。&lt;/li&gt;
+&lt;li&gt;按 H 获取当前空格的提示。&lt;/li&gt;
+&lt;li&gt;按 N 开始新题。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;慢下来，不要急着猜。数独最有价值的地方，是每一步都有理由。&lt;/p&gt;</description></item></channel></rss>
